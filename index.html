@@ -333,7 +333,7 @@ main { padding: 0 16px 24px; max-width: 640px; margin: 0 auto; }
     <div id="server-dot" title="Server-Status"></div>
   </div>
   <div class="goal-row">
-    <span class="goal-label">140 → 95 kg</span>
+    <span class="goal-label" id="goal-label">— → 95 kg</span>
     <div class="goal-bar-wrap"><div class="goal-bar-fill" id="goal-fill" style="width:0%"></div></div>
     <span class="goal-kg" id="goal-kg">— kg</span>
   </div>
@@ -479,7 +479,8 @@ main { padding: 0 16px 24px; max-width: 640px; margin: 0 auto; }
 <script>
 // ─── DATA ──────────────────────────────────────────────────────────────────
 const IS_SERVER = !['','file:'].includes(window.location.protocol);
-const GOAL_START = 140, GOAL_END = 95;
+const GOAL_END = 95;
+function goalStart() { return weights.length > 0 ? weights[0].kg : 140; }
 
 const db = {
   async get(url, fallback) {
@@ -996,9 +997,11 @@ function renderGoalBar() {
   const latest = weights[weights.length - 1];
   if (!latest) return;
   const kg = latest.kg;
-  const pct = Math.min(100, Math.max(0, ((GOAL_START - kg) / (GOAL_START - GOAL_END)) * 100));
+  const gs = goalStart();
+  const pct = Math.min(100, Math.max(0, ((gs - kg) / (gs - GOAL_END)) * 100));
   document.getElementById('goal-fill').style.width = pct + '%';
   document.getElementById('goal-kg').textContent = kg.toFixed(1) + ' kg';
+  document.getElementById('goal-label').textContent = gs.toFixed(1) + ' → ' + GOAL_END + ' kg';
 }
 
 function renderWeightChart() {
