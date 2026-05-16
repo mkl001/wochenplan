@@ -5,7 +5,10 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0e0e10">
 <title>Martins Wochenplan</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -182,8 +185,148 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .wbar{background:var(--surface2);border-radius:4px;height:7px;overflow:hidden;}
 .wfill{height:100%;background:linear-gradient(90deg,var(--accent2),#a0e8ff);border-radius:4px;transition:width .4s ease;}
 .wtxt{font-size:10px;color:var(--muted);margin-top:5px;}
-@media(max-width:768px){.dgrid{grid-template-columns:repeat(4,1fr);}.dgrd{grid-template-columns:1fr;}.mgrid{grid-template-columns:1fr;}.pgrid{grid-template-columns:1fr;}.stats{grid-template-columns:repeat(2,1fr);}.wt-hero{grid-template-columns:repeat(2,1fr);}.milestones{grid-template-columns:repeat(3,1fr);}.stress-grid{grid-template-columns:1fr;}}
-@media(max-width:480px){.dgrid{grid-template-columns:repeat(2,1fr);}}
+/* Trend-Chart-spezifisch */
+.chart-legend{display:flex;gap:16px;margin-top:10px;flex-wrap:wrap;}
+.chart-legend span{font-size:10px;color:var(--muted);display:flex;align-items:center;gap:5px;}
+.chart-legend .dot{width:10px;height:3px;border-radius:2px;}
+.trend-info{background:var(--surface2);border-radius:4px;padding:10px 14px;margin-top:10px;font-size:11px;color:var(--muted);line-height:1.7;}
+.trend-info strong{color:var(--accent);}
+/* === JETZT-KARTE (Echtzeit Tagesplan) === */
+.now-card{background:linear-gradient(135deg,rgba(232,255,71,0.08),rgba(232,255,71,0.02));border:1px solid rgba(232,255,71,0.25);border-radius:10px;padding:16px 20px;margin-bottom:20px;}
+.now-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
+.now-date{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);}
+.now-clock{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--accent);line-height:1;}
+.now-current{background:rgba(232,255,71,0.1);border:1px solid rgba(232,255,71,0.3);border-radius:6px;padding:12px 14px;margin-bottom:10px;}
+.now-current-lbl{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(232,255,71,0.6);margin-bottom:4px;}
+.now-current-act{font-size:16px;font-weight:600;color:var(--text);line-height:1.4;}
+.now-current-desc{font-size:11px;color:var(--muted);margin-top:3px;font-weight:300;}
+.now-next{display:flex;gap:8px;flex-direction:column;}
+.now-next-lbl{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:4px;}
+.now-next-item{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--surface2);border-radius:4px;}
+.now-next-time{font-family:'Bebas Neue',sans-serif;font-size:14px;color:var(--accent2);min-width:42px;}
+.now-next-txt{font-size:12px;color:var(--text);font-weight:400;}
+.now-progress{margin-top:12px;}
+.now-prog-lbl{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:5px;}
+.now-prog-bar{background:var(--surface2);border-radius:4px;height:6px;overflow:hidden;}
+.now-prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),rgba(232,255,71,0.5));border-radius:4px;transition:width 1s ease;}
+/* Bottom Nav Mobile */
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);padding:8px 0;padding-bottom:env(safe-area-inset-bottom,8px);z-index:100;justify-content:space-around;align-items:center;}
+.bn-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;border-radius:8px;transition:all .2s;min-width:44px;min-height:44px;justify-content:center;}
+.bn-item.active{color:var(--accent);}
+.bn-icon{font-size:20px;line-height:1;}
+.bn-lbl{font-size:9px;font-weight:600;letter-spacing:.3px;text-transform:uppercase;}
+
+/* === TABLET 768px === */
+@media(max-width:768px){
+  .dgrid{grid-template-columns:repeat(4,1fr);}
+  .dgrd{grid-template-columns:1fr;}
+  .mgrid{grid-template-columns:1fr;}
+  .pgrid{grid-template-columns:1fr;}
+  .stats{grid-template-columns:repeat(2,1fr);}
+  .wt-hero{grid-template-columns:repeat(2,1fr);}
+  .milestones{grid-template-columns:repeat(3,1fr);}
+  .stress-grid{grid-template-columns:1fr;}
+}
+
+/* === iPHONE 17 PRO MAX (430px) === */
+@media(max-width:430px){
+  /* Safe Areas */
+  body{padding-top:env(safe-area-inset-top,0);}
+  .wrap{padding:16px 14px 90px 14px;max-width:100%;}
+
+  /* Header */
+  .hdr{margin-bottom:16px;gap:8px;}
+  .hdr h1{font-size:36px;}
+  .hdr p{font-size:11px;}
+  .badge{font-size:9px;padding:5px 10px;}
+
+  /* Stats row */
+  .stats{grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:16px;}
+  .sc{padding:10px 12px;}
+  .sc .val{font-size:20px;}
+  .sc .lbl{font-size:8px;}
+  .sc .sub{font-size:9px;}
+
+  /* Tabs: auf mobile verstecken, Bottom Nav nutzen */
+  .tabs{display:none;}
+  .bottom-nav{display:flex;}
+
+  /* Wochenplan-Grid: 2 Spalten auf mobile */
+  .dgrid{grid-template-columns:repeat(2,1fr);gap:6px;}
+  .dc{min-height:100px;padding:9px 8px;}
+  .dc .dn{font-size:8px;}
+  .dc .dt{font-size:12px;}
+  .p{font-size:7px;}
+
+  /* Detail Panel */
+  .dpanel{padding:16px 12px;}
+  .dpanel h2{font-size:20px;}
+  .dsub{font-size:11px;margin-bottom:14px;}
+  .dgrd{grid-template-columns:1fr;gap:16px;}
+  .ti-title{font-size:13px;}
+  .ti-desc{font-size:11px;}
+  .ti-t{font-size:16px;}
+
+  /* Gewichtstracker */
+  .wt-hero{grid-template-columns:repeat(2,1fr);gap:8px;}
+  .wt-card{padding:14px 10px;}
+  .wval{font-size:28px;}
+  .wlbl{font-size:8px;}
+  .wsub{font-size:9px;}
+
+  /* Eingabezeile: vertikal */
+  .wt-input-row{flex-direction:column;gap:12px;align-items:stretch;}
+  .wt-input-group{width:100%;}
+  .wt-input{width:100%;font-size:18px;padding:14px 16px;border-radius:8px;}
+  .wt-input-group label{font-size:11px;}
+  .wt-btn{width:100%;padding:16px;font-size:14px;border-radius:8px;min-height:50px;}
+
+  /* Chart */
+  .chart-wrap{padding:14px;}
+
+  /* Timeline Einträge mobile */
+  .wt-entry{flex-wrap:wrap;gap:6px;padding:10px 12px;}
+  .we-date{min-width:auto;font-size:10px;width:100%;}
+  .we-kg{font-size:20px;}
+  .we-bmi{font-size:9px;width:100%;order:3;}
+  .we-diff{font-size:12px;margin-left:auto;}
+
+  /* Milestones */
+  .milestones{grid-template-columns:repeat(3,1fr);gap:6px;}
+  .ms{padding:10px 6px;}
+  .ms-icon{font-size:14px;}
+  .ms-kg{font-size:16px;}
+  .ms-lbl{font-size:8px;}
+
+  /* Ernährung */
+  .mgrid{grid-template-columns:1fr;gap:8px;}
+
+  /* Sport */
+  .sdh{padding:10px 12px;gap:8px;}
+  .sex{padding:0 12px 10px;}
+  .ei{padding:8px 10px;}
+  .en{font-size:13px;}
+  .ed{font-size:11px;}
+
+  /* Prinzipien */
+  .pgrid{grid-template-columns:1fr;gap:8px;}
+  .pcard{padding:14px;}
+  .pcard p{font-size:12px;}
+  .pcard h4{font-size:13px;}
+
+  /* Wasser-Tracker */
+  .wtr{padding:14px;}
+  .gl{font-size:22px;}
+
+  /* Stress-Grid */
+  .stress-grid{grid-template-columns:1fr;}
+
+  /* Notices */
+  .notice,.walert{font-size:12px;padding:12px;}
+  .stitle{font-size:22px;}
+  .ssub{font-size:12px;}
+}
+
 </style>
 </head>
 <body>
@@ -213,9 +356,54 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
   <button class="tab" onclick="switchTab('prinzipien',event)">🧠 Regeln</button>
 </div>
 
+<!-- Mobile Bottom Navigation -->
+<nav class="bottom-nav" id="bottomNav">
+  <button class="bn-item active" onclick="switchTab('woche',event)" data-tab="woche">
+    <span class="bn-icon">📅</span><span class="bn-lbl">Plan</span>
+  </button>
+  <button class="bn-item" onclick="switchTab('gewicht',event)" data-tab="gewicht">
+    <span class="bn-icon">⚖️</span><span class="bn-lbl">Gewicht</span>
+  </button>
+  <button class="bn-item" onclick="switchTab('ernaehrung',event)" data-tab="ernaehrung">
+    <span class="bn-icon">🥗</span><span class="bn-lbl">Essen</span>
+  </button>
+  <button class="bn-item" onclick="switchTab('sport',event)" data-tab="sport">
+    <span class="bn-icon">💪</span><span class="bn-lbl">Sport</span>
+  </button>
+  <button class="bn-item" onclick="switchTab('prinzipien',event)" data-tab="prinzipien">
+    <span class="bn-icon">🧠</span><span class="bn-lbl">Regeln</span>
+  </button>
+</nav>
+
 <!-- WOCHENPLAN -->
 
 <div id="tab-woche" class="tc active">
+
+  <!-- JETZT-KARTE: Echtzeit Tagesplan -->
+  <div class="now-card" id="nowCard">
+    <div class="now-header">
+      <div>
+        <div class="now-date" id="nowDate">Samstag, 17. Mai 2026</div>
+        <div id="nowDayTitle" style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;margin-top:2px;">HEUTE</div>
+      </div>
+      <div class="now-clock" id="nowClock">--:--</div>
+    </div>
+    <div class="now-current" id="nowCurrentBlock">
+      <div class="now-current-lbl">⚡ Jetzt gerade</div>
+      <div class="now-current-act" id="nowCurrentAct">Wird geladen...</div>
+      <div class="now-current-desc" id="nowCurrentDesc"></div>
+    </div>
+    <div class="now-next-lbl">Als nächstes</div>
+    <div class="now-next" id="nowNextList"></div>
+    <div class="now-progress">
+      <div class="now-prog-lbl">
+        <span>Tagesfortschritt</span>
+        <span id="nowProgPct">0%</span>
+      </div>
+      <div class="now-prog-bar"><div class="now-prog-fill" id="nowProgFill" style="width:0%"></div></div>
+    </div>
+  </div>
+
   <div class="walert"><strong>Trainingstage Mi & Fr:</strong> Abfahrt 17:45 → Ankunft + Umziehen → Training 18:30–20:00 → Heimfahrt → Zuhause ~20:50. Shake sofort, leichtes Abendbrot, 22:30 schlafen.</div>
   <div class="dgrid">
     <div class="dc sel" onclick="showDay(0,this)"><div class="dn">Mo</div><div class="dt">Fokustag</div><div class="pills"><span class="p s">06:00 Aufstehen</span><span class="p m">🥤 Shake Frühstück</span><span class="p s">🐕 Walk + Übungen</span><span class="p r">07:30 🚗 Büro</span><span class="p f">~1800 kcal</span></div></div>
@@ -286,8 +474,14 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
   <!-- Chart -->
 
   <div class="chart-wrap">
-    <h4>📈 Gewichtsverlauf — Kurve</h4>
-    <canvas id="weightChart" height="200"></canvas>
+    <h4>📈 Gewichtsverlauf — Kurve &amp; Trend</h4>
+    <canvas id="weightChart" height="220"></canvas>
+    <div class="chart-legend">
+      <span><span class="dot" style="background:#e8ff47;display:inline-block;"></span>Gewicht</span>
+      <span><span class="dot" style="background:rgba(255,107,71,0.8);display:inline-block;border-top:2px dashed rgba(255,107,71,0.8);height:0;"></span>Trendlinie</span>
+      <span><span class="dot" style="background:rgba(95,255,154,0.5);display:inline-block;border-top:2px dashed rgba(95,255,154,0.6);height:0;"></span>Ziel 95 kg</span>
+    </div>
+    <div class="trend-info" id="trend-info" style="display:none;"></div>
   </div>
 
   <!-- Einträge -->
@@ -741,6 +935,19 @@ function renderMilestones(cur){
   }).join('');
 }
 
+function linearRegression(data){
+  // data = [{x: dayIndex, y: kg}, ...]
+  if(data.length<2) return null;
+  const n=data.length;
+  const sumX=data.reduce((a,d)=>a+d.x,0);
+  const sumY=data.reduce((a,d)=>a+d.y,0);
+  const sumXY=data.reduce((a,d)=>a+d.x*d.y,0);
+  const sumX2=data.reduce((a,d)=>a+d.x*d.x,0);
+  const slope=(n*sumXY-sumX*sumY)/(n*sumX2-sumX*sumX);
+  const intercept=(sumY-slope*sumX)/n;
+  return{slope,intercept}; // slope = kg/day
+}
+
 function updateDashboard(){
   const start=140,goal=95,height=1.86;
   const cur=weights.length>0?weights[weights.length-1].kg:start;
@@ -753,8 +960,32 @@ function updateDashboard(){
   const pct=Math.max(0,Math.round(lost/45*100));
   document.getElementById('wt-lost-pct').textContent=`${pct}% des Ziels erreicht`;
   document.getElementById('wt-remaining').textContent=Math.max(0,rem).toFixed(1)+' kg';
-  const weeks=Math.ceil(rem);
-  document.getElementById('wt-eta').textContent=rem>0?`~${weeks} Wochen bei 1kg/Wo`:'🎉 Ziel erreicht!';
+
+  // Trend-basierte ETA berechnen
+  const trendEl=document.getElementById('trend-info');
+  if(weights.length>=2){
+    const base=new Date(weights[0].date).getTime();
+    const regData=weights.map(w=>({x:(new Date(w.date).getTime()-base)/(1000*60*60*24),y:w.kg}));
+    const reg=linearRegression(regData);
+    if(reg && reg.slope<0){
+      const kgPerWeek=Math.abs(reg.slope*7);
+      const weeksToGoal=rem/Math.abs(reg.slope*7);
+      const etaDate=new Date(Date.now()+weeksToGoal*7*24*60*60*1000);
+      const etaStr=etaDate.toLocaleDateString('de-DE',{month:'long',year:'numeric'});
+      document.getElementById('wt-eta').textContent=`${kgPerWeek.toFixed(2)} kg/Woche Trend`;
+      trendEl.style.display='block';
+      trendEl.innerHTML=`<strong>📊 Trendanalyse:</strong> Du nimmst im Schnitt <strong>${kgPerWeek.toFixed(2)} kg/Woche</strong> ab · Basierend auf deinem aktuellen Tempo erreichst du 95 kg voraussichtlich <strong>im ${etaStr}</strong> · Noch ~<strong>${Math.ceil(weeksToGoal)} Wochen</strong>.`;
+    } else if(reg && reg.slope>=0){
+      document.getElementById('wt-eta').textContent='⚠️ Trend: kein Defizit';
+      trendEl.style.display='block';
+      trendEl.innerHTML='<strong>⚠️ Achtung:</strong> Dein Trend zeigt aktuell keine Abnahme. Kaloriendefizit prüfen!';
+    }
+  } else {
+    const weeks=Math.ceil(rem);
+    document.getElementById('wt-eta').textContent=rem>0?`~${weeks} Wochen bei 1kg/Wo`:'🎉 Ziel erreicht!';
+    trendEl.style.display='none';
+  }
+
   renderMilestones(cur);
   renderTimeline();
   drawChart();
@@ -815,8 +1046,8 @@ function drawChart(){
   const ctx=canvas.getContext('2d');
   const dpr=window.devicePixelRatio||1;
   const rect=canvas.parentElement.getBoundingClientRect();
-  const W=rect.width-40;
-  const H=200;
+  const W=Math.max(rect.width-40,200);
+  const H=220;
   canvas.width=W*dpr;
   canvas.height=H*dpr;
   canvas.style.width=W+'px';
@@ -824,74 +1055,103 @@ function drawChart(){
   ctx.scale(dpr,dpr);
   ctx.clearRect(0,0,W,H);
 
-  const allData=[{date:'Start',kg:140},...weights,{date:'Ziel',kg:95,ghost:true}];
-  if(allData.length<2){
-    ctx.fillStyle='#555';ctx.font='13px DM Sans';ctx.textAlign='center';
-    ctx.fillText('Trag dein erstes Gewicht ein — dann erscheint die Kurve!',W/2,H/2);return;
+  const realData=[{date:'Start',kg:140,isStart:true},...weights];
+  if(realData.length<2){
+    ctx.fillStyle='#555';ctx.font='14px DM Sans';ctx.textAlign='center';
+    ctx.fillText('Trag dein erstes Gewicht ein',W/2,H/2-8);
+    ctx.font='11px DM Sans';ctx.fillStyle='#444';
+    ctx.fillText('— dann erscheint die Kurve mit Trendlinie —',W/2,H/2+12);
+    return;
   }
 
-  const minKg=Math.min(...allData.map(d=>d.kg))-3;
-  const maxKg=Math.max(...allData.map(d=>d.kg))+3;
-  const pad={t:20,r:20,b:30,l:45};
+  const minKg=Math.min(95,...realData.map(d=>d.kg))-4;
+  const maxKg=Math.max(...realData.map(d=>d.kg))+5;
+  const pad={t:24,r:16,b:32,l:42};
   const cW=W-pad.l-pad.r;
   const cH=H-pad.t-pad.b;
-  const xStep=cW/(allData.length-1);
+  const xStep=cW/(realData.length-1||1);
   const yScale=cH/(maxKg-minKg);
 
   const px=(i)=>pad.l+i*xStep;
   const py=(kg)=>pad.t+cH-(kg-minKg)*yScale;
 
-  // Grid
-  ctx.strokeStyle='rgba(255,255,255,0.05)';ctx.lineWidth=1;
-  for(let k=0;k<=4;k++){
-    const y=pad.t+k*(cH/4);
+  // Hintergrund-Grid
+  ctx.strokeStyle='rgba(255,255,255,0.04)';ctx.lineWidth=1;
+  for(let k=0;k<=5;k++){
+    const y=pad.t+k*(cH/5);
     ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+cW,y);ctx.stroke();
-    const kg=maxKg-(k*(maxKg-minKg)/4);
-    ctx.fillStyle='#555';ctx.font='10px DM Sans';ctx.textAlign='right';
-    ctx.fillText(kg.toFixed(0),pad.l-5,y+4);
+    const kg=maxKg-(k*(maxKg-minKg)/5);
+    ctx.fillStyle='#444';ctx.font=`${Math.max(9,Math.min(11,W/40))}px DM Sans`;ctx.textAlign='right';
+    ctx.fillText(kg.toFixed(0)+'kg',pad.l-4,y+4);
   }
 
-  // Goal line
+  // Ziellinie 95 kg
   const goalY=py(95);
-  ctx.setLineDash([4,4]);ctx.strokeStyle='rgba(95,255,154,0.3)';ctx.lineWidth=1;
+  ctx.save();ctx.setLineDash([5,4]);ctx.strokeStyle='rgba(95,255,154,0.4)';ctx.lineWidth=1.5;
   ctx.beginPath();ctx.moveTo(pad.l,goalY);ctx.lineTo(pad.l+cW,goalY);ctx.stroke();
-  ctx.setLineDash([]);
-  ctx.fillStyle='rgba(95,255,154,0.6)';ctx.font='10px DM Sans';ctx.textAlign='left';
-  ctx.fillText('Ziel 95 kg',pad.l+4,goalY-4);
+  ctx.restore();
+  ctx.fillStyle='rgba(95,255,154,0.7)';ctx.font='9px DM Sans';ctx.textAlign='left';
+  ctx.fillText('Ziel 95 kg',pad.l+4,goalY-5);
 
-  // Gradient fill
+  // Gradient fill unter Kurve
   const grad=ctx.createLinearGradient(0,pad.t,0,pad.t+cH);
-  grad.addColorStop(0,'rgba(232,255,71,0.15)');
+  grad.addColorStop(0,'rgba(232,255,71,0.18)');
   grad.addColorStop(1,'rgba(232,255,71,0)');
   ctx.beginPath();
-  ctx.moveTo(px(0),py(allData[0].kg));
-  allData.forEach((d,i)=>{if(i>0)ctx.lineTo(px(i),py(d.kg));});
-  ctx.lineTo(px(allData.length-1),pad.t+cH);
+  ctx.moveTo(px(0),py(realData[0].kg));
+  realData.forEach((d,i)=>{if(i>0)ctx.lineTo(px(i),py(d.kg));});
+  ctx.lineTo(px(realData.length-1),pad.t+cH);
   ctx.lineTo(px(0),pad.t+cH);
   ctx.closePath();ctx.fillStyle=grad;ctx.fill();
 
-  // Line
-  ctx.beginPath();ctx.moveTo(px(0),py(allData[0].kg));
-  allData.forEach((d,i)=>{if(i>0){if(d.ghost){ctx.setLineDash([4,4]);ctx.strokeStyle='rgba(95,255,154,0.4)';}ctx.lineTo(px(i),py(d.kg));}});
-  ctx.strokeStyle='#e8ff47';ctx.setLineDash([]);ctx.lineWidth=2;
+  // Hauptlinie (Gewichtskurve)
   ctx.beginPath();
-  const realData=allData.filter(d=>!d.ghost);
-  realData.forEach((d,i)=>{const idx=allData.indexOf(d);i===0?ctx.moveTo(px(idx),py(d.kg)):ctx.lineTo(px(idx),py(d.kg));});
-  ctx.stroke();
+  ctx.moveTo(px(0),py(realData[0].kg));
+  realData.forEach((d,i)=>{if(i>0)ctx.lineTo(px(i),py(d.kg));});
+  ctx.strokeStyle='#e8ff47';ctx.lineWidth=2.5;ctx.setLineDash([]);ctx.stroke();
 
-  // Dots
+  // Trendlinie (lineare Regression)
+  if(weights.length>=2){
+    const base=new Date(weights[0].date).getTime();
+    const regPts=weights.map((w,idx)=>({x:idx,y:w.kg}));
+    const reg=linearRegression(regPts);
+    if(reg){
+      // Trendlinie von erstem bis letztem echten Punkt (+ Projektion bis Rand)
+      const startI=1; // Index in realData wo echte weights starten
+      const tX0=px(startI)+((realData.length-2>0)?0:0);
+      const tY0=py(reg.intercept);
+      const lastI=realData.length-1;
+      const tX1=px(lastI);
+      const tY1=py(reg.intercept+reg.slope*(weights.length-1));
+      ctx.save();
+      ctx.setLineDash([6,4]);
+      ctx.strokeStyle='rgba(255,107,71,0.75)';
+      ctx.lineWidth=2;
+      ctx.beginPath();ctx.moveTo(tX0,tY0);ctx.lineTo(tX1,tY1);ctx.stroke();
+      ctx.restore();
+    }
+  }
+
+  // Punkte auf der Kurve
   realData.forEach((d,i)=>{
-    const idx=allData.indexOf(d);
-    ctx.beginPath();ctx.arc(px(idx),py(d.kg),4,0,Math.PI*2);
-    ctx.fillStyle=i===0?'#888':'#e8ff47';ctx.fill();
+    ctx.beginPath();ctx.arc(px(i),py(d.kg),i===0?4:5,0,Math.PI*2);
+    ctx.fillStyle=d.isStart?'#555':'#e8ff47';
+    ctx.strokeStyle='#0e0e10';ctx.lineWidth=1.5;
+    ctx.fill();ctx.stroke();
+    // Gewichtslabel über Punkt (bei wenigen Einträgen)
+    if(realData.length<=8&&!d.isStart){
+      ctx.fillStyle='rgba(232,255,71,0.85)';ctx.font='bold 9px DM Sans';ctx.textAlign='center';
+      ctx.fillText(d.kg.toFixed(1),px(i),py(d.kg)-10);
+    }
   });
 
-  // Labels
-  allData.forEach((d,i)=>{
-    ctx.fillStyle=d.ghost?'rgba(95,255,154,0.5)':'#555';
-    ctx.font='9px DM Sans';ctx.textAlign='center';
-    const lbl=d.date==='Start'?'Start':d.date==='Ziel'?'Ziel':d.date.slice(5);
-    ctx.fillText(lbl,px(i),H-8);
+  // X-Achse Labels
+  realData.forEach((d,i)=>{
+    ctx.fillStyle='#444';ctx.font='9px DM Sans';ctx.textAlign='center';
+    const lbl=d.isStart?'Start':d.date.slice(5);
+    // Nur jeden 2. Label bei vielen Einträgen
+    if(realData.length<=8||i%2===0||i===realData.length-1)
+      ctx.fillText(lbl,px(i),H-8);
   });
 }
 
@@ -899,8 +1159,14 @@ function drawChart(){
 function switchTab(n,e){
   document.querySelectorAll('.tc').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.bn-item').forEach(t=>t.classList.remove('active'));
   document.getElementById('tab-'+n).classList.add('active');
-  e.target.classList.add('active');
+  // Desktop tab
+  const clickedTab=e.target.closest('.tab');
+  if(clickedTab) clickedTab.classList.add('active');
+  // Mobile bottom nav
+  const bnItem=document.querySelector(`.bn-item[data-tab="${n}"]`);
+  if(bnItem) bnItem.classList.add('active');
   if(n==='gewicht'){setTimeout(drawChart,100);}
 }
 
@@ -953,6 +1219,95 @@ function toggleW(i){
 
 // Date default
 document.getElementById('wt-date').valueAsDate=new Date();
+
+// ==============================
+// ECHTZEIT TAGESPLAN
+// ==============================
+const DE_DAYS=['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+const DE_MONTHS=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+
+// days[0]=Mo, days[1]=Di, ... days[6]=So
+// JS getDay(): 0=So,1=Mo,...,6=Sa → mappping
+function getTodayDayIndex(){
+  const jsd=new Date().getDay(); // 0=So
+  return jsd===0?6:jsd-1; // 0=Mo..6=So
+}
+
+function parseTime(t){
+  // "06:00" → minutes since midnight
+  const p=t.split(':');
+  return parseInt(p[0])*60+parseInt(p[1]);
+}
+
+function minsNow(){
+  const n=new Date();
+  return n.getHours()*60+n.getMinutes();
+}
+
+function updateNowCard(){
+  const now=new Date();
+  const h=String(now.getHours()).padStart(2,'0');
+  const m=String(now.getMinutes()).padStart(2,'0');
+  document.getElementById('nowClock').textContent=`${h}:${m}`;
+
+  const dayIdx=getTodayDayIndex();
+  const dayData=days[dayIdx];
+  const dayName=DE_DAYS[now.getDay()];
+  const dateStr=`${dayName}, ${now.getDate()}. ${DE_MONTHS[now.getMonth()]} ${now.getFullYear()}`;
+  document.getElementById('nowDate').textContent=dateStr;
+  document.getElementById('nowDayTitle').textContent=dayData.title.split(' — ')[0]+' — '+dayData.title.split(' — ').slice(1).join(' — ');
+
+  const cur=minsNow();
+  const tl=dayData.tl;
+
+  // Tagesfortschritt 06:00 bis 23:00
+  const dayStart=6*60,dayEnd=23*60;
+  const pct=Math.min(100,Math.max(0,Math.round((cur-dayStart)/(dayEnd-dayStart)*100)));
+  document.getElementById('nowProgPct').textContent=pct+'%';
+  document.getElementById('nowProgFill').style.width=pct+'%';
+
+  // Aktuelle Aktivität finden
+  let currentIdx=-1;
+  for(let i=0;i<tl.length;i++){
+    const tMin=parseTime(tl[i].time);
+    const nextMin=i+1<tl.length?parseTime(tl[i+1].time):24*60;
+    if(cur>=tMin && cur<nextMin){currentIdx=i;break;}
+  }
+  if(currentIdx===-1 && cur<parseTime(tl[0].time)) currentIdx=-1;
+  if(currentIdx===-1 && cur>=parseTime(tl[tl.length-1].time)) currentIdx=tl.length-1;
+
+  const curItem=currentIdx>=0?tl[currentIdx]:null;
+  if(curItem){
+    document.getElementById('nowCurrentAct').textContent=curItem.tt;
+    document.getElementById('nowCurrentDesc').textContent=curItem.desc||'';
+  } else {
+    document.getElementById('nowCurrentAct').textContent='Vor dem Start des Tages';
+    document.getElementById('nowCurrentDesc').textContent='Tagesplan beginnt um '+tl[0].time+' Uhr';
+  }
+
+  // Nächste 3 Aktivitäten
+  const nextStart=currentIdx+1;
+  const nextItems=tl.slice(nextStart,nextStart+3);
+  const nextEl=document.getElementById('nowNextList');
+  if(nextItems.length===0){
+    nextEl.innerHTML='<div style="font-size:11px;color:var(--muted);padding:6px 0;">✅ Alle Aktivitäten des Tages abgeschlossen — gute Nacht!</div>';
+  } else {
+    nextEl.innerHTML=nextItems.map(it=>`
+      <div class="now-next-item">
+        <span class="now-next-time">${it.time}</span>
+        <span class="now-next-txt">${it.tt}</span>
+      </div>`).join('');
+  }
+
+  // Highlight heute im Wochenplan-Grid
+  document.querySelectorAll('.dc').forEach((el,i)=>{
+    el.style.boxShadow=i===dayIdx?'0 0 0 2px var(--accent)':'';
+  });
+}
+
+// Init Echtzeit-Karte
+updateNowCard();
+setInterval(updateNowCard, 30000); // alle 30 Sek aktualisieren
 
 // Init
 loadWeights();
