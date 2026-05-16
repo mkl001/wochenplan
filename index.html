@@ -706,7 +706,7 @@ async function checkServer() {
   const dot = document.getElementById('server-dot');
   if (!IS_SERVER) { dot.className=''; return; }
   try {
-    const r = await fetch('/api/status');
+    const r = await fetch('/api/status.php');
     dot.className = r.ok ? 'ok' : 'err';
   } catch { dot.className = 'err'; }
 }
@@ -762,7 +762,7 @@ function updateNowCard() {
 // ─── WATER ───────────────────────────────────────────────────────────────────
 async function loadWater() {
   if (IS_SERVER) {
-    const d = await db.get('/api/water/' + todayKey, { count: 0 });
+    const d = await db.get('/api/water.php?date=' + todayKey, { count: 0 });
     water[todayKey] = d.count || 0;
   } else {
     try { water = JSON.parse(localStorage.getItem('water') || '{}'); } catch {}
@@ -788,7 +788,7 @@ function renderWater() {
 async function setWater(count) {
   water[todayKey] = count;
   if (IS_SERVER) {
-    await db.post('/api/water', { date: todayKey, count });
+    await db.post('/api/water.php', { date: todayKey, count });
   } else {
     localStorage.setItem('water', JSON.stringify(water));
   }
@@ -901,8 +901,8 @@ async function toggleCheckin() {
   const cur = checkins.find(c => c.type === 'training' && c.date === todayKey);
   const done = !(cur?.done);
   if (IS_SERVER) {
-    await db.post('/api/checkins', { date: todayKey, type: 'training', done });
-    checkins = await db.get('/api/checkins', checkins);
+    await db.post('/api/checkins.php', { date: todayKey, type: 'training', done });
+    checkins = await db.get('/api/checkins.php', checkins);
   } else {
     const idx = checkins.findIndex(c => c.type === 'training' && c.date === todayKey);
     const entry = { date: todayKey, type: 'training', done };
@@ -927,7 +927,7 @@ function renderRules() {
 // ─── NOTES ────────────────────────────────────────────────────────────────────
 async function loadNotes() {
   if (IS_SERVER) {
-    notes = await db.get('/api/notes', []);
+    notes = await db.get('/api/notes.php', []);
   } else {
     try { notes = JSON.parse(localStorage.getItem('notes') || '[]'); } catch {}
   }
@@ -953,8 +953,8 @@ async function saveNote() {
   if (!text) return;
   inp.value = '';
   if (IS_SERVER) {
-    await db.post('/api/notes', { text, date: todayKey });
-    notes = await db.get('/api/notes', notes);
+    await db.post('/api/notes.php', { text, date: todayKey });
+    notes = await db.get('/api/notes.php', notes);
   } else {
     const entry = { id: Date.now(), text, date: todayKey, createdAt: new Date().toISOString() };
     notes.unshift(entry);
@@ -966,8 +966,8 @@ async function saveNote() {
 
 async function deleteNote(id) {
   if (IS_SERVER) {
-    await db.del('/api/notes/' + id);
-    notes = await db.get('/api/notes', notes);
+    await db.del('/api/notes.php?id=' + id);
+    notes = await db.get('/api/notes.php', notes);
   } else {
     notes = notes.filter(n => n.id !== id);
     localStorage.setItem('notes', JSON.stringify(notes));
@@ -983,7 +983,7 @@ document.getElementById('note-input').addEventListener('keydown', e => {
 // ─── WEIGHT ──────────────────────────────────────────────────────────────────
 async function loadWeights() {
   if (IS_SERVER) {
-    weights = await db.get('/api/weights', []);
+    weights = await db.get('/api/weights.php', []);
   } else {
     try { weights = JSON.parse(localStorage.getItem('weights') || '[]'); } catch {}
   }
@@ -1128,8 +1128,8 @@ async function addWeight() {
     }
   }
   if (IS_SERVER) {
-    await db.post('/api/weights', { date: dateStr, kg });
-    weights = await db.get('/api/weights', weights);
+    await db.post('/api/weights.php', { date: dateStr, kg });
+    weights = await db.get('/api/weights.php', weights);
   } else {
     weights = weights.filter(w => w.date !== dateStr);
     weights.push({ date: dateStr, kg, savedAt: new Date().toISOString() });
@@ -1142,8 +1142,8 @@ async function addWeight() {
 
 async function deleteWeight(date) {
   if (IS_SERVER) {
-    await db.del('/api/weights/' + date);
-    weights = await db.get('/api/weights', weights);
+    await db.del('/api/weights.php?date=' + date);
+    weights = await db.get('/api/weights.php', weights);
   } else {
     weights = weights.filter(w => w.date !== date);
     localStorage.setItem('weights', JSON.stringify(weights));
