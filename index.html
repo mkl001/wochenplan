@@ -1,1331 +1,1174 @@
-
-
 <!DOCTYPE html>
-
 <html lang="de">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#0e0e10">
-<title>Martins Wochenplan</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<title>Wochenplan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0e0e10;--surface:#18181c;--surface2:#222228;--accent:#e8ff47;--accent2:#47c8ff;--accent3:#ff6b47;--green:#5fff9a;--text:#f0f0f0;--muted:#888;--border:rgba(255,255,255,0.07);}
-*{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
-body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse at 15% 10%,rgba(232,255,71,0.07) 0%,transparent 50%),radial-gradient(ellipse at 85% 90%,rgba(71,200,255,0.05) 0%,transparent 50%);}
-/* TOP NAV */
-.top-nav{position:sticky;top:0;z-index:50;background:var(--surface);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-top:env(safe-area-inset-top,0);}
-.top-nav-links{display:flex;gap:2px;padding:6px 0;}
-.tnav-btn{padding:8px 14px;font-size:12px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--muted);border-radius:4px;transition:all .2s;font-family:'DM Sans',sans-serif;white-space:nowrap;}
-.tnav-btn:hover{color:var(--text);background:rgba(255,255,255,0.05);}
-.tnav-btn.active{background:var(--accent);color:#000;font-weight:700;}
-.top-nav-goal{display:flex;align-items:center;gap:8px;padding:6px 0;flex-shrink:0;}
-.tng-start,.tng-goal{font-size:10px;font-weight:600;color:var(--muted);white-space:nowrap;}
-.tng-goal{color:var(--green);}
-.tng-bar-wrap{display:flex;align-items:center;gap:5px;}
-.tng-bar{width:80px;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;}
-.tng-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));border-radius:3px;transition:width .5s ease;}
-.tng-pct{font-size:10px;font-weight:700;color:var(--accent);min-width:28px;}
-
-.wrap{max-width:1100px;margin:0 auto;padding:24px 20px;position:relative;z-index:1;}
-.tc{display:none;}.tc.active{display:block;}
-.dgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;margin-bottom:20px;}
-.dc{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:11px 9px;cursor:pointer;transition:all .2s;min-height:145px;}
-.dc:hover{border-color:rgba(232,255,71,.3);transform:translateY(-2px);}
-.dc.sel{border-color:var(--accent);background:rgba(232,255,71,.05);}
-.dc .dn{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:5px;}
-.dc .dt{font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--text);line-height:1.2;margin-bottom:6px;}
-.pills{display:flex;flex-direction:column;gap:3px;}
-.p{font-size:8px;padding:2px 5px;border-radius:2px;font-weight:500;line-height:1.4;}
-.p.s{background:rgba(232,255,71,.12);color:var(--accent);}
-.p.f{background:rgba(71,200,255,.12);color:var(--accent2);}
-.p.r{background:rgba(255,107,71,.12);color:var(--accent3);}
-.p.m{background:rgba(255,0,80,.12);color:#ff4d7a;}
-.p.w{background:rgba(95,255,154,.15);color:var(--green);}
-.dpanel{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:24px;}
-.dpanel h2{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;margin-bottom:3px;}
-.dsub{color:var(--muted);font-size:12px;margin-bottom:20px;font-weight:300;}
-.dgrd{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
-.ds h3{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:11px;padding-bottom:7px;border-bottom:1px solid var(--border);}
-.tl{display:flex;flex-direction:column;}
-.ti{display:flex;align-items:stretch;}
-.ti-l{display:flex;flex-direction:column;align-items:center;min-width:58px;padding-right:9px;}
-.ti-t{font-family:'Bebas Neue',sans-serif;font-size:15px;color:var(--accent);line-height:1;white-space:nowrap;}
-.ti.blue .ti-t{color:var(--accent2);}
-.ti.orange .ti-t{color:var(--accent3);}
-.ti.more .ti-t{color:#ff4d7a;}
-.ti.drive .ti-t{color:#555;}
-.ti.green .ti-t{color:var(--green);}
-.ti-line{width:1px;background:var(--border);flex:1;margin-top:4px;min-height:8px;}
-.ti-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:5px;}
-.ti.blue .ti-dot{background:var(--accent2);}
-.ti.orange .ti-dot{background:var(--accent3);}
-.ti.more .ti-dot{background:#ff4d7a;}
-.ti.drive .ti-dot{background:#333;}
-.ti.green .ti-dot{background:var(--green);}
-.ti-r{flex:1;padding-bottom:12px;padding-top:1px;}
-.ti-tag{display:inline-block;font-size:8px;padding:1px 6px;border-radius:2px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:3px;}
-.tg-drive{background:rgba(255,255,255,.07);color:#666;}
-.tg-more{background:rgba(255,77,122,.2);color:#ff4d7a;}
-.tg-training{background:rgba(255,107,71,.2);color:var(--accent3);}
-.tg-rudern{background:rgba(71,200,255,.2);color:var(--accent2);}
-.tg-wiegen{background:rgba(95,255,154,.2);color:var(--green);}
-.ti-title{font-size:12px;font-weight:500;margin-bottom:2px;}
-.ti-desc{font-size:10px;color:var(--muted);font-weight:300;line-height:1.5;}
-.fl{display:flex;flex-direction:column;gap:6px;}
-.fi{background:var(--surface2);padding:8px 12px;border-radius:4px;}
-.fi .fn{font-size:12px;font-weight:500;margin-bottom:2px;}
-.fi .fd{font-size:10px;color:var(--muted);font-weight:300;}
-.fi .fkal{font-size:10px;color:var(--accent);font-weight:600;margin-top:2px;}
-.fi.shake{border-left:3px solid #ff4d7a;}
-.fi.main{border-left:3px solid var(--accent2);}
-.fi.snack{border-left:3px solid var(--accent);}
-.walert{background:rgba(255,107,71,.07);border:1px solid rgba(255,107,71,.2);border-radius:4px;padding:11px 15px;font-size:11px;color:rgba(255,255,255,.7);line-height:1.6;margin-bottom:18px;}
-.walert strong{color:var(--accent3);}
-.notice{background:rgba(232,255,71,.05);border:1px solid rgba(232,255,71,.15);border-radius:4px;padding:12px 15px;font-size:11px;color:rgba(255,255,255,.65);line-height:1.6;margin-top:12px;}
-.notice strong{color:var(--accent);}
-.stitle{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1px;margin-bottom:3px;}
-.ssub{color:var(--muted);font-size:12px;font-weight:300;margin-bottom:20px;}
-/* GEWICHTSTRACKER */
-.wt-hero{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
-.wt-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:18px;text-align:center;}
-.wt-card.hl{border-color:rgba(232,255,71,.3);background:rgba(232,255,71,.04);}
-.wt-card.hl2{border-color:rgba(95,255,154,.3);background:rgba(95,255,154,.04);}
-.wlbl{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:7px;}
-.wval{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1;}
-.wsub{font-size:10px;color:var(--muted);margin-top:3px;}
-.wt-input-row{display:flex;gap:10px;margin-bottom:20px;align-items:flex-end;flex-wrap:wrap;}
-.wt-input-group{display:flex;flex-direction:column;gap:5px;}
-.wt-input-group label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);}
-.wt-input{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:4px;font-size:16px;font-family:'Bebas Neue',sans-serif;width:110px;outline:none;}
-.wt-input:focus{border-color:var(--accent);}
-.wt-btn{background:var(--accent);color:#000;border:none;padding:10px 20px;border-radius:4px;font-weight:700;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;letter-spacing:.5px;text-transform:uppercase;}
-.wt-btn:hover{opacity:.9;}
-.chart-wrap{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:20px;margin-bottom:16px;}
-.chart-wrap h4{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:16px;}
-.milestones{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:16px;}
-.ms{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:12px;text-align:center;transition:all .3s;}
-.ms.reached{border-color:var(--green);background:rgba(95,255,154,.06);}
-.ms-icon{font-size:16px;margin-bottom:3px;}
-.ms-kg{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--muted);}
-.ms.reached .ms-kg{color:var(--green);}
-.ms-lbl{font-size:9px;color:var(--muted);margin-top:2px;}
-.ms.reached .ms-lbl{color:var(--green);}
-.wt-timeline{display:flex;flex-direction:column;gap:6px;max-height:260px;overflow-y:auto;}
-.wt-entry{display:flex;align-items:center;gap:12px;background:var(--surface2);padding:10px 14px;border-radius:4px;}
-.we-date{font-size:11px;color:var(--muted);min-width:90px;font-weight:300;}
-.we-kg{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--text);}
-.we-bmi{font-size:10px;color:var(--muted);flex:1;}
-.we-diff{font-size:11px;font-weight:600;}
-.we-diff.neg{color:var(--green);}
-.we-diff.pos{color:var(--accent3);}
-.we-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:4px;opacity:.5;}
-.we-del:hover{opacity:1;color:var(--accent3);}
-/* ERNÄHRUNG */
-.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-bottom:12px;}
-.mc{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:15px;}
-.mc.shk{border-color:rgba(255,77,122,.3);background:rgba(255,77,122,.04);}
-.mt{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--accent2);margin-bottom:2px;}
-.mc.shk .mt{color:#ff4d7a;}
-.mn{font-size:12px;font-weight:600;margin-bottom:7px;}
-.mbdg{display:inline-block;font-size:8px;padding:2px 7px;border-radius:2px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
-.bdg-more{background:rgba(255,77,122,.2);color:#ff4d7a;}
-.bdg-meal{background:rgba(71,200,255,.15);color:var(--accent2);}
-.mi-list{list-style:none;display:flex;flex-direction:column;gap:3px;}
-.mi-list li{font-size:10px;color:var(--muted);font-weight:300;padding-left:11px;position:relative;line-height:1.5;}
-.mi-list li::before{content:'—';position:absolute;left:0;color:var(--accent);}
-.mi-list li.kal{color:var(--accent);font-weight:600;padding-left:0;}
-.mi-list li.kal::before{display:none;}
-.stress-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px;}
-.stress-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px;display:flex;gap:12px;}
-.stress-card.trigger{border-left:3px solid var(--accent3);}
-.stress-card.solution{border-left:3px solid var(--green);}
-.sico{font-size:22px;flex-shrink:0;}
-.stress-card h4{font-size:12px;font-weight:600;margin-bottom:5px;}
-.stress-card.trigger h4{color:var(--accent3);}
-.stress-card.solution h4{color:var(--green);}
-.stress-card p{font-size:11px;color:var(--muted);font-weight:300;line-height:1.6;}
-/* SPORT */
-.swk{display:flex;flex-direction:column;gap:10px;}
-.sd{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;}
-.sdh{display:flex;align-items:center;gap:12px;padding:12px 15px;}
-.sdn{font-family:'Bebas Neue',sans-serif;font-size:20px;min-width:38px;}
-.sdt{font-size:12px;font-weight:500;flex:1;}
-.stbdg{font-size:9px;padding:3px 9px;border-radius:2px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;}
-.bdg-tr{background:rgba(255,107,71,.2);color:var(--accent3);}
-.bdg-mg{background:rgba(232,255,71,.15);color:var(--accent);}
-.bdg-rs{background:rgba(71,200,255,.15);color:var(--accent2);}
-.bdg-rd{background:rgba(71,200,255,.2);color:var(--accent2);}
-.sex{padding:0 15px 12px;display:flex;flex-direction:column;gap:7px;}
-.ei{display:flex;align-items:flex-start;gap:10px;background:var(--surface2);padding:9px 12px;border-radius:4px;}
-.eico{font-size:16px;flex-shrink:0;margin-top:1px;}
-.en{font-size:12px;font-weight:500;margin-bottom:2px;}
-.ed{font-size:10px;color:var(--muted);font-weight:300;line-height:1.5;}
-.etag{margin-left:auto;font-size:8px;padding:2px 7px;border-radius:2px;font-weight:600;text-transform:uppercase;white-space:nowrap;flex-shrink:0;}
-.et-k{background:rgba(232,255,71,.15);color:var(--accent);}
-.et-ka{background:rgba(255,107,71,.15);color:var(--accent3);}
-.et-r{background:rgba(71,200,255,.15);color:var(--accent2);}
-.et-rd{background:rgba(71,200,255,.25);color:var(--accent2);}
-/* PRINZIPIEN */
-.pgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
-.pcard{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px;display:flex;gap:12px;}
-.pico{font-size:24px;flex-shrink:0;}
-.pcard h4{font-size:12px;font-weight:600;margin-bottom:4px;color:var(--accent);}
-.pcard p{font-size:11px;color:var(--muted);font-weight:300;line-height:1.6;}
-.wtr{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:12px;}
-.wtr-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;}
-.wtr-ttl{font-size:12px;font-weight:600;}
-.glasses{display:flex;gap:5px;margin-bottom:9px;flex-wrap:wrap;}
-.gl{font-size:20px;cursor:pointer;transition:transform .15s;opacity:.2;user-select:none;}
-.gl.on{opacity:1;}
-.gl:hover{transform:scale(1.2);}
-.wbar{background:var(--surface2);border-radius:4px;height:7px;overflow:hidden;}
-.wfill{height:100%;background:linear-gradient(90deg,var(--accent2),#a0e8ff);border-radius:4px;transition:width .4s ease;}
-.wtxt{font-size:10px;color:var(--muted);margin-top:5px;}
-/* Trend-Chart-spezifisch */
-.chart-legend{display:flex;gap:16px;margin-top:10px;flex-wrap:wrap;}
-.chart-legend span{font-size:10px;color:var(--muted);display:flex;align-items:center;gap:5px;}
-.chart-legend .dot{width:10px;height:3px;border-radius:2px;}
-.trend-info{background:var(--surface2);border-radius:4px;padding:10px 14px;margin-top:10px;font-size:11px;color:var(--muted);line-height:1.7;}
-.trend-info strong{color:var(--accent);}
-/* === JETZT-KARTE (Echtzeit Tagesplan) === */
-.now-card{background:linear-gradient(135deg,rgba(232,255,71,0.08),rgba(232,255,71,0.02));border:1px solid rgba(232,255,71,0.25);border-radius:10px;padding:16px 20px;margin-bottom:20px;}
-.now-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
-.now-date{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);}
-.now-clock{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--accent);line-height:1;}
-.now-current{background:rgba(232,255,71,0.1);border:1px solid rgba(232,255,71,0.3);border-radius:6px;padding:12px 14px;margin-bottom:10px;}
-.now-current-lbl{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(232,255,71,0.6);margin-bottom:4px;}
-.now-current-act{font-size:16px;font-weight:600;color:var(--text);line-height:1.4;}
-.now-current-desc{font-size:11px;color:var(--muted);margin-top:3px;font-weight:300;}
-.now-next{display:flex;gap:8px;flex-direction:column;}
-.now-next-lbl{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:4px;}
-.now-next-item{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--surface2);border-radius:4px;}
-.now-next-time{font-family:'Bebas Neue',sans-serif;font-size:14px;color:var(--accent2);min-width:42px;}
-.now-next-txt{font-size:12px;color:var(--text);font-weight:400;}
-.now-progress{margin-top:12px;}
-.now-prog-lbl{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:5px;}
-.now-prog-bar{background:var(--surface2);border-radius:4px;height:6px;overflow:hidden;}
-.now-prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),rgba(232,255,71,0.5));border-radius:4px;transition:width 1s ease;}
-/* Bottom Nav Mobile */
-.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);padding:8px 0;padding-bottom:env(safe-area-inset-bottom,8px);z-index:100;justify-content:space-around;align-items:center;}
-.bn-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;border-radius:8px;transition:all .2s;min-width:44px;min-height:44px;justify-content:center;}
-.bn-item.active{color:var(--accent);}
-.bn-icon{font-size:20px;line-height:1;}
-.bn-lbl{font-size:9px;font-weight:600;letter-spacing:.3px;text-transform:uppercase;}
-
-/* === TABLET 768px === */
-@media(max-width:768px){
-  .dgrid{grid-template-columns:repeat(4,1fr);}
-  .dgrd{grid-template-columns:1fr;}
-  .mgrid{grid-template-columns:1fr;}
-  .pgrid{grid-template-columns:1fr;}
-  .stats{grid-template-columns:repeat(2,1fr);}
-  .wt-hero{grid-template-columns:repeat(2,1fr);}
-  .milestones{grid-template-columns:repeat(3,1fr);}
-  .stress-grid{grid-template-columns:1fr;}
+:root {
+  --bg:     #0a0a0b;
+  --s1:     #111113;
+  --s2:     #18181b;
+  --s3:     #222226;
+  --border: #2a2a2f;
+  --text:   #f4f4f5;
+  --muted:  #71717a;
+  --accent: #d4ff47;
+  --green:  #34d399;
+  --red:    #f87171;
+  --blue:   #60a5fa;
+  --orange: #fb923c;
+  --r:      14px;
+  --nav-h:  64px;
+  --font:   'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { background: var(--bg); }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100dvh;
+  padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom));
+  overscroll-behavior: none;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* === iPHONE 17 PRO MAX (430px) === */
-@media(max-width:430px){
-  /* Safe Areas */
-  body{padding-top:env(safe-area-inset-top,0);}
-  .wrap{padding:16px 14px 90px 14px;max-width:100%;}
+/* ── TOP BAR ── */
+#topbar {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(10,10,11,.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 16px 10px;
+  padding-top: calc(12px + env(safe-area-inset-top));
+}
+.topbar-row1 {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 10px;
+}
+.app-title { font-size: 13px; font-weight: 600; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+#server-dot {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--muted);
+  transition: background .4s;
+}
+#server-dot.ok  { background: var(--green); }
+#server-dot.err { background: var(--red); }
 
-  /* Header */
-  .hdr{margin-bottom:16px;gap:8px;}
-  .hdr h1{font-size:36px;}
-  .hdr p{font-size:11px;}
-  .badge{font-size:9px;padding:5px 10px;}
+/* Goal bar */
+.goal-row { display: flex; align-items: center; gap: 10px; }
+.goal-label { font-size: 12px; font-weight: 500; color: var(--muted); white-space: nowrap; }
+.goal-bar-wrap { flex: 1; height: 6px; background: var(--s3); border-radius: 99px; overflow: hidden; }
+.goal-bar-fill { height: 100%; background: var(--accent); border-radius: 99px; transition: width .6s; }
+.goal-kg { font-size: 12px; font-weight: 700; color: var(--accent); white-space: nowrap; }
 
-  /* Stats row */
-  .stats{grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:16px;}
-  .sc{padding:10px 12px;}
-  .sc .val{font-size:20px;}
-  .sc .lbl{font-size:8px;}
-  .sc .sub{font-size:9px;}
+/* Tab nav (desktop / top) */
+.top-tabs {
+  display: flex; gap: 2px; margin-top: 12px;
+  border-bottom: 1px solid var(--border); padding-bottom: 0;
+}
+.top-tab {
+  flex: 1; text-align: center; padding: 8px 4px;
+  font-size: 12px; font-weight: 500; color: var(--muted);
+  border-bottom: 2px solid transparent; cursor: pointer;
+  transition: color .2s, border-color .2s; background: none; border-top: none; border-left: none; border-right: none;
+  letter-spacing: .01em;
+}
+.top-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
 
-  /* Top Nav: Links verstecken, Bottom Nav nutzen */
-  .top-nav-links{display:none;}
-  .top-nav{justify-content:center;}
-  .top-nav-goal{width:100%;justify-content:center;padding:8px 0;}
-  .tng-bar{width:120px;}
-  .bottom-nav{display:flex;}
-  .wrap{padding:16px 14px 90px 14px;}
+/* ── BOTTOM NAV (mobile) ── */
+#bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+  display: flex;
+  background: rgba(10,10,11,.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  padding-bottom: env(safe-area-inset-bottom);
+  height: calc(var(--nav-h) + env(safe-area-inset-bottom));
+}
+.bn-item {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 3px; padding: 8px 4px; cursor: pointer; background: none; border: none; color: var(--muted);
+  font-family: var(--font); font-size: 10px; font-weight: 500; transition: color .2s;
+  min-height: 44px;
+}
+.bn-icon { font-size: 20px; line-height: 1; }
+.bn-item.active { color: var(--accent); }
 
-  /* Wochenplan-Grid: 2 Spalten auf mobile */
-  .dgrid{grid-template-columns:repeat(2,1fr);gap:6px;}
-  .dc{min-height:100px;padding:9px 8px;}
-  .dc .dn{font-size:8px;}
-  .dc .dt{font-size:12px;}
-  .p{font-size:7px;}
+/* ── CONTENT ── */
+main { padding: 0 16px 24px; max-width: 640px; margin: 0 auto; }
+.tab-panel { display: none; padding-top: 20px; }
+.tab-panel.active { display: block; }
 
-  /* Detail Panel */
-  .dpanel{padding:16px 12px;}
-  .dpanel h2{font-size:20px;}
-  .dsub{font-size:11px;margin-bottom:14px;}
-  .dgrd{grid-template-columns:1fr;gap:16px;}
-  .ti-title{font-size:13px;}
-  .ti-desc{font-size:11px;}
-  .ti-t{font-size:16px;}
-
-  /* Gewichtstracker */
-  .wt-hero{grid-template-columns:repeat(2,1fr);gap:8px;}
-  .wt-card{padding:14px 10px;}
-  .wval{font-size:28px;}
-  .wlbl{font-size:8px;}
-  .wsub{font-size:9px;}
-
-  /* Eingabezeile: vertikal */
-  .wt-input-row{flex-direction:column;gap:12px;align-items:stretch;}
-  .wt-input-group{width:100%;}
-  .wt-input{width:100%;font-size:18px;padding:14px 16px;border-radius:8px;}
-  .wt-input-group label{font-size:11px;}
-  .wt-btn{width:100%;padding:16px;font-size:14px;border-radius:8px;min-height:50px;}
-
-  /* Chart */
-  .chart-wrap{padding:14px;}
-
-  /* Timeline Einträge mobile */
-  .wt-entry{flex-wrap:wrap;gap:6px;padding:10px 12px;}
-  .we-date{min-width:auto;font-size:10px;width:100%;}
-  .we-kg{font-size:20px;}
-  .we-bmi{font-size:9px;width:100%;order:3;}
-  .we-diff{font-size:12px;margin-left:auto;}
-
-  /* Milestones */
-  .milestones{grid-template-columns:repeat(3,1fr);gap:6px;}
-  .ms{padding:10px 6px;}
-  .ms-icon{font-size:14px;}
-  .ms-kg{font-size:16px;}
-  .ms-lbl{font-size:8px;}
-
-  /* Ernährung */
-  .mgrid{grid-template-columns:1fr;gap:8px;}
-
-  /* Sport */
-  .sdh{padding:10px 12px;gap:8px;}
-  .sex{padding:0 12px 10px;}
-  .ei{padding:8px 10px;}
-  .en{font-size:13px;}
-  .ed{font-size:11px;}
-
-  /* Prinzipien */
-  .pgrid{grid-template-columns:1fr;gap:8px;}
-  .pcard{padding:14px;}
-  .pcard p{font-size:12px;}
-  .pcard h4{font-size:13px;}
-
-  /* Wasser-Tracker */
-  .wtr{padding:14px;}
-  .gl{font-size:22px;}
-
-  /* Stress-Grid */
-  .stress-grid{grid-template-columns:1fr;}
-
-  /* Notices */
-  .notice,.walert{font-size:12px;padding:12px;}
-  .stitle{font-size:22px;}
-  .ssub{font-size:12px;}
+/* ── CARDS ── */
+.card {
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.card-title {
+  font-size: 11px; font-weight: 600; color: var(--muted);
+  text-transform: uppercase; letter-spacing: .07em; margin-bottom: 12px;
+}
+.section-head {
+  font-size: 18px; font-weight: 700; margin-bottom: 4px;
+}
+.section-sub {
+  font-size: 13px; color: var(--muted); margin-bottom: 16px;
 }
 
+/* ── NOW CARD ── */
+#now-card {
+  background: linear-gradient(135deg, #111113 0%, #16161a 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 20px;
+  margin-bottom: 12px;
+  position: relative; overflow: hidden;
+}
+#now-card::before {
+  content: ''; position: absolute; top: -40px; right: -40px;
+  width: 120px; height: 120px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(212,255,71,.08) 0%, transparent 70%);
+}
+.now-time { font-size: 36px; font-weight: 800; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.now-date { font-size: 13px; color: var(--muted); margin-top: 2px; margin-bottom: 16px; }
+.now-activity-label { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 6px; }
+.now-activity { font-size: 17px; font-weight: 600; margin-bottom: 16px; line-height: 1.3; }
+.now-activity.active-item { color: var(--accent); }
+.now-upcoming { display: flex; flex-direction: column; gap: 6px; }
+.upcoming-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px; background: var(--s2); border-radius: 8px;
+  font-size: 13px;
+}
+.upcoming-time { font-size: 12px; font-weight: 600; color: var(--muted); min-width: 40px; font-variant-numeric: tabular-nums; }
+.upcoming-text { flex: 1; }
+.progress-bar-wrap { height: 4px; background: var(--s3); border-radius: 99px; overflow: hidden; margin-top: 16px; }
+.progress-bar-fill { height: 100%; background: var(--accent); border-radius: 99px; transition: width 60s linear; }
+
+/* ── WATER ── */
+.water-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.glass-btn {
+  font-size: 24px; background: var(--s2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 8px 10px; cursor: pointer; transition: all .15s;
+  min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center;
+}
+.glass-btn:active { transform: scale(.92); }
+.glass-btn.filled { background: rgba(96,165,250,.18); border-color: var(--blue); }
+.water-count { font-size: 14px; font-weight: 600; margin-left: 4px; }
+.water-ml { font-size: 12px; color: var(--muted); }
+.water-reset { font-size: 11px; color: var(--muted); background: none; border: none; cursor: pointer; margin-left: auto; font-family: var(--font); text-decoration: underline; }
+
+/* ── TIMELINE ── */
+.timeline { display: flex; flex-direction: column; gap: 2px; }
+.tl-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 10px 12px; border-radius: 10px;
+  transition: background .2s;
+}
+.tl-item.current { background: rgba(212,255,71,.07); }
+.tl-item.past { opacity: .45; }
+.tl-time { font-size: 12px; font-weight: 600; color: var(--muted); min-width: 40px; padding-top: 1px; font-variant-numeric: tabular-nums; }
+.tl-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--s3); margin-top: 5px; flex-shrink: 0; }
+.tl-item.current .tl-dot { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+.tl-text { flex: 1; font-size: 14px; line-height: 1.4; }
+.tl-tag { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; margin-left: 6px; text-transform: uppercase; vertical-align: middle; }
+.tl-tag.sport { background: rgba(212,255,71,.15); color: var(--accent); }
+.tl-tag.meal  { background: rgba(52,211,153,.15); color: var(--green); }
+.tl-tag.sleep { background: rgba(96,165,250,.15); color: var(--blue); }
+
+/* ── WEEK VIEW ── */
+.week-grid { display: flex; flex-direction: column; gap: 8px; }
+.week-day-card {
+  background: var(--s1); border: 1px solid var(--border); border-radius: var(--r);
+  overflow: hidden;
+}
+.week-day-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px; cursor: pointer;
+}
+.week-day-header:active { background: var(--s2); }
+.week-day-name { font-size: 15px; font-weight: 600; }
+.week-day-name.today { color: var(--accent); }
+.week-day-meta { font-size: 12px; color: var(--muted); }
+.week-day-body { padding: 0 16px 12px; display: none; }
+.week-day-body.open { display: block; }
+.week-meal { font-size: 13px; color: var(--muted); margin-bottom: 3px; }
+.week-meal strong { color: var(--text); }
+.week-divider { height: 1px; background: var(--border); margin: 8px 0; }
+
+/* ── WEIGHT ── */
+#weight-canvas-wrap { position: relative; width: 100%; }
+#weight-canvas { width: 100%; border-radius: 10px; display: block; }
+.weight-input-row { display: flex; gap: 8px; margin-top: 12px; }
+.wi-input {
+  flex: 1; background: var(--s2); border: 1px solid var(--border); border-radius: 10px;
+  color: var(--text); font-family: var(--font); font-size: 16px; font-weight: 500;
+  padding: 12px 14px; outline: none; transition: border-color .2s; -webkit-appearance: none;
+}
+.wi-input:focus { border-color: var(--accent); }
+.wi-input::placeholder { color: var(--muted); }
+.btn {
+  background: var(--accent); color: #000; font-family: var(--font); font-size: 14px; font-weight: 700;
+  border: none; border-radius: 10px; padding: 12px 18px; cursor: pointer;
+  transition: opacity .2s, transform .1s; min-height: 44px;
+}
+.btn:active { opacity: .85; transform: scale(.97); }
+.btn-ghost {
+  background: var(--s2); color: var(--text); border: 1px solid var(--border);
+}
+.weight-history { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+.weight-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 12px; background: var(--s2); border-radius: 8px;
+  font-size: 14px;
+}
+.weight-row-kg { font-weight: 700; }
+.weight-row-date { color: var(--muted); font-size: 12px; }
+.weight-row-del { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 16px; padding: 4px; min-width: 32px; min-height: 32px; }
+.weight-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+.stat-box { background: var(--s2); border-radius: 10px; padding: 12px; }
+.stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
+.stat-value { font-size: 20px; font-weight: 700; }
+.stat-value.accent { color: var(--accent); }
+.stat-value.green { color: var(--green); }
+.stat-value.red { color: var(--red); }
+.stat-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+/* ── NUTRITION ── */
+.macro-row { display: flex; gap: 8px; margin-bottom: 16px; }
+.macro-box { flex: 1; background: var(--s2); border-radius: 10px; padding: 12px 10px; text-align: center; }
+.macro-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
+.macro-val { font-size: 18px; font-weight: 700; }
+.food-list { display: flex; flex-direction: column; gap: 4px; }
+.food-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; background: var(--s2); border-radius: 8px; font-size: 13px; }
+.food-icon { font-size: 18px; min-width: 24px; text-align: center; }
+.food-name { flex: 1; }
+.food-kcal { color: var(--muted); font-size: 12px; }
+
+/* ── SPORT ── */
+.sport-week { display: flex; flex-direction: column; gap: 8px; }
+.sport-day-card { background: var(--s1); border: 1px solid var(--border); border-radius: var(--r); padding: 16px; }
+.sport-day-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.sport-day-name { font-size: 15px; font-weight: 700; }
+.sport-badge {
+  font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px;
+  text-transform: uppercase; letter-spacing: .05em;
+}
+.sport-badge.training { background: rgba(212,255,71,.15); color: var(--accent); }
+.sport-badge.rest    { background: var(--s3); color: var(--muted); }
+.sport-badge.active  { background: rgba(52,211,153,.15); color: var(--green); }
+.sport-exercise { font-size: 13px; color: var(--muted); line-height: 1.7; }
+.checkin-row { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+.checkin-label { font-size: 12px; color: var(--muted); }
+.check-btn {
+  width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--border);
+  background: none; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+}
+.check-btn.done { background: var(--green); border-color: var(--green); }
+
+/* ── NOTES ── */
+.note-input-row { display: flex; gap: 8px; margin-bottom: 12px; }
+.note-input {
+  flex: 1; background: var(--s2); border: 1px solid var(--border); border-radius: 10px;
+  color: var(--text); font-family: var(--font); font-size: 16px; padding: 12px 14px;
+  outline: none; transition: border-color .2s; resize: none; -webkit-appearance: none;
+}
+.note-input:focus { border-color: var(--accent); }
+.note-input::placeholder { color: var(--muted); }
+.notes-list { display: flex; flex-direction: column; gap: 6px; }
+.note-card { background: var(--s2); border-radius: 10px; padding: 12px 14px; display: flex; gap: 10px; }
+.note-body { flex: 1; font-size: 14px; line-height: 1.5; white-space: pre-wrap; }
+.note-meta { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.note-del { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 18px; min-width: 32px; min-height: 32px; padding: 0 4px; }
+
+/* ── RULES ── */
+.rule-item { display: flex; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.rule-item:last-child { border-bottom: none; }
+.rule-num { font-size: 22px; font-weight: 800; color: var(--accent); min-width: 32px; }
+.rule-content {}
+.rule-title { font-size: 15px; font-weight: 600; margin-bottom: 3px; }
+.rule-text { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+/* ── HELPERS ── */
+.pill {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: var(--s2); border: 1px solid var(--border);
+  border-radius: 99px; padding: 4px 10px; font-size: 12px; font-weight: 500;
+}
+.empty { text-align: center; padding: 32px 16px; color: var(--muted); font-size: 14px; }
+.mt8  { margin-top: 8px; }
+.mt16 { margin-top: 16px; }
+.spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .6s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (prefers-color-scheme: dark) { /* already dark */ }
+@media (min-width: 640px) {
+  #bottom-nav { display: none; }
+  .top-tabs { display: flex; }
+  body { padding-bottom: 24px; }
+}
+@media (max-width: 639px) {
+  .top-tabs { display: none; }
+}
 </style>
 </head>
 <body>
-<!-- TOP NAVIGATION -->
-<nav class="top-nav">
-  <div class="top-nav-links">
-    <button class="tnav-btn active" onclick="switchTab('woche',event)" data-tab="woche">📅 Woche</button>
-    <button class="tnav-btn" onclick="switchTab('gewicht',event)" data-tab="gewicht">⚖️ Gewichtstracker</button>
-    <button class="tnav-btn" onclick="switchTab('ernaehrung',event)" data-tab="ernaehrung">🥗 Ernährung</button>
-    <button class="tnav-btn" onclick="switchTab('sport',event)" data-tab="sport">💪 Sport</button>
-    <button class="tnav-btn" onclick="switchTab('prinzipien',event)" data-tab="prinzipien">🧠 Regeln</button>
+
+<!-- ── TOP BAR ── -->
+<div id="topbar">
+  <div class="topbar-row1">
+    <span class="app-title">Wochenplan</span>
+    <div id="server-dot" title="Server-Status"></div>
   </div>
-  <div class="top-nav-goal">
-    <span class="tng-start">140 kg</span>
-    <div class="tng-bar-wrap">
-      <div class="tng-bar"><div class="tng-fill" id="tngFill"></div></div>
-      <span class="tng-pct" id="tngPct">0%</span>
+  <div class="goal-row">
+    <span class="goal-label">140 → 95 kg</span>
+    <div class="goal-bar-wrap"><div class="goal-bar-fill" id="goal-fill" style="width:0%"></div></div>
+    <span class="goal-kg" id="goal-kg">— kg</span>
+  </div>
+  <!-- desktop tabs -->
+  <div class="top-tabs">
+    <button class="top-tab active" data-tab="heute">⚡ Heute</button>
+    <button class="top-tab" data-tab="woche">📅 Woche</button>
+    <button class="top-tab" data-tab="gewicht">⚖️ Gewicht</button>
+    <button class="top-tab" data-tab="ernaehrung">🥗 Ernährung</button>
+    <button class="top-tab" data-tab="sport">💪 Sport</button>
+    <button class="top-tab" data-tab="regeln">🧠 Regeln</button>
+  </div>
+</div>
+
+<!-- ── CONTENT ── -->
+<main>
+
+  <!-- HEUTE -->
+  <div class="tab-panel active" id="tab-heute">
+    <!-- Now Card -->
+    <div id="now-card">
+      <div id="nc-time" class="now-time">--:--</div>
+      <div id="nc-date" class="now-date">Wird geladen…</div>
+      <div class="now-activity-label">Aktuelle Aktivität</div>
+      <div id="nc-activity" class="now-activity">—</div>
+      <div class="progress-bar-wrap"><div id="nc-progress" class="progress-bar-fill" style="width:0%"></div></div>
+      <div class="now-activity-label mt8">Als nächstes</div>
+      <div id="nc-upcoming" class="now-upcoming"></div>
     </div>
-    <span class="tng-goal">Ziel 95 kg</span>
+
+    <!-- Water -->
+    <div class="card">
+      <div class="card-title">💧 Wassertrinken</div>
+      <div class="water-row" id="water-glasses"></div>
+      <div style="display:flex;align-items:center;margin-top:10px;">
+        <span class="water-count"><span id="water-num">0</span> / 8</span>
+        <span class="water-ml" id="water-ml-label">&nbsp;(0 ml)</span>
+        <button class="water-reset" onclick="resetWater()">zurücksetzen</button>
+      </div>
+    </div>
+
+    <!-- Today Timeline -->
+    <div class="card">
+      <div class="card-title" id="today-tl-title">Tagesplan</div>
+      <div id="today-timeline" class="timeline"></div>
+    </div>
+
+    <!-- Today Meals -->
+    <div class="card">
+      <div class="card-title" id="today-meals-title">Mahlzeiten heute</div>
+      <div id="today-meals" class="food-list"></div>
+    </div>
+
+    <!-- Notes -->
+    <div class="card">
+      <div class="card-title">📝 Notizen</div>
+      <div class="note-input-row">
+        <textarea class="note-input" id="note-input" rows="2" placeholder="Notiz eingeben…"></textarea>
+        <button class="btn" onclick="saveNote()" style="align-self:flex-end">+</button>
+      </div>
+      <div id="notes-list" class="notes-list"></div>
+    </div>
   </div>
+
+  <!-- WOCHE -->
+  <div class="tab-panel" id="tab-woche">
+    <p class="section-sub">Alle 7 Tage auf einen Blick</p>
+    <div id="week-grid" class="week-grid"></div>
+  </div>
+
+  <!-- GEWICHT -->
+  <div class="tab-panel" id="tab-gewicht">
+    <div class="card">
+      <div class="card-title">Verlauf</div>
+      <div id="weight-canvas-wrap">
+        <canvas id="weight-canvas" height="200"></canvas>
+      </div>
+    </div>
+    <div class="weight-stats" id="weight-stats"></div>
+    <div class="card mt8">
+      <div class="card-title">Eintragen</div>
+      <div class="weight-input-row">
+        <input type="number" class="wi-input" id="w-date" style="max-width:140px;" placeholder="Datum (TT.MM.)" step="any">
+        <input type="number" class="wi-input" id="w-kg" placeholder="kg" step="0.1" min="50" max="250">
+        <button class="btn" onclick="addWeight()">OK</button>
+      </div>
+    </div>
+    <div class="card mt8">
+      <div class="card-title">Einträge</div>
+      <div id="weight-history" class="weight-history"></div>
+    </div>
+  </div>
+
+  <!-- ERNÄHRUNG -->
+  <div class="tab-panel" id="tab-ernaehrung">
+    <div class="card">
+      <div class="card-title">Tagesziel</div>
+      <div class="macro-row">
+        <div class="macro-box"><div class="macro-label">Kalorien</div><div class="macro-val" style="color:var(--orange)">1800</div><div class="stat-sub">kcal</div></div>
+        <div class="macro-box"><div class="macro-label">Protein</div><div class="macro-val" style="color:var(--green)">180g</div><div class="stat-sub">mind.</div></div>
+        <div class="macro-box"><div class="macro-label">Carbs</div><div class="macro-val" style="color:var(--blue)">150g</div><div class="stat-sub">max.</div></div>
+        <div class="macro-box"><div class="macro-label">Fett</div><div class="macro-val">60g</div><div class="stat-sub">max.</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title" id="ern-day-title">Mahlzeiten heute</div>
+      <div id="ern-meals" class="food-list"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Wochenplan Ernährung</div>
+      <div id="ern-week" class="week-grid"></div>
+    </div>
+  </div>
+
+  <!-- SPORT -->
+  <div class="tab-panel" id="tab-sport">
+    <div class="card">
+      <div class="card-title">Diese Woche</div>
+      <div id="sport-week-grid" class="sport-week"></div>
+    </div>
+  </div>
+
+  <!-- REGELN -->
+  <div class="tab-panel" id="tab-regeln">
+    <div class="card">
+      <div class="card-title">Meine Regeln</div>
+      <div id="rules-list"></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ── BOTTOM NAV ── -->
+<nav id="bottom-nav">
+  <button class="bn-item active" data-tab="heute"><span class="bn-icon">⚡</span><span>Heute</span></button>
+  <button class="bn-item" data-tab="woche"><span class="bn-icon">📅</span><span>Woche</span></button>
+  <button class="bn-item" data-tab="gewicht"><span class="bn-icon">⚖️</span><span>Gewicht</span></button>
+  <button class="bn-item" data-tab="ernaehrung"><span class="bn-icon">🥗</span><span>Ernährung</span></button>
+  <button class="bn-item" data-tab="sport"><span class="bn-icon">💪</span><span>Sport</span></button>
+  <button class="bn-item" data-tab="regeln"><span class="bn-icon">🧠</span><span>Regeln</span></button>
 </nav>
-
-<div class="wrap">
-
-<!-- Mobile Bottom Navigation -->
-<nav class="bottom-nav" id="bottomNav">
-  <button class="bn-item active" onclick="switchTab('woche',event)" data-tab="woche">
-    <span class="bn-icon">📅</span><span class="bn-lbl">Plan</span>
-  </button>
-  <button class="bn-item" onclick="switchTab('gewicht',event)" data-tab="gewicht">
-    <span class="bn-icon">⚖️</span><span class="bn-lbl">Gewicht</span>
-  </button>
-  <button class="bn-item" onclick="switchTab('ernaehrung',event)" data-tab="ernaehrung">
-    <span class="bn-icon">🥗</span><span class="bn-lbl">Essen</span>
-  </button>
-  <button class="bn-item" onclick="switchTab('sport',event)" data-tab="sport">
-    <span class="bn-icon">💪</span><span class="bn-lbl">Sport</span>
-  </button>
-  <button class="bn-item" onclick="switchTab('prinzipien',event)" data-tab="prinzipien">
-    <span class="bn-icon">🧠</span><span class="bn-lbl">Regeln</span>
-  </button>
-</nav>
-
-<!-- WOCHENPLAN -->
-
-<div id="tab-woche" class="tc active">
-
-  <!-- JETZT-KARTE: Echtzeit Tagesplan -->
-  <div class="now-card" id="nowCard">
-    <div class="now-header">
-      <div>
-        <div class="now-date" id="nowDate">Samstag, 17. Mai 2026</div>
-        <div id="nowDayTitle" style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;margin-top:2px;">HEUTE</div>
-      </div>
-      <div class="now-clock" id="nowClock">--:--</div>
-    </div>
-    <div class="now-current" id="nowCurrentBlock">
-      <div class="now-current-lbl">⚡ Jetzt gerade</div>
-      <div class="now-current-act" id="nowCurrentAct">Wird geladen...</div>
-      <div class="now-current-desc" id="nowCurrentDesc"></div>
-    </div>
-    <div class="now-next-lbl">Als nächstes</div>
-    <div class="now-next" id="nowNextList"></div>
-    <div class="now-progress">
-      <div class="now-prog-lbl">
-        <span>Tagesfortschritt</span>
-        <span id="nowProgPct">0%</span>
-      </div>
-      <div class="now-prog-bar"><div class="now-prog-fill" id="nowProgFill" style="width:0%"></div></div>
-    </div>
-  </div>
-
-  <div class="walert"><strong>Trainingstage Mi & Fr:</strong> Abfahrt 17:45 → Ankunft + Umziehen → Training 18:30–20:00 → Heimfahrt → Zuhause ~20:50. Shake sofort, leichtes Abendbrot, 22:30 schlafen.</div>
-  <div class="dgrid">
-    <div class="dc sel" onclick="showDay(0,this)"><div class="dn">Mo</div><div class="dt">Fokustag</div><div class="pills"><span class="p s">06:00 Aufstehen</span><span class="p m">🥤 Shake Frühstück</span><span class="p s">🐕 Walk + Übungen</span><span class="p r">07:30 🚗 Büro</span><span class="p f">~1800 kcal</span></div></div>
-    <div class="dc" onclick="showDay(1,this)"><div class="dn">Di</div><div class="dt">Deep Work</div><div class="pills"><span class="p s">06:00 Aufstehen</span><span class="p s">🐕 + Rücken</span><span class="p r">07:30 🚗 Büro</span><span class="p f">~1800 kcal</span></div></div>
-    <div class="dc" onclick="showDay(2,this)"><div class="dn">Mi</div><div class="dt">🥋 Training</div><div class="pills"><span class="p r">07:30 🚗 Büro</span><span class="p r">17:45 🚗 Training</span><span class="p f">18:30–20:00 🥋</span><span class="p m">~21:00 Shake!</span><span class="p f">~2000 kcal</span></div></div>
-    <div class="dc" onclick="showDay(3,this)"><div class="dn">Do</div><div class="dt">Erholung</div><div class="pills"><span class="p s">🐕 Langer Walk</span><span class="p r">07:30 🚗 Büro</span><span class="p f">Stretching Abend</span><span class="p f">~1800 kcal</span></div></div>
-    <div class="dc" onclick="showDay(4,this)"><div class="dn">Fr</div><div class="dt">🥋 Training</div><div class="pills"><span class="p r">07:30 🚗 Büro</span><span class="p r">17:45 🚗 Training</span><span class="p f">18:30–20:00 🥋</span><span class="p m">~21:00 Shake!</span><span class="p f">~2000 kcal</span></div></div>
-    <div class="dc" onclick="showDay(5,this)"><div class="dn">Sa</div><div class="dt">🌳 Erholung</div><div class="pills"><span class="p w">⚖️ WIEGEN nüchtern</span><span class="p s">🚶 Natur-Spaziergang</span><span class="p f">Meal Prep</span><span class="p f">~1900 kcal</span></div></div>
-    <div class="dc" onclick="showDay(6,this)"><div class="dn">So</div><div class="dt">🚣 Intensiv</div><div class="pills"><span class="p s">45 Min Rudergerät</span><span class="p s">Körpergew.-Zirkel</span><span class="p m">More Shake danach</span><span class="p f">~2000 kcal</span></div></div>
-  </div>
-  <div class="dpanel">
-    <h2 id="d-title">MONTAG — FOKUSTAG</h2>
-    <p class="dsub" id="d-sub">Morgenroutine schützen · Kaloriendefizit halten · Stress-Hunger mit Shake abfangen</p>
-    <div class="dgrd">
-      <div class="ds"><h3>Tagesablauf</h3><div class="tl" id="d-tl"></div></div>
-      <div class="ds"><h3>Ernährung & Kalorien</h3><div class="fl" id="d-fl"></div></div>
-    </div>
-  </div>
-</div>
-
-<!-- GEWICHTSTRACKER -->
-
-<div id="tab-gewicht" class="tc">
-  <div class="stitle">GEWICHTSTRACKER</div>
-  <div class="ssub">Jeden Samstag morgens · nüchtern · nach dem ersten Wasserlassen</div>
-
-  <div class="wt-hero">
-    <div class="wt-card hl">
-      <div class="wlbl">Aktuell</div>
-      <div class="wval" id="wt-current" style="color:var(--accent)">140 kg</div>
-      <div class="wsub" id="wt-bmi-current">BMI: 40.6 · Adipositas III</div>
-    </div>
-    <div class="wt-card">
-      <div class="wlbl">Abgenommen</div>
-      <div class="wval" id="wt-lost" style="color:var(--green)">0 kg</div>
-      <div class="wsub" id="wt-lost-pct">0% des Ziels erreicht</div>
-    </div>
-    <div class="wt-card">
-      <div class="wlbl">Noch bis Ziel</div>
-      <div class="wval" id="wt-remaining" style="color:var(--accent3)">45 kg</div>
-      <div class="wsub" id="wt-eta">~45 Wochen bei 1kg/Wo</div>
-    </div>
-    <div class="wt-card hl2">
-      <div class="wlbl">Zielgewicht</div>
-      <div class="wval" style="color:var(--green)">95 kg</div>
-      <div class="wsub">BMI: 27.5 · Normalbereich</div>
-    </div>
-  </div>
-
-  <!-- Meilensteine -->
-
-  <div class="milestones" id="milestones"></div>
-
-  <!-- Eingabe -->
-
-  <div class="wt-input-row">
-    <div class="wt-input-group">
-      <label>Datum</label>
-      <input type="date" id="wt-date" class="wt-input" style="width:150px;font-family:'DM Sans',sans-serif;font-size:13px;">
-    </div>
-    <div class="wt-input-group">
-      <label>Gewicht (kg)</label>
-      <input type="number" id="wt-kg" class="wt-input" placeholder="z.B. 139" step="0.1" min="50" max="200">
-    </div>
-    <button class="wt-btn" onclick="addWeight()">+ Eintragen</button>
-  </div>
-
-  <!-- Chart -->
-
-  <div class="chart-wrap">
-    <h4>📈 Gewichtsverlauf — Kurve &amp; Trend</h4>
-    <canvas id="weightChart" height="220"></canvas>
-    <div class="chart-legend">
-      <span><span class="dot" style="background:#e8ff47;display:inline-block;"></span>Gewicht</span>
-      <span><span class="dot" style="background:rgba(255,107,71,0.8);display:inline-block;border-top:2px dashed rgba(255,107,71,0.8);height:0;"></span>Trendlinie</span>
-      <span><span class="dot" style="background:rgba(95,255,154,0.5);display:inline-block;border-top:2px dashed rgba(95,255,154,0.6);height:0;"></span>Ziel 95 kg</span>
-    </div>
-    <div class="trend-info" id="trend-info" style="display:none;"></div>
-  </div>
-
-  <!-- Einträge -->
-
-  <div class="stitle" style="font-size:18px;margin-bottom:12px;">Alle Einträge</div>
-  <div class="wt-timeline" id="wt-timeline">
-    <div style="padding:20px;text-align:center;color:var(--muted);font-size:12px;">Noch keine Einträge — trag jeden Samstag dein Gewicht ein!</div>
-  </div>
-
-  <div class="notice" style="margin-top:16px;">
-    <strong>Wiegeprotokoll:</strong> Immer Samstag morgens · nüchtern (vor Frühstück) · nach erstem Wasserlassen · gleiche Waage · kein Kleidung. Schwankungen von ±1kg sind normal — nur der Trend über 4 Wochen zählt!
-  </div>
-</div>
-
-<!-- ERNÄHRUNG -->
-
-<div id="tab-ernaehrung" class="tc">
-  <div class="stitle">ERNÄHRUNGSPLAN</div>
-  <div class="ssub">~1800 kcal/Tag · Kein Reis · More Nutrition Whey · Stress-Essen durch Shakes ersetzen</div>
-
-  <div class="notice" style="margin-bottom:20px;">
-    <strong>Dein Kalorienbudget:</strong> Grundumsatz ~2600 kcal + Aktivität ~400 kcal = ~3000 kcal Verbrauch. Ziel: 1800–2000 kcal essen = ~800–1000 kcal Defizit = ~1 kg/Woche. Kein Hunger — 5 Mahlzeiten täglich!
-  </div>
-
-  <div class="mgrid">
-    <div class="mc shk">
-      <div class="mt">06:30</div>
-      <span class="mbdg bdg-more">MORE NUTRITION</span>
-      <div class="mn">Frühstücks-Shake (Schnell-Option)</div>
-      <ul class="mi-list">
-        <li>More Whey 2 Löffel (~50g)</li>
-        <li>250ml Milch 1,5%</li>
-        <li>1 Banane + 1 TL Erdnussbutter</li>
-        <li>→ satt bis 10:00 Uhr</li>
-        <li class="kal">≈ 480 kcal · 48g Protein</li>
-      </ul>
-    </div>
-    <div class="mc">
-      <div class="mt">06:30</div>
-      <span class="mbdg bdg-meal">KLASSISCH</span>
-      <div class="mn">Frühstück (wenn Zeit da ist)</div>
-      <ul class="mi-list">
-        <li>3 Eier (Rührei / Spiegelei)</li>
-        <li>1 Scheibe Vollkornbrot</li>
-        <li>Quark oder Avocado</li>
-        <li>Gurke · Tomaten</li>
-        <li class="kal">≈ 450 kcal · 32g Protein</li>
-      </ul>
-    </div>
-    <div class="mc">
-      <div class="mt">10:00</div>
-      <span class="mbdg bdg-meal">BÜRO-SNACK</span>
-      <div class="mn">Vormittag — kein Süßes!</div>
-      <ul class="mi-list">
-        <li>20–30g Mandeln oder Walnüsse</li>
-        <li>1 Apfel oder Handvoll Beeren</li>
-        <li>Kaffee mit Milch 1,5% (max. 2/Tag)</li>
-        <li>500ml Wasser dazu!</li>
-        <li class="kal">≈ 220 kcal · 6g Protein</li>
-      </ul>
-    </div>
-    <div class="mc">
-      <div class="mt">13:00</div>
-      <span class="mbdg bdg-meal">HAUPTMAHLZEIT</span>
-      <div class="mn">Mittagessen (Meal Prep)</div>
-      <ul class="mi-list">
-        <li>Hähnchen / Lachs / Rind 180g</li>
-        <li>Süßkartoffel ODER Linsen (150g)</li>
-        <li>Viel Gemüse (unbegrenzt!)</li>
-        <li>Olivenöl 1 EL · Kräuter</li>
-        <li class="kal">≈ 550 kcal · 42g Protein</li>
-      </ul>
-    </div>
-    <div class="mc shk">
-      <div class="mt">16:00</div>
-      <span class="mbdg bdg-more">MORE NUTRITION</span>
-      <div class="mn">Anti-Stress-Shake (statt Süßem!)</div>
-      <ul class="mi-list">
-        <li>More Whey 1,5 Löffel (~37g)</li>
-        <li>250ml Wasser (kein Zucker!)</li>
-        <li>Optional: 1 Frucht dazu</li>
-        <li>→ Dopamin ohne Reue</li>
-        <li class="kal">≈ 200 kcal · 34g Protein</li>
-      </ul>
-    </div>
-    <div class="mc">
-      <div class="mt">19:00</div>
-      <span class="mbdg bdg-meal">ABENDESSEN</span>
-      <div class="mn">Leicht & früh</div>
-      <ul class="mi-list">
-        <li>Greek Yogurt 200g + Beeren</li>
-        <li>ODER Gemüsesuppe + 1 Ei</li>
-        <li>ODER Quark + Leinöl + Kräuter</li>
-        <li>Nichts nach 20:00 Uhr!</li>
-        <li class="kal">≈ 300 kcal · 22g Protein</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="mc shk" style="margin-bottom:12px;">
-    <div class="mt">~21:00 — NUR MI + FR + SO</div>
-    <span class="mbdg bdg-more">MORE NUTRITION · POST-TRAINING PFLICHT</span>
-    <div class="mn">Recovery-Shake nach Training / Rudern</div>
-    <ul class="mi-list" style="display:flex;flex-wrap:wrap;gap:0 24px;">
-      <li>More Whey 2 Löffel + 250ml Milch + Banane</li>
-      <li>Innerhalb 30 Min nach Sport</li>
-      <li class="kal">≈ 480 kcal · 50g Protein · Muskelaufbau & Regeneration</li>
-    </ul>
-  </div>
-
-  <div class="stitle" style="font-size:20px;margin-top:24px;margin-bottom:4px;">STRESS-ESSEN PROTOKOLL</div>
-  <div class="ssub">Dein größtes Hindernis — hier ist der konkrete Plan dagegen</div>
-
-  <div class="stress-grid">
-    <div class="stress-card trigger">
-      <div class="sico">😤</div>
-      <div>
-        <h4>Trigger: Stress im Büro / Gründer-Druck</h4>
-        <p>Meeting lief schlecht · Investor-Mail · To-Do explodiert · Mitarbeiter-Problem → Griff zu Süßem ist automatisch und unbewusst.</p>
-      </div>
-    </div>
-    <div class="stress-card solution">
-      <div class="sico">🥤</div>
-      <div>
-        <h4>Lösung: Shake als sofortiger Ersatz</h4>
-        <p>More Whey in Wasser ist süß, sättigend, hat Protein und gibt das gleiche Belohnungsgefühl — ohne Zucker-Crash danach. Immer Shaker im Büro haben!</p>
-      </div>
-    </div>
-    <div class="stress-card trigger">
-      <div class="sico">🍟</div>
-      <div>
-        <h4>Trigger: Fast Food "weil keine Zeit"</h4>
-        <p>Kein Mittag vorbereitet · zu busy zum Denken · Burger oder Pizza bestellen fühlt sich schneller an als kochen.</p>
-      </div>
-    </div>
-    <div class="stress-card solution">
-      <div class="sico">🍱</div>
-      <div>
-        <h4>Lösung: Meal Prep ist deine Versicherung</h4>
-        <p>Samstag 2h kochen = Mo–Mi kein Nachdenken. Portionen im Kühlschrank. Wenn wirklich gar nichts da: Shake + Nüsse ist besser als Fast Food.</p>
-      </div>
-    </div>
-    <div class="stress-card trigger">
-      <div class="sico">🍫</div>
-      <div>
-        <h4>Trigger: Nachmittags-Loch 15–17 Uhr</h4>
-        <p>Energie sinkt, Konzentration lässt nach → automatischer Griff zu Schokolade, Keksen, Süßkram aus der Schublade.</p>
-      </div>
-    </div>
-    <div class="stress-card solution">
-      <div class="sico">⏰</div>
-      <div>
-        <h4>Lösung: 16:00 Shake ist FEST eingeplant</h4>
-        <p>Wecker auf 16:00. More Shake vorbereiten. Das verhindert den Impuls zuverlässig — Körper bekommt was er will, ohne Schaden.</p>
-      </div>
-    </div>
-    <div class="stress-card trigger">
-      <div class="sico">🌙</div>
-      <div>
-        <h4>Trigger: Abends nach dem Büro / Training</h4>
-        <p>Erschöpft, verdient, "ich hab heute so viel geleistet" → Belohnungsessen · zu große Portionen · spät noch essen.</p>
-      </div>
-    </div>
-    <div class="stress-card solution">
-      <div class="sico">🥣</div>
-      <div>
-        <h4>Lösung: Abendessen ist vorbereitet & leicht</h4>
-        <p>Greek Yogurt oder Suppe steht bereit. Nach Trainingstagen: erst Shake (~21:00), dann kleines Abendbrot. Kein Essen nach 21:30.</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="notice">
-    <strong>Wichtigste Regel:</strong> Du musst nicht perfekt sein — du musst nur besser sein als vorher. Ein Fast-Food-Tag ruiniert nichts. Zwei hintereinander sind ein Problem. Der More Shake ist dein Sicherheitsnetz.
-  </div>
-</div>
-
-<!-- SPORT -->
-
-<div id="tab-sport" class="tc">
-  <div class="stitle">SPORTPLAN</div>
-  <div class="ssub">Realistisch · Rücken schützen · Kalorienverbrennung maximieren</div>
-  <div class="swk">
-    <div class="sd"><div class="sdh"><div class="sdn" style="color:var(--accent)">MO</div><div class="sdt">Hundespaziergang + Morgen-Aktivierung</div><span class="stbdg bdg-mg">~45 Min · ~280 kcal</span></div><div class="sex">
-      <div class="ei"><div class="eico">🐕</div><div><div class="en">Spaziergang mit Hund (30–45 Min)</div><div class="ed">Zügiges Tempo, aufrecht. Schultern zurück. Kein Handy beim Gehen.</div></div><span class="etag et-k">Basis</span></div>
-      <div class="ei"><div class="eico">🧱</div><div><div class="en">3× Plank à 30 Sek</div><div class="ed">Rumpfstabilität = wichtigstes Mittel gegen Kreuzschmerzen. Täglich steigern.</div></div><span class="etag et-r">Rücken</span></div>
-      <div class="ei"><div class="eico">🦵</div><div><div class="en">2× 15 Kniebeugen (Bodyweight)</div><div class="ed">Langsam runter (3 Sek). Beine & Gesäß aktivieren. Großer Kalorienverbraucher!</div></div><span class="etag et-k">Kraft</span></div>
-    </div></div>
-
-```
-<div class="sd"><div class="sdh"><div class="sdn" style="color:var(--accent)">DI</div><div class="sdt">Rücken-Fokus + Spaziergang</div><span class="stbdg bdg-mg">~40 Min · ~250 kcal</span></div><div class="sex">
-  <div class="ei"><div class="eico">🐕</div><div><div class="en">Spaziergang (30 Min)</div><div class="ed">Ruhiges Tempo. Bewusstes Atmen: 4 Sek ein, 6 Sek aus.</div></div><span class="etag et-k">Basis</span></div>
-  <div class="ei"><div class="eico">🤸</div><div><div class="en">Katze-Kuh — 10 Wdh. langsam</div><div class="ed">Auf allen Vieren: Rücken wölben dann hohlkreuzen. Wirbelsäule mobilisieren.</div></div><span class="etag et-r">Rücken</span></div>
-  <div class="ei"><div class="eico">🏊</div><div><div class="en">Superman — 3×10 Wdh.</div><div class="ed">Bauch auf Boden: Arme & Beine heben, 2 Sek halten. Unterer Rücken direkt.</div></div><span class="etag et-r">Rücken</span></div>
-  <div class="ei"><div class="eico">🪑</div><div><div class="en">Hip Flexor Stretch — 30 Sek je Seite</div><div class="ed">Verkürzte Hüftbeuger = Hauptursache Kreuzschmerzen bei Sitzberufen!</div></div><span class="etag et-r">Rücken</span></div>
-</div></div>
-
-<div class="sd"><div class="sdh"><div class="sdn" style="color:var(--accent3)">MI</div><div class="sdt">🥋 Selbstverteidigung 18:30–20:00</div><span class="stbdg bdg-tr">1,5 Std · ~700 kcal</span></div><div class="sex">
-  <div class="ei"><div class="eico">🐕</div><div><div class="en">Morgen-Spaziergang (30 Min, ruhig)</div><div class="ed">Energie für Abend aufsparen. Kein Workout morgens.</div></div><span class="etag et-k">Morgen</span></div>
-  <div class="ei"><div class="eico">🥋</div><div><div class="en">Selbstverteidigung 18:30–20:00</div><div class="ed">Cardio, Koordination, Kraft, mentale Schärfe. Alles geben.</div></div><span class="etag et-ka">Kampfsport</span></div>
-  <div class="ei"><div class="eico">🥤</div><div><div class="en">~21:00 More Recovery-Shake — SOFORT</div><div class="ed">Whey + Milch + Banane. Innerhalb 30 Min nach Heimkehr. Muskelaufbau!</div></div><span class="etag et-k">Recovery</span></div>
-</div></div>
-
-<div class="sd"><div class="sdh"><div class="sdn" style="color:var(--accent2)">DO</div><div class="sdt">Aktive Regeneration</div><span class="stbdg bdg-rs">~45 Min · ~200 kcal</span></div><div class="sex">
-  <div class="ei"><div class="eico">🐕</div><div><div class="en">Langer Spaziergang (45 Min)</div><div class="ed">Längster Walk der Woche. Kein Handy. Natur = mentale Erholung.</div></div><span class="etag et-k">Erholung</span></div>
-  <div class="ei"><div class="eico">🧘</div><div><div class="en">Abend-Stretching (15 Min)</div><div class="ed">Ischiasnerv-Dehnung, Piriformis-Stretch, Brustwirbelsäule. Kreuz entspannen.</div></div><span class="etag et-r">Rücken</span></div>
-</div></div>
-
-<div class="sd"><div class="sdh"><div class="sdn" style="color:var(--accent3)">FR</div><div class="sdt">🥋 Selbstverteidigung 18:30–20:00</div><span class="stbdg bdg-tr">1,5 Std · ~700 kcal</span></div><div class="sex">
-  <div class="ei"><div class="eico">🐕</div><div><div class="en">Morgen-Spaziergang (30 Min, ruhig)</div><div class="ed">Energie aufsparen für Abendtraining.</div></div><span class="etag et-k">Morgen</span></div>
-  <div class="ei"><div class="eico">🥋</div><div><div class="en">Selbstverteidigung 18:30–20:00</div><div class="ed">Letzte Einheit der Woche. Woche rauslassen. Alles geben.</div></div><span class="etag et-ka">Kampfsport</span></div>
-  <div class="ei"><div class="eico">🥤</div><div><div class="en">~21:00 More Recovery-Shake — SOFORT</div><div class="ed">Wochenende startet mit optimaler Regeneration.</div></div><span class="etag et-k">Recovery</span></div>
-</div></div>
-
-<div class="sd"><div class="sdh"><div class="sdn" style="color:var(--accent2)">SA</div><div class="sdt">🌳 Erholung · Wiegen · Meal Prep</div><span class="stbdg bdg-rs">Kein Sport!</span></div><div class="sex">
-  <div class="ei"><div class="eico">⚖️</div><div><div class="en">WIEGEN — morgens nüchtern (vor Frühstück!)</div><div class="ed">Ins Gewichtstracker eintragen. Trend beobachten, nicht täglich stressen.</div></div><span class="etag et-r" style="background:rgba(95,255,154,.2);color:var(--green)">Wiegen</span></div>
-  <div class="ei"><div class="eico">🌳</div><div><div class="en">Natur-Spaziergang (mit Frau & Hund)</div><div class="ed">Kein Sport. Aktive Erholung nach Fr-Training. Frische Luft, kein Handy.</div></div><span class="etag et-r">Erholung</span></div>
-  <div class="ei"><div class="eico">🍳</div><div><div class="en">Meal Prep mit Frau (1,5–2h)</div><div class="ed">Protein für Mo–Mi vorkochen. Spart enorm Zeit und verhindert Fast Food.</div></div><span class="etag et-k">Planung</span></div>
-</div></div>
-
-<div class="sd"><div class="sdh"><div class="sdn" style="color:var(--accent2)">SO</div><div class="sdt">🚣 Intensiv: Rudergerät + Körpergewicht</div><span class="stbdg bdg-rd">~75 Min · ~650 kcal</span></div><div class="sex">
-  <div class="ei"><div class="eico">🚣</div><div><div class="en">Rudergerät — 45 Min Intervalle</div><div class="ed">5 Min locker → 8× (2 Min intensiv / 1 Min locker) → 5 Min ausrudern. TECHNIK: Beine drücken → Rücken → Arme ziehen!</div></div><span class="etag et-rd">Cardio</span></div>
-  <div class="ei"><div class="eico">💪</div><div><div class="en">Körpergewicht-Zirkel — 3 Runden</div><div class="ed">15 Push-Ups · 12 Ausfallschritte je Seite · 30 Sek Plank · 10 Superman. 90 Sek Pause.</div></div><span class="etag et-k">Kraft</span></div>
-  <div class="ei"><div class="eico">🥤</div><div><div class="en">More Recovery-Shake danach</div><div class="ed">Whey 50g + Milch + Banane. Direkt nach Training.</div></div><span class="etag et-k">Recovery</span></div>
-  <div class="ei"><div class="eico">📋</div><div><div class="en">15 Min Wochenplanung</div><div class="ed">Top 3 Prioritäten. Kalender checken. Erholt und vorbereitet in den Montag.</div></div><span class="etag et-k">CEO</span></div>
-</div></div>
-```
-
-  </div>
-  <div class="notice" style="margin-top:14px;"><strong>Wöchentlicher Kalorienverbrauch Sport:</strong> Spaziergang täglich ~250 kcal + Mi Training ~700 kcal + Fr Training ~700 kcal + So Rudern+Kraft ~650 kcal = ~3500 kcal extra pro Woche. Das sind zusätzlich ~0,5 kg Fett pro Woche allein durch Sport!</div>
-</div>
-
-<!-- PRINZIPIEN -->
-
-<div id="tab-prinzipien" class="tc">
-  <div class="stitle">DEINE REGELN</div>
-  <div class="ssub">Einfach · Konsequent · Gründer-kompatibel · Ohne leiden</div>
-
-  <div class="wtr">
-    <div class="wtr-h">
-      <span class="wtr-ttl">💧 Wasser-Tracker — Tagesziel: 2,5 Liter</span>
-      <span id="wcnt" style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--accent2)">0 / 10</span>
-    </div>
-    <div class="glasses" id="glasses"></div>
-    <div class="wbar"><div class="wfill" id="wfill" style="width:0%"></div></div>
-    <div class="wtxt" id="wtxt">Klick auf ein Glas · je Glas = 250ml</div>
-  </div>
-
-  <div class="pgrid">
-    <div class="pcard"><div class="pico">🌅</div><div><h4>Morgenritual ist unverhandelbar</h4><p>06:00–07:30 gehört dir. Hund, Shake, Übungen — bevor der Laptop aufgeht. Das ist die Grundlage für alles andere.</p></div></div>
-    <div class="pcard"><div class="pico">🥤</div><div><h4>More Shake = dein Sicherheitsnetz</h4><p>Stress, Hunger, kein Zeit zum Kochen — immer zuerst den Shaker rausholen. Kein Fast Food solange Pulver da ist.</p></div></div>
-    <div class="pcard"><div class="pico">💧</div><div><h4>Wasser vor allem anderen</h4><p>500ml morgens vor dem Kaffee. Hunger ist oft Durst. 2,5L täglich — Kreuzschmerzen, Müdigkeit und Hunger bessern sich allein dadurch.</p></div></div>
-    <div class="pcard"><div class="pico">⚖️</div><div><h4>Samstag morgens wiegen — immer</h4><p>Nüchtern, gleiche Waage, ins Dashboard eintragen. Nur der Trend über 4 Wochen zählt — nicht die täglichen Schwankungen.</p></div></div>
-    <div class="pcard"><div class="pico">🕙</div><div><h4>22:30 Laptop zu — kein Verhandeln</h4><p>Schlafmangel erhöht Cortisol und Hunger-Hormone direkt. Wer schlecht schläft, nimmt nachweislich langsamer ab.</p></div></div>
-    <div class="pcard"><div class="pico">🍳</div><div><h4>Samstag Meal Prep = Wochenschutz</h4><p>2 Stunden Kochen = 5 Tage kein Fast Food. Das ist deine wichtigste Investition gegen Stress-Essen unter der Woche.</p></div></div>
-    <div class="pcard"><div class="pico">🥋</div><div><h4>Training Mi + Fr ist heilig</h4><p>17:45 Abfahrt — keine Meetings danach. Post-Shake innerhalb 30 Min nach Heimkehr. Dein physischer Reset der Woche.</p></div></div>
-    <div class="pcard"><div class="pico">🚣</div><div><h4>Sonntag: Rudern + Wochenplanung</h4><p>45 Min Rudergerät + Zirkel + Shake + 15 Min Planung. Du startest erholt und vorbereitet. Kein Montag-Chaos.</p></div></div>
-  </div>
-
-  <div class="notice" style="margin-top:14px;">
-    <strong>Zeitplan 140 → 95 kg:</strong> Mo 1–4: Routine, Wasser, Shakes etablieren · Mo 5–8: Erste 4 kg weg, Energie steigt · Mo 3–6: Rücken besser, Kleidung lockerer · Mo 7–12: 7–12 kg weniger · 1 Jahr: Ziel in Reichweite. Jede Woche zählt — fang heute an.
-  </div>
-</div>
-
-</div><!-- end wrap -->
 
 <script>
-// ===== TAGESDATEN =====
-const days=[
-  {title:"MONTAG — FOKUSTAG",sub:"Morgenroutine schützen · Shake statt Stress-Snack · 1800 kcal halten",
-   tl:[
-    {c:"",time:"06:00",tag:"",tt:"Aufstehen + 500ml Wasser",desc:"Vor Kaffee, vor Handy. Sofort."},
-    {c:"more",time:"06:20",tag:"tg-more",tgtxt:"MORE",tt:"More Whey Shake Frühstück",desc:"Whey 50g + Milch + Banane + Erdnussbutter. 3 Min. Satt bis 10:00."},
-    {c:"",time:"06:30",tag:"",tt:"🐕 Hund + Übungen (45 Min)",desc:"Zügig gehen + 3× Plank + 15 Kniebeugen unterwegs."},
-    {c:"",time:"07:15",tag:"",tt:"Waschen · Anziehen (15 Min)",desc:""},
-    {c:"drive",time:"07:30",tag:"tg-drive",tgtxt:"FAHRT",tt:"🚗 Büro (30 Min)",desc:"Kein Stress-Scrollen."},
-    {c:"blue",time:"08:00",tag:"",tt:"Deep Work Block 1",desc:"Schwerste Aufgabe zuerst. Handy stumm."},
-    {c:"",time:"10:00",tag:"",tt:"Snack + 500ml Wasser + aufstehen",desc:"Nüsse + Apfel. 5 Min Hüftbeuger. Kein Süßes!"},
-    {c:"blue",time:"13:00",tag:"",tt:"Mittagessen — Meal Prep",desc:"Protein + Gemüse. 20 Min Pause. Laptop zu."},
-    {c:"more",time:"16:00",tag:"tg-more",tgtxt:"SHAKE",tt:"Anti-Stress-Shake (Pflicht!)",desc:"Wecker stellen! Whey + Wasser. Verhindert Nachmittags-Snacken zuverlässig."},
-    {c:"drive",time:"17:30",tag:"tg-drive",tgtxt:"HEIMFAHRT",tt:"🚗 Heimfahrt (30 Min)",desc:"Feierabend. Bewusst abschalten."},
-    {c:"",time:"19:00",tag:"",tt:"Leichtes Abendessen",desc:"Greek Yogurt oder Suppe. Nichts nach 20:00!"},
-    {c:"orange",time:"22:30",tag:"",tt:"Laptop zu — schlafen",desc:"7,5h Schlaf. Unverhandelbar."}
-   ],
-   fl:[
-    {t:"shake",fn:"🥤 More Shake Frühstück",fd:"Whey 50g + Milch + Banane",fk:"480 kcal · 48g Protein"},
-    {t:"snack",fn:"🍎 Snack 10:00",fd:"20g Walnüsse + Apfel",fk:"220 kcal"},
-    {t:"main",fn:"🍗 Mittag Meal Prep",fd:"Hähnchen + Süßkartoffel + Gemüse",fk:"550 kcal · 42g Protein"},
-    {t:"shake",fn:"🥤 Anti-Stress-Shake 16:00",fd:"Whey 37g + Wasser",fk:"200 kcal · 34g Protein"},
-    {t:"snack",fn:"🥣 Abendessen",fd:"Greek Yogurt + Beeren",fk:"300 kcal · 22g Protein"},
-    {t:"snack",fn:"📊 Tagessumme",fd:"Kaloriendefizit ~800 kcal",fk:"≈ 1750 kcal · 146g Protein"}
-   ]},
-  {title:"DIENSTAG — DEEP WORK",sub:"Rücken-Routine einbauen · Meal Prep nutzen · Digital Detox Abend",
-   tl:[
-    {c:"",time:"06:00",tag:"",tt:"Aufstehen + 500ml Wasser",desc:""},
-    {c:"",time:"06:20",tag:"",tt:"Frühstück (Eier + Brot)",desc:"3 Eier + 1 Vollkornbrot + Quark."},
-    {c:"",time:"06:45",tag:"",tt:"🐕 Hund + Rücken-Routine (40 Min)",desc:"Spaziergang + Cat-Cow + Superman + Hip Flexor Stretch."},
-    {c:"",time:"07:15",tag:"",tt:"Waschen · Anziehen",desc:""},
-    {c:"drive",time:"07:30",tag:"tg-drive",tgtxt:"FAHRT",tt:"🚗 Büro (30 Min)",desc:""},
-    {c:"blue",time:"08:00",tag:"",tt:"Deep Work — wichtigstes Projekt",desc:"Kein E-Mail bis 10 Uhr."},
-    {c:"",time:"10:00",tag:"",tt:"Snack + aufstehen",desc:"Mandeln + Beeren. Hüftbeuger dehnen."},
-    {c:"blue",time:"13:00",tag:"",tt:"Mittagessen Meal Prep",desc:"Aus dem Samstags-Vorrat."},
-    {c:"more",time:"16:00",tag:"tg-more",tgtxt:"SHAKE",tt:"Anti-Stress-Shake",desc:"Whey + Wasser. Wecker stellen!"},
-    {c:"drive",time:"17:30",tag:"tg-drive",tgtxt:"HEIMFAHRT",tt:"🚗 Heimfahrt",desc:""},
-    {c:"orange",time:"20:00",tag:"",tt:"Digital Detox",desc:"Kein Social Media. Buch, Gespräch, Entspannen."},
-    {c:"orange",time:"22:30",tag:"",tt:"Schlafen",desc:""}
-   ],
-   fl:[
-    {t:"main",fn:"🍳 Frühstück",fd:"3 Eier + Vollkornbrot + Quark",fk:"450 kcal · 32g Protein"},
-    {t:"snack",fn:"🍎 Snack 10:00",fd:"Mandeln + Beeren",fk:"200 kcal"},
-    {t:"main",fn:"🍗 Mittag Meal Prep",fd:"Protein + Gemüse",fk:"550 kcal · 42g Protein"},
-    {t:"shake",fn:"🥤 Shake 16:00",fd:"Whey + Wasser",fk:"200 kcal · 34g Protein"},
-    {t:"snack",fn:"🥣 Abendessen",fd:"Quark + Kräuter + 1 Brot",fk:"300 kcal"},
-    {t:"snack",fn:"📊 Tagessumme",fd:"Kaloriendefizit ~800 kcal",fk:"≈ 1700 kcal · 108g Protein"}
-   ]},
-  {title:"MITTWOCH — TRAININGSTAG",sub:"Mehr Carbs essen · 17:45 Abfahrt · Post-Shake sofort nach Heimkehr ~21:00",
-   tl:[
-    {c:"",time:"06:00",tag:"",tt:"Aufstehen + 500ml Wasser",desc:""},
-    {c:"",time:"06:20",tag:"",tt:"Frühstück mit mehr Carbs",desc:"Haferbrei + Beeren + Eier. Heute braucht der Körper Energie."},
-    {c:"",time:"06:45",tag:"",tt:"🐕 Hund — ruhig (30 Min)",desc:"Energie für 18:30 aufsparen. Kein Workout."},
-    {c:"",time:"07:15",tag:"",tt:"Waschen · Anziehen",desc:""},
-    {c:"drive",time:"07:30",tag:"tg-drive",tgtxt:"FAHRT",tt:"🚗 Büro (30 Min)",desc:""},
-    {c:"blue",time:"08:00",tag:"",tt:"Büro — Meetings & Arbeit",desc:"Wichtige Entscheidungen vor 13 Uhr."},
-    {c:"blue",time:"13:00",tag:"",tt:"Mittagessen XL",desc:"Extra Protein + Süßkartoffel. Trainingstag = mehr essen ok."},
-    {c:"",time:"15:30",tag:"",tt:"Pre-Training Snack",desc:"Banane + Nüsse. 2–3h vor Training."},
-    {c:"drive",time:"17:30",tag:"tg-drive",tgtxt:"FAHRT",tt:"🚗 Fahrt zum Training (30 Min)",desc:"Pünktlich!"},
-    {c:"",time:"18:15",tag:"",tt:"Ankommen · Umziehen (15 Min)",desc:""},
-    {c:"orange",time:"18:30",tag:"tg-training",tgtxt:"TRAINING",tt:"🥋 Selbstverteidigung",desc:"Volles Training bis 20:00. Alles geben."},
-    {c:"drive",time:"20:00",tag:"tg-drive",tgtxt:"HEIMFAHRT",tt:"🚗 Heimfahrt (30 Min)",desc:"Umziehen + Fahrt."},
-    {c:"more",time:"20:50",tag:"tg-more",tgtxt:"PFLICHT",tt:"🥤 More Recovery-Shake — SOFORT",desc:"Whey 50g + Milch + Banane. Direkt nach Heimkehr!"},
-    {c:"",time:"21:15",tag:"",tt:"Kleines Abendbrot",desc:"Greek Yogurt oder Quark. Leicht & schnell."},
-    {c:"orange",time:"22:30",tag:"",tt:"Schlafen — früher heute",desc:"Körper regeneriert nach Training stärker im Schlaf."}
-   ],
-   fl:[
-    {t:"main",fn:"🥣 Frühstück mit Carbs",fd:"Haferbrei + Beeren + Eier",fk:"580 kcal"},
-    {t:"main",fn:"🍗 Mittag XL",fd:"200g Protein + Süßkartoffel + Gemüse",fk:"650 kcal · 48g Protein"},
-    {t:"snack",fn:"🍌 Pre-Training 15:30",fd:"Banane + Nüsse",fk:"250 kcal"},
-    {t:"shake",fn:"🥤 Recovery-Shake ~20:50",fd:"Whey 50g + Milch + Banane",fk:"480 kcal · 50g Protein"},
-    {t:"snack",fn:"📊 Tagessumme",fd:"Trainingstag: mehr essen erlaubt",fk:"≈ 1960 kcal · 98g+ Protein"}
-   ]},
-  {title:"DONNERSTAG — AKTIVE ERHOLUNG",sub:"Rücken regenerieren · langer Walk · Abend-Stretching Pflicht",
-   tl:[
-    {c:"",time:"06:00",tag:"",tt:"Aufstehen + 500ml Wasser",desc:""},
-    {c:"more",time:"06:20",tag:"tg-more",tgtxt:"MORE",tt:"More Shake oder Eier",desc:"Je nach Hunger nach gestrigem Training."},
-    {c:"",time:"06:45",tag:"",tt:"🐕 Langer Spaziergang (45 Min)",desc:"Längster Walk. Kein Handy. Natur tanken."},
-    {c:"",time:"07:15",tag:"",tt:"Waschen · Anziehen",desc:""},
-    {c:"drive",time:"07:30",tag:"tg-drive",tgtxt:"FAHRT",tt:"🚗 Büro (30 Min)",desc:""},
-    {c:"blue",time:"13:00",tag:"",tt:"Lachs oder fettreicher Fisch",desc:"Omega-3 für Rücken & Entzündungshemmung. Heute bewusst."},
-    {c:"more",time:"16:00",tag:"tg-more",tgtxt:"SHAKE",tt:"Shake oder Joghurt",desc:"Kein Süßes."},
-    {c:"drive",time:"17:30",tag:"tg-drive",tgtxt:"HEIMFAHRT",tt:"🚗 Heimfahrt",desc:""},
-    {c:"",time:"19:00",tag:"",tt:"Leichtes Abendessen",desc:"Suppe oder Quark."},
-    {c:"blue",time:"20:30",tag:"tg-rudern",tgtxt:"RÜCKEN",tt:"Stretching 15 Min",desc:"Ischiasnerv-Dehnung, Piriformis, Brustwirbelsäule."},
-    {c:"orange",time:"22:30",tag:"",tt:"Schlafen",desc:""}
-   ],
-   fl:[
-    {t:"shake",fn:"🥤 Shake oder Eier",fd:"Frühstück nach Training-Hunger",fk:"450 kcal"},
-    {t:"main",fn:"🐟 Lachs-Mittagessen",fd:"Lachs + Gemüse + Olivenöl",fk:"520 kcal · 40g Protein"},
-    {t:"shake",fn:"🥤 Shake 16:00",fd:"Whey + Wasser",fk:"200 kcal"},
-    {t:"snack",fn:"🥣 Abendessen leicht",fd:"Suppe oder Quark + Brot",fk:"280 kcal"},
-    {t:"snack",fn:"📊 Tagessumme",fd:"Kaloriendefizit ~900 kcal",fk:"≈ 1650 kcal"}
-   ]},
-  {title:"FREITAG — TRAININGSTAG",sub:"Wie Mittwoch · Woche stark beenden · Post-Shake nicht vergessen!",
-   tl:[
-    {c:"",time:"06:00",tag:"",tt:"Aufstehen + 500ml Wasser",desc:""},
-    {c:"",time:"06:20",tag:"",tt:"Frühstück mit Carbs",desc:"Wie Mi — Energie für Abendtraining."},
-    {c:"",time:"06:45",tag:"",tt:"🐕 Hund — ruhig (30 Min)",desc:"Energie aufsparen."},
-    {c:"",time:"07:15",tag:"",tt:"Waschen · Anziehen",desc:""},
-    {c:"drive",time:"07:30",tag:"tg-drive",tgtxt:"FAHRT",tt:"🚗 Büro (30 Min)",desc:""},
-    {c:"blue",time:"08:00",tag:"",tt:"Büro + Wochenreview",desc:"Was erreicht? Was nächste Woche?"},
-    {c:"blue",time:"13:00",tag:"",tt:"Mittagessen proteinreich",desc:"Letzte große Mahlzeit vor Training."},
-    {c:"",time:"15:30",tag:"",tt:"Pre-Training Snack",desc:"Banane + Nüsse."},
-    {c:"drive",time:"17:30",tag:"tg-drive",tgtxt:"FAHRT",tt:"🚗 Fahrt zum Training",desc:"Pünktlich!"},
-    {c:"orange",time:"18:30",tag:"tg-training",tgtxt:"TRAINING",tt:"🥋 Selbstverteidigung",desc:"Letzte Einheit. Woche rauslassen. Alles geben."},
-    {c:"drive",time:"20:00",tag:"tg-drive",tgtxt:"HEIMFAHRT",tt:"🚗 Heimfahrt",desc:""},
-    {c:"more",time:"20:50",tag:"tg-more",tgtxt:"PFLICHT",tt:"🥤 More Recovery-Shake — SOFORT",desc:"Wochenende startet mit optimaler Regeneration."},
-    {c:"",time:"21:15",tag:"",tt:"Abendbrot + entspannen",desc:"Leicht essen. Wochenende starten."},
-    {c:"orange",time:"22:30",tag:"",tt:"Schlafen — Sa ausschlafen!",desc:""}
-   ],
-   fl:[
-    {t:"main",fn:"🥣 Frühstück mit Carbs",fd:"Haferbrei + Beeren + Eier",fk:"580 kcal"},
-    {t:"main",fn:"🍗 Mittagessen XL",fd:"Protein + Kohlenhydrate + Gemüse",fk:"650 kcal"},
-    {t:"snack",fn:"🍌 Pre-Training 15:30",fd:"Banane + Nüsse",fk:"250 kcal"},
-    {t:"shake",fn:"🥤 Recovery-Shake ~20:50",fd:"Whey 50g + Milch + Banane — SOFORT!",fk:"480 kcal · 50g Protein"},
-    {t:"snack",fn:"📊 Tagessumme",fd:"Trainingstag: mehr essen ok",fk:"≈ 1960 kcal"}
-   ]},
-  {title:"SAMSTAG — ERHOLUNG & WIEGEN",sub:"Kein intensiver Sport! Nüchtern wiegen · Natur · Meal Prep für die Woche",
-   tl:[
-    {c:"green",time:"08:00",tag:"tg-wiegen",tgtxt:"WIEGEN",tt:"⚖️ WIEGEN — nüchtern, vor Frühstück!",desc:"Gleiche Waage, kein Kleidung. Ins Dashboard eintragen. Trend beobachten."},
-    {c:"",time:"08:15",tag:"",tt:"Ausschlafen — verdient!",desc:"Freitag war hart. Körper braucht das."},
-    {c:"",time:"09:00",tag:"",tt:"Entspanntes Frühstück mit Frau",desc:"Eier, Brot, Kaffee. Kein Stress."},
-    {c:"",time:"10:00",tag:"",tt:"🌳 Natur-Spaziergang (Frau + Hund)",desc:"Kein Handy, kein Podcast. Frische Luft, Gespräch. Kein Sport."},
-    {c:"blue",time:"12:00",tag:"",tt:"🍳 Meal Prep mit Frau (1,5–2h)",desc:"Hähnchen/Fisch/Rind + Gemüse für Mo–Mi. Portionieren & einfrieren."},
-    {c:"",time:"14:00",tag:"",tt:"Mittagessen — gemeinsam genießen",desc:"Was frisch gekocht wurde. Heute großzügiger essen."},
-    {c:"",time:"Nachm.",tag:"",tt:"Freizeit & Familie",desc:"Kein Laptop. Qualitätszeit. Erholung."},
-    {c:"blue",time:"Abend",tag:"tg-rudern",tgtxt:"RÜCKEN",tt:"Wärmflasche oder warmes Bad",desc:"Muskeln nach Trainingswoche entspannen."},
-    {c:"orange",time:"22:30",tag:"",tt:"Schlafen — morgen Intensivtraining!",desc:""}
-   ],
-   fl:[
-    {t:"main",fn:"⚖️ Wiegen nüchtern",fd:"Vor Frühstück · ins Dashboard eintragen",fk:""},
-    {t:"main",fn:"🍳 Frühstück mit Frau",fd:"Eier + Brot + Avocado + Kaffee",fk:"500 kcal"},
-    {t:"main",fn:"🍖 Meal Prep Mittagessen",fd:"Frisch Gekochtes genießen",fk:"600 kcal"},
-    {t:"snack",fn:"🍕 Abendessen — Wildcard",fd:"Heute etwas Schöneres erlaubt",fk:"~500 kcal"},
-    {t:"snack",fn:"📊 Samstag lockerer",fd:"Kein striktes Defizit — Erholungstag",fk:"≈ 1900 kcal"}
-   ]},
-  {title:"SONNTAG — INTENSIV-TRAINING",sub:"45 Min Rudergerät · Körpergewicht-Zirkel · Shake · 15 Min Wochenplanung",
-   tl:[
-    {c:"",time:"07:30",tag:"",tt:"Aufstehen + 500ml Wasser",desc:"Etwas später ok."},
-    {c:"",time:"08:00",tag:"",tt:"Frühstück — proteinreich",desc:"3 Eier + Vollkornbrot + Avocado. Energie für Training."},
-    {c:"",time:"09:00",tag:"",tt:"🐕 Kurzer Spaziergang (20 Min)",desc:"Aufwärmen für den Körper."},
-    {c:"",time:"09:30",tag:"",tt:"Aufwärmen (5 Min)",desc:"Gelenke mobilisieren, Schultern kreisen."},
-    {c:"blue",time:"09:35",tag:"tg-rudern",tgtxt:"RUDERN",tt:"🚣 Rudergerät — 45 Minuten",desc:"5 Min locker → 8× (2 Min intensiv / 1 Min locker) → 5 Min aus. TECHNIK: Beine → Rücken → Arme!"},
-    {c:"blue",time:"10:20",tag:"",tt:"💪 Körpergewicht-Zirkel (3 Runden)",desc:"15 Push-Ups · 12 Ausfallschritte · 30 Sek Plank · 10 Superman. 90 Sek Pause."},
-    {c:"more",time:"11:00",tag:"tg-more",tgtxt:"PFLICHT",tt:"🥤 More Recovery-Shake — direkt danach",desc:"Whey 50g + Milch + Banane. Muskeln aufbauen, Regeneration starten."},
-    {c:"",time:"11:30",tag:"",tt:"Duschen · Mittagessen",desc:"Großzügig essen. Carbs heute verdient."},
-    {c:"blue",time:"14:00",tag:"",tt:"📋 15 Min Wochenplanung",desc:"Top 3 Prioritäten. Kalender checken. Montag kann kommen."},
-    {c:"",time:"Nachm.",tag:"",tt:"Freizeit & Familie",desc:"Kein Laptop vor 17 Uhr."},
-    {c:"orange",time:"22:30",tag:"",tt:"Schlafen",desc:"Gut vorbereitet in die neue Woche."}
-   ],
-   fl:[
-    {t:"main",fn:"🍳 Frühstück proteinreich",fd:"3 Eier + Vollkornbrot + Avocado",fk:"500 kcal"},
-    {t:"shake",fn:"🥤 Recovery-Shake nach Training",fd:"Whey 50g + Milch + Banane",fk:"480 kcal · 50g Protein"},
-    {t:"main",fn:"🍖 Mittagessen großzügig",fd:"Mit Carbs — verdient!",fk:"650 kcal"},
-    {t:"snack",fn:"🥗 Abendessen leicht",fd:"Salat oder Joghurt vor der Woche",fk:"280 kcal"},
-    {t:"snack",fn:"📊 Tagessumme",fd:"Trainingstag: mehr essen ok",fk:"≈ 1910 kcal"}
-   ]}
+// ─── DATA ──────────────────────────────────────────────────────────────────
+const IS_SERVER = !['','file:'].includes(window.location.protocol);
+const GOAL_START = 140, GOAL_END = 95;
+
+const db = {
+  async get(url, fallback) {
+    if (!IS_SERVER) return fallback;
+    try { const r = await fetch(url); if (!r.ok) throw new Error(); return await r.json(); } catch { return fallback; }
+  },
+  async post(url, body) {
+    if (!IS_SERVER) return { ok: false };
+    const r = await fetch(url, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
+    return r.json();
+  },
+  async del(url) {
+    if (!IS_SERVER) return { ok: false };
+    const r = await fetch(url, { method: 'DELETE' });
+    return r.json();
+  }
+};
+
+// ─── SCHEDULE DATA ──────────────────────────────────────────────────────────
+const days = [
+  { name: 'Montag',     short: 'Mo', dow: 1,
+    timeline: [
+      { t:'06:00', text:'Aufstehen & Morgenroutine' },
+      { t:'06:30', text:'Frühstück', tag:'meal' },
+      { t:'07:30', text:'Arbeit / Deep Work' },
+      { t:'12:30', text:'Mittagessen', tag:'meal' },
+      { t:'13:00', text:'Spaziergang 30 Min', tag:'sport' },
+      { t:'13:30', text:'Arbeit' },
+      { t:'18:00', text:'Krafttraining 60 Min', tag:'sport' },
+      { t:'19:30', text:'Abendessen', tag:'meal' },
+      { t:'22:00', text:'Abendroutine, kein Bildschirm' },
+      { t:'23:00', text:'Schlafen', tag:'sleep' },
+    ],
+    meals: [
+      { icon:'🥚', name:'Rührei + Avocado', kcal:'420 kcal' },
+      { icon:'🍗', name:'Hähnchen + Reis + Gemüse', kcal:'650 kcal' },
+      { icon:'🥩', name:'Rindersteak + Brokkoli', kcal:'580 kcal' },
+      { icon:'🥜', name:'Proteinshake + Nüsse', kcal:'320 kcal' },
+    ]
+  },
+  { name: 'Dienstag',   short: 'Di', dow: 2,
+    timeline: [
+      { t:'06:00', text:'Aufstehen' },
+      { t:'06:30', text:'Frühstück', tag:'meal' },
+      { t:'07:30', text:'Arbeit' },
+      { t:'12:30', text:'Mittagessen', tag:'meal' },
+      { t:'13:00', text:'Spaziergang 30 Min', tag:'sport' },
+      { t:'13:30', text:'Arbeit' },
+      { t:'18:00', text:'Rudertraining 45 Min', tag:'sport' },
+      { t:'19:30', text:'Abendessen + Meal Prep', tag:'meal' },
+      { t:'23:00', text:'Schlafen', tag:'sleep' },
+    ],
+    meals: [
+      { icon:'🥣', name:'Haferflocken + Beeren', kcal:'380 kcal' },
+      { icon:'🐟', name:'Lachs + Süßkartoffel', kcal:'680 kcal' },
+      { icon:'🥗', name:'Großer Salat + Hähnchen', kcal:'480 kcal' },
+      { icon:'🧀', name:'Hüttenkäse + Früchte', kcal:'280 kcal' },
+    ]
+  },
+  { name: 'Mittwoch',   short: 'Mi', dow: 3,
+    timeline: [
+      { t:'06:00', text:'Aufstehen' },
+      { t:'06:30', text:'Frühstück', tag:'meal' },
+      { t:'07:30', text:'Arbeit / Deep Work' },
+      { t:'12:30', text:'Mittagessen', tag:'meal' },
+      { t:'13:00', text:'Spaziergang 30 Min', tag:'sport' },
+      { t:'13:30', text:'Arbeit' },
+      { t:'18:00', text:'Krafttraining 60 Min', tag:'sport' },
+      { t:'19:30', text:'Abendessen', tag:'meal' },
+      { t:'23:00', text:'Schlafen', tag:'sleep' },
+    ],
+    meals: [
+      { icon:'🥚', name:'Omelette + Gemüse', kcal:'400 kcal' },
+      { icon:'🍝', name:'Pasta + Fleischsauce (light)', kcal:'620 kcal' },
+      { icon:'🥩', name:'Schweinefilet + Salat', kcal:'540 kcal' },
+      { icon:'🍌', name:'Proteinshake + Banane', kcal:'340 kcal' },
+    ]
+  },
+  { name: 'Donnerstag', short: 'Do', dow: 4,
+    timeline: [
+      { t:'06:00', text:'Aufstehen' },
+      { t:'06:30', text:'Frühstück', tag:'meal' },
+      { t:'07:30', text:'Arbeit' },
+      { t:'12:30', text:'Mittagessen', tag:'meal' },
+      { t:'13:00', text:'Aktive Pause / Stretching', tag:'sport' },
+      { t:'13:30', text:'Arbeit' },
+      { t:'18:00', text:'Rudertraining 45 Min', tag:'sport' },
+      { t:'19:30', text:'Abendessen', tag:'meal' },
+      { t:'23:00', text:'Schlafen', tag:'sleep' },
+    ],
+    meals: [
+      { icon:'🥣', name:'Müsli + Proteinmilch', kcal:'360 kcal' },
+      { icon:'🫕', name:'Gemüse-Curry + Reis', kcal:'580 kcal' },
+      { icon:'🍗', name:'Hähnchenbrust + Zucchini', kcal:'500 kcal' },
+      { icon:'🥜', name:'Nüsse + Whey-Shake', kcal:'310 kcal' },
+    ]
+  },
+  { name: 'Freitag',    short: 'Fr', dow: 5,
+    timeline: [
+      { t:'06:00', text:'Aufstehen' },
+      { t:'06:30', text:'Frühstück', tag:'meal' },
+      { t:'07:30', text:'Arbeit' },
+      { t:'12:30', text:'Mittagessen', tag:'meal' },
+      { t:'13:00', text:'Spaziergang 30 Min', tag:'sport' },
+      { t:'13:30', text:'Arbeit' },
+      { t:'18:00', text:'Krafttraining 60 Min', tag:'sport' },
+      { t:'19:30', text:'Abendessen (flex.)', tag:'meal' },
+      { t:'23:00', text:'Schlafen', tag:'sleep' },
+    ],
+    meals: [
+      { icon:'🥚', name:'Scrambled Eggs + Toast Vollkorn', kcal:'440 kcal' },
+      { icon:'🥙', name:'Wrap mit Hähnchen', kcal:'580 kcal' },
+      { icon:'🐟', name:'Thunfisch-Salat', kcal:'460 kcal' },
+      { icon:'🍫', name:'Proteinriegel', kcal:'220 kcal' },
+    ]
+  },
+  { name: 'Samstag',    short: 'Sa', dow: 6,
+    timeline: [
+      { t:'07:30', text:'Ausschlafen & Aufstehen' },
+      { t:'08:00', text:'Ausgiebiges Frühstück', tag:'meal' },
+      { t:'10:00', text:'Meal Prep für die Woche', tag:'sport' },
+      { t:'12:00', text:'Mittagessen', tag:'meal' },
+      { t:'14:00', text:'Langer Spaziergang / Aktivität', tag:'sport' },
+      { t:'18:00', text:'Freizeit' },
+      { t:'19:00', text:'Abendessen', tag:'meal' },
+      { t:'23:00', text:'Schlafen', tag:'sleep' },
+    ],
+    meals: [
+      { icon:'🍳', name:'Großes Frühstück (flex.)', kcal:'600 kcal' },
+      { icon:'🥗', name:'Leichtes Mittagessen', kcal:'450 kcal' },
+      { icon:'🍽️', name:'Abendessen (freie Wahl)', kcal:'650 kcal' },
+    ]
+  },
+  { name: 'Sonntag',    short: 'So', dow: 0,
+    timeline: [
+      { t:'08:00', text:'Ruhetag – Ausschlafen' },
+      { t:'09:00', text:'Frühstück', tag:'meal' },
+      { t:'11:00', text:'Spaziergang / Natur', tag:'sport' },
+      { t:'13:00', text:'Mittagessen (mit Familie/Freunden)', tag:'meal' },
+      { t:'16:00', text:'Erholung & Planung neue Woche' },
+      { t:'19:00', text:'Leichtes Abendessen', tag:'meal' },
+      { t:'22:30', text:'Früh schlafen für Montag', tag:'sleep' },
+    ],
+    meals: [
+      { icon:'🥞', name:'Pancakes (protein)', kcal:'520 kcal' },
+      { icon:'🍲', name:'Sonntagsessen (flex.)', kcal:'700 kcal' },
+      { icon:'🥒', name:'Leichte Suppe + Brot', kcal:'380 kcal' },
+    ]
+  },
 ];
 
-let sel=0,wc=0,weights=[];
-
-// Milestones
-const msDef=[
-  {kg:135,icon:"🎯",lbl:"-5kg Start!"},
-  {kg:130,icon:"💪",lbl:"-10kg"},
-  {kg:125,icon:"⚡",lbl:"-15kg"},
-  {kg:120,icon:"🔥",lbl:"-20kg"},
-  {kg:110,icon:"🏆",lbl:"-30kg"}
+const sportDays = [
+  { name:'Montag',     type:'training', badge:'training', exercises:'Bankdrücken 4×10\nKurzhantel-Schulterdrücken 3×12\nSchrägbanke 3×12\nKabelzüge 3×15\nTrizeps-Dips 3×12' },
+  { name:'Dienstag',   type:'row',      badge:'active',   exercises:'Rudergerät 45 Min (Intervalle)\nZiel: 10.000m' },
+  { name:'Mittwoch',   type:'training', badge:'training', exercises:'Kniebeugen 4×10\nRomanisches Kreuzheben 3×12\nBeinpresse 3×15\nCurls 3×12\nHammer-Curls 3×12' },
+  { name:'Donnerstag', type:'row',      badge:'active',   exercises:'Rudergerät 45 Min (Ausdauer)\nZiel: steady-state, Puls <140' },
+  { name:'Freitag',    type:'training', badge:'training', exercises:'Klimmzüge 4×max\nLatzug 3×12\nRudern sitzend 3×12\nFace-Pulls 3×15\nPlanks 3×60s' },
+  { name:'Samstag',    type:'walk',     badge:'active',   exercises:'Langer Spaziergang ≥60 Min\nMeal Prep' },
+  { name:'Sonntag',    type:'rest',     badge:'rest',     exercises:'Ruhetag\nLeichte Dehnung optional' },
 ];
 
-function bmi(kg){return(kg/(1.86*1.86)).toFixed(1);}
-function bmiCat(b){if(b<18.5)return"Untergewicht";if(b<25)return"Normalgewicht";if(b<30)return"Übergewicht";if(b<35)return"Adipositas I";if(b<40)return"Adipositas II";return"Adipositas III";}
+const principles = [
+  { title:'Kalorien im Defizit', text:'Max. 1800 kcal/Tag. Keine Ausnahmen außer geplantem Refeed.' },
+  { title:'Protein zuerst', text:'Jede Mahlzeit hat mindestens 30g Protein. Erst dann Carbs und Fett.' },
+  { title:'Trinken vor dem Hunger', text:'Erst ein großes Glas Wasser, dann 15 Min warten. Echten Hunger erkennen.' },
+  { title:'Kein Alkohol unter der Woche', text:'Mo–Do alkoholfrei. Wochenende: max. 2 Getränke, einkalkuliert.' },
+  { title:'10.000 Schritte täglich', text:'Spaziergang ist Pflicht – kein optionaler Bonus.' },
+  { title:'Meal Prep samstags', text:'Samstag wird für die ganze Woche vorgekocht. Keine Ausrede für Fast Food.' },
+  { title:'Kein Junk Food im Haus', text:'Was nicht da ist, wird nicht gegessen. Einkaufsliste strikt einhalten.' },
+  { title:'Wöchentliche Wägung', text:'Jeden Montagmorgen, nüchtern, gleiche Bedingungen. Trend zählt, nicht Tagesschwankung.' },
+];
 
-function renderMilestones(cur){
-  const c=document.getElementById('milestones');
-  c.innerHTML=msDef.map(m=>{
-    const reached=cur<=m.kg;
-    return`<div class="ms ${reached?'reached':''}">
-      <div class="ms-icon">${m.icon}</div>
-      <div class="ms-kg">${m.kg} kg</div>
-      <div class="ms-lbl">${m.lbl}${reached?' ✓':''}</div>
-    </div>`;
-  }).join('');
+// ─── STATE ──────────────────────────────────────────────────────────────────
+let weights = [];
+let water = {};
+let checkins = [];
+let notes = [];
+let todayKey = '';
+let clockTimer = null;
+let nowTimer = null;
+
+// ─── HELPERS ────────────────────────────────────────────────────────────────
+function today() { return new Date(); }
+function todayISO() { return today().toISOString().slice(0,10); }
+function minsNow() { const n = today(); return n.getHours()*60 + n.getMinutes(); }
+function tToMins(t) { const [h,m] = t.split(':').map(Number); return h*60+m; }
+function pad2(n) { return String(n).padStart(2,'0'); }
+function fmt(d) {
+  const days = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+  const dd = new Date(d + 'T00:00:00');
+  return `${days[dd.getDay()]}, ${pad2(dd.getDate())}.${pad2(dd.getMonth()+1)}`;
+}
+function todayDow() { return today().getDay(); } // 0=Sun
+
+function getDayData() {
+  const dow = todayDow();
+  return days.find(d => d.dow === dow) || days[0];
 }
 
-function linearRegression(data){
-  // data = [{x: dayIndex, y: kg}, ...]
-  if(data.length<2) return null;
-  const n=data.length;
-  const sumX=data.reduce((a,d)=>a+d.x,0);
-  const sumY=data.reduce((a,d)=>a+d.y,0);
-  const sumXY=data.reduce((a,d)=>a+d.x*d.y,0);
-  const sumX2=data.reduce((a,d)=>a+d.x*d.x,0);
-  const slope=(n*sumXY-sumX*sumY)/(n*sumX2-sumX*sumX);
-  const intercept=(sumY-slope*sumX)/n;
-  return{slope,intercept}; // slope = kg/day
+// Linear regression
+function linReg(pts) {
+  const n = pts.length;
+  if (n < 2) return null;
+  let sx=0,sy=0,sxy=0,sx2=0;
+  pts.forEach(([x,y])=>{ sx+=x; sy+=y; sxy+=x*y; sx2+=x*x; });
+  const m=(n*sxy-sx*sy)/(n*sx2-sx*sx);
+  const b=(sy-m*sx)/n;
+  return {m,b, at: x=>m*x+b};
 }
 
-function updateDashboard(){
-  const start=140,goal=95,height=1.86;
-  const cur=weights.length>0?weights[weights.length-1].kg:start;
-  const lost=start-cur;
-  const rem=cur-goal;
-  const b=bmi(cur);
-  document.getElementById('wt-current').textContent=cur.toFixed(1)+' kg';
-  document.getElementById('wt-bmi-current').textContent=`BMI: ${b} · ${bmiCat(parseFloat(b))}`;
-  document.getElementById('wt-lost').textContent=lost.toFixed(1)+' kg';
-  const pct=Math.max(0,Math.round(lost/45*100));
-  document.getElementById('wt-lost-pct').textContent=`${pct}% des Ziels erreicht`;
-  document.getElementById('wt-remaining').textContent=Math.max(0,rem).toFixed(1)+' kg';
+// ─── TABS ────────────────────────────────────────────────────────────────────
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-'+tabId));
+  document.querySelectorAll('[data-tab]').forEach(el => el.classList.toggle('active', el.dataset.tab === tabId));
+  if (tabId === 'gewicht') renderWeightChart();
+}
 
-  // Trend-basierte ETA berechnen
-  const trendEl=document.getElementById('trend-info');
-  if(weights.length>=2){
-    const base=new Date(weights[0].date).getTime();
-    const regData=weights.map(w=>({x:(new Date(w.date).getTime()-base)/(1000*60*60*24),y:w.kg}));
-    const reg=linearRegression(regData);
-    if(reg && reg.slope<0){
-      const kgPerWeek=Math.abs(reg.slope*7);
-      const weeksToGoal=rem/Math.abs(reg.slope*7);
-      const etaDate=new Date(Date.now()+weeksToGoal*7*24*60*60*1000);
-      const etaStr=etaDate.toLocaleDateString('de-DE',{month:'long',year:'numeric'});
-      document.getElementById('wt-eta').textContent=`${kgPerWeek.toFixed(2)} kg/Woche Trend`;
-      trendEl.style.display='block';
-      trendEl.innerHTML=`<strong>📊 Trendanalyse:</strong> Du nimmst im Schnitt <strong>${kgPerWeek.toFixed(2)} kg/Woche</strong> ab · Basierend auf deinem aktuellen Tempo erreichst du 95 kg voraussichtlich <strong>im ${etaStr}</strong> · Noch ~<strong>${Math.ceil(weeksToGoal)} Wochen</strong>.`;
-    } else if(reg && reg.slope>=0){
-      document.getElementById('wt-eta').textContent='⚠️ Trend: kein Defizit';
-      trendEl.style.display='block';
-      trendEl.innerHTML='<strong>⚠️ Achtung:</strong> Dein Trend zeigt aktuell keine Abnahme. Kaloriendefizit prüfen!';
-    }
+document.querySelectorAll('[data-tab]').forEach(el => {
+  el.addEventListener('click', () => switchTab(el.dataset.tab));
+});
+
+// ─── SERVER STATUS ───────────────────────────────────────────────────────────
+async function checkServer() {
+  const dot = document.getElementById('server-dot');
+  if (!IS_SERVER) { dot.className=''; return; }
+  try {
+    const r = await fetch('/api/status');
+    dot.className = r.ok ? 'ok' : 'err';
+  } catch { dot.className = 'err'; }
+}
+
+// ─── CLOCK & NOW CARD ────────────────────────────────────────────────────────
+function updateClock() {
+  const n = today();
+  const h = pad2(n.getHours()), m = pad2(n.getMinutes());
+  document.getElementById('nc-time').textContent = h+':'+m;
+  const days2 = ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+  const months = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+  document.getElementById('nc-date').textContent = `${days2[n.getDay()]}, ${n.getDate()}. ${months[n.getMonth()]} ${n.getFullYear()}`;
+}
+
+function updateNowCard() {
+  const d = getDayData();
+  const mins = minsNow();
+  const tl = d.timeline;
+
+  // Find current item
+  let curIdx = -1;
+  for (let i = 0; i < tl.length; i++) {
+    if (tToMins(tl[i].t) <= mins) curIdx = i;
+    else break;
+  }
+
+  const actEl = document.getElementById('nc-activity');
+  if (curIdx >= 0) {
+    const cur = tl[curIdx];
+    actEl.textContent = cur.t + ' · ' + cur.text;
+    actEl.className = 'now-activity active-item';
   } else {
-    const weeks=Math.ceil(rem);
-    document.getElementById('wt-eta').textContent=rem>0?`~${weeks} Wochen bei 1kg/Wo`:'🎉 Ziel erreicht!';
-    trendEl.style.display='none';
+    actEl.textContent = tl[0] ? 'Bald: ' + tl[0].t + ' · ' + tl[0].text : 'Keine Einträge';
+    actEl.className = 'now-activity';
   }
 
-  renderMilestones(cur);
-  renderTimeline();
-  drawChart();
-  updateGoalBar();
+  // Day progress
+  const startMins = tToMins(tl[0]?.t || '06:00');
+  const endMins   = tToMins(tl[tl.length-1]?.t || '23:00');
+  const prog = Math.min(100, Math.max(0, ((mins - startMins) / (endMins - startMins)) * 100));
+  document.getElementById('nc-progress').style.width = prog + '%';
+
+  // Upcoming
+  const next = tl.filter((_,i) => i > curIdx).slice(0,3);
+  const upEl = document.getElementById('nc-upcoming');
+  upEl.innerHTML = next.map(item => `
+    <div class="upcoming-item">
+      <span class="upcoming-time">${item.t}</span>
+      <span class="upcoming-text">${item.text}${item.tag ? `<span class="tl-tag ${item.tag}">${item.tag==='meal'?'Mahlzeit':item.tag==='sport'?'Sport':'Schlafen'}</span>` : ''}</span>
+    </div>`).join('');
 }
 
-function renderTimeline(){
-  const c=document.getElementById('wt-timeline');
-  if(weights.length===0){
-    c.innerHTML='<div style="padding:20px;text-align:center;color:var(--muted);font-size:12px;">Noch keine Einträge — trag jeden Samstag dein Gewicht ein!</div>';
-    return;
+// ─── WATER ───────────────────────────────────────────────────────────────────
+async function loadWater() {
+  if (IS_SERVER) {
+    const d = await db.get('/api/water/' + todayKey, { count: 0 });
+    water[todayKey] = d.count || 0;
+  } else {
+    try { water = JSON.parse(localStorage.getItem('water') || '{}'); } catch {}
   }
-  c.innerHTML=[...weights].reverse().map((e,ri)=>{
-    const i=weights.length-1-ri;
-    const prev=i>0?weights[i-1].kg:140;
-    const diff=e.kg-prev;
-    const diffStr=diff===0?'±0':(diff<0?diff.toFixed(1):'+'+diff.toFixed(1));
-    const diffCls=diff<0?'neg':diff>0?'pos':'';
-    const b=bmi(e.kg);
-    return`<div class="wt-entry">
-      <span class="we-date">${e.date}</span>
-      <span class="we-kg">${e.kg} kg</span>
-      <span class="we-bmi">BMI ${b} · ${bmiCat(parseFloat(b))}</span>
-      <span class="we-diff ${diffCls}">${diffStr} kg</span>
-      <button class="we-del" onclick="deleteWeight(${i})">✕</button>
+  renderWater();
+}
+
+function renderWater() {
+  const count = water[todayKey] || 0;
+  const wrap = document.getElementById('water-glasses');
+  wrap.innerHTML = '';
+  for (let i = 1; i <= 8; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'glass-btn' + (i <= count ? ' filled' : '');
+    btn.textContent = '💧';
+    btn.onclick = () => setWater(i <= count ? i-1 : i);
+    wrap.appendChild(btn);
+  }
+  document.getElementById('water-num').textContent = count;
+  document.getElementById('water-ml-label').textContent = ` (${count*250} ml)`;
+}
+
+async function setWater(count) {
+  water[todayKey] = count;
+  if (IS_SERVER) {
+    await db.post('/api/water', { date: todayKey, count });
+  } else {
+    localStorage.setItem('water', JSON.stringify(water));
+  }
+  renderWater();
+}
+
+function resetWater() { setWater(0); }
+
+// ─── TODAY TIMELINE ───────────────────────────────────────────────────────────
+function renderTodayTimeline() {
+  const d = getDayData();
+  const mins = minsNow();
+  document.getElementById('today-tl-title').textContent = `📅 ${d.name} – Tagesplan`;
+  document.getElementById('today-meals-title').textContent = `🍽️ ${d.name} – Mahlzeiten`;
+  const wrap = document.getElementById('today-timeline');
+  wrap.innerHTML = d.timeline.map(item => {
+    const t = tToMins(item.t);
+    const cls = t <= mins && (t + 90) > mins ? 'current' : t < mins ? 'past' : '';
+    const tagHtml = item.tag ? `<span class="tl-tag ${item.tag}">${item.tag==='meal'?'Mahlzeit':item.tag==='sport'?'Sport':'Schlafen'}</span>` : '';
+    return `<div class="tl-item ${cls}">
+      <span class="tl-time">${item.t}</span>
+      <span class="tl-dot"></span>
+      <span class="tl-text">${item.text}${tagHtml}</span>
+    </div>`;
+  }).join('');
+
+  const mealsWrap = document.getElementById('today-meals');
+  mealsWrap.innerHTML = d.meals.map(m => `
+    <div class="food-item">
+      <span class="food-icon">${m.icon}</span>
+      <span class="food-name">${m.name}</span>
+      <span class="food-kcal">${m.kcal}</span>
+    </div>`).join('');
+}
+
+// ─── WEEK VIEW ────────────────────────────────────────────────────────────────
+function renderWeek() {
+  const grid = document.getElementById('week-grid');
+  const todayDow2 = todayDow();
+  grid.innerHTML = days.map(d => {
+    const isToday = d.dow === todayDow2;
+    return `<div class="week-day-card">
+      <div class="week-day-header" onclick="toggleWeekDay(this)">
+        <span class="week-day-name${isToday?' today':''}">${isToday?'▶ ':''}${d.name}</span>
+        <span class="week-day-meta">${d.meals.length} Mahlzeiten · ${d.timeline.filter(t=>t.tag==='sport').length} Sport</span>
+      </div>
+      <div class="week-day-body${isToday?' open':''}">
+        ${d.meals.map(m=>`<div class="week-meal"><strong>${m.icon} ${m.name}</strong> – ${m.kcal}</div>`).join('')}
+        <div class="week-divider"></div>
+        ${d.timeline.filter(t=>t.tag).map(t=>`<div class="week-meal">${t.t} · ${t.text}</div>`).join('')}
+      </div>
     </div>`;
   }).join('');
 }
 
-function addWeight(){
-  const dateEl=document.getElementById('wt-date');
-  const kgEl=document.getElementById('wt-kg');
-  const date=dateEl.value;
-  const kg=parseFloat(kgEl.value);
-  if(!date||isNaN(kg)||kg<50||kg>250){alert('Bitte Datum und gültiges Gewicht eingeben!');return;}
-  weights.push({date,kg});
-  weights.sort((a,b)=>a.date.localeCompare(b.date));
-  saveWeights();
-  updateDashboard();
-  kgEl.value='';
+function toggleWeekDay(header) {
+  const body = header.nextElementSibling;
+  body.classList.toggle('open');
 }
 
-function deleteWeight(i){
-  weights.splice(i,1);
-  saveWeights();
-  updateDashboard();
+// ─── ERNÄHRUNG ────────────────────────────────────────────────────────────────
+function renderErnaehrung() {
+  const d = getDayData();
+  document.getElementById('ern-day-title').textContent = `🍽️ ${d.name} – Mahlzeiten`;
+  document.getElementById('ern-meals').innerHTML = d.meals.map(m => `
+    <div class="food-item">
+      <span class="food-icon">${m.icon}</span>
+      <span class="food-name">${m.name}</span>
+      <span class="food-kcal">${m.kcal}</span>
+    </div>`).join('');
+
+  const ew = document.getElementById('ern-week');
+  ew.innerHTML = days.map(day => {
+    const isToday = day.dow === todayDow();
+    return `<div class="week-day-card">
+      <div class="week-day-header" onclick="toggleWeekDay(this)">
+        <span class="week-day-name${isToday?' today':''}">${day.short}${isToday?' ◀':''}</span>
+        <span class="week-day-meta">${day.meals.reduce((a,m)=>a+parseInt(m.kcal),0)} kcal</span>
+      </div>
+      <div class="week-day-body${isToday?' open':''}">
+        ${day.meals.map(m=>`<div class="week-meal">${m.icon} <strong>${m.name}</strong> – ${m.kcal}</div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
 }
 
-function saveWeights(){
-  try{localStorage.setItem('martin_weights',JSON.stringify(weights));}catch(e){}
+// ─── SPORT ────────────────────────────────────────────────────────────────────
+function renderSport() {
+  const grid = document.getElementById('sport-week-grid');
+  const todayName = getDayData().name;
+  grid.innerHTML = sportDays.map(d => {
+    const isToday = d.name === todayName;
+    const checkin = checkins.find(c => c.type === 'training' && c.date === todayKey);
+    const done = isToday && checkin?.done;
+    return `<div class="sport-day-card" style="${isToday?'border-color:var(--accent)':''}">
+      <div class="sport-day-header">
+        <span class="sport-day-name">${isToday?'▶ ':''}${d.name}</span>
+        <span class="sport-badge ${d.badge}">${d.badge==='training'?'Kraft':d.badge==='active'?'Ausdauer':'Ruhe'}</span>
+      </div>
+      <div class="sport-exercise">${d.exercises.replace(/\n/g,'<br>')}</div>
+      ${isToday ? `<div class="checkin-row">
+        <span class="checkin-label">Heute erledigt?</span>
+        <button class="check-btn ${done?'done':''}" onclick="toggleCheckin()">${done?'✓':'·'}</button>
+      </div>` : ''}
+    </div>`;
+  }).join('');
 }
 
-function loadWeights(){
-  try{const d=localStorage.getItem('martin_weights');if(d)weights=JSON.parse(d);}catch(e){}
-}
-
-function drawChart(){
-  const canvas=document.getElementById('weightChart');
-  const ctx=canvas.getContext('2d');
-  const dpr=window.devicePixelRatio||1;
-  const rect=canvas.parentElement.getBoundingClientRect();
-  const W=Math.max(rect.width-40,200);
-  const H=220;
-  canvas.width=W*dpr;
-  canvas.height=H*dpr;
-  canvas.style.width=W+'px';
-  canvas.style.height=H+'px';
-  ctx.scale(dpr,dpr);
-  ctx.clearRect(0,0,W,H);
-
-  const realData=[{date:'Start',kg:140,isStart:true},...weights];
-  if(realData.length<2){
-    ctx.fillStyle='#555';ctx.font='14px DM Sans';ctx.textAlign='center';
-    ctx.fillText('Trag dein erstes Gewicht ein',W/2,H/2-8);
-    ctx.font='11px DM Sans';ctx.fillStyle='#444';
-    ctx.fillText('— dann erscheint die Kurve mit Trendlinie —',W/2,H/2+12);
-    return;
+async function toggleCheckin() {
+  const cur = checkins.find(c => c.type === 'training' && c.date === todayKey);
+  const done = !(cur?.done);
+  if (IS_SERVER) {
+    await db.post('/api/checkins', { date: todayKey, type: 'training', done });
+    checkins = await db.get('/api/checkins', checkins);
+  } else {
+    const idx = checkins.findIndex(c => c.type === 'training' && c.date === todayKey);
+    const entry = { date: todayKey, type: 'training', done };
+    if (idx >= 0) checkins[idx] = entry; else checkins.push(entry);
+    localStorage.setItem('checkins', JSON.stringify(checkins));
   }
-
-  const minKg=Math.min(95,...realData.map(d=>d.kg))-4;
-  const maxKg=Math.max(...realData.map(d=>d.kg))+5;
-  const pad={t:24,r:16,b:32,l:42};
-  const cW=W-pad.l-pad.r;
-  const cH=H-pad.t-pad.b;
-  const xStep=cW/(realData.length-1||1);
-  const yScale=cH/(maxKg-minKg);
-
-  const px=(i)=>pad.l+i*xStep;
-  const py=(kg)=>pad.t+cH-(kg-minKg)*yScale;
-
-  // Hintergrund-Grid
-  ctx.strokeStyle='rgba(255,255,255,0.04)';ctx.lineWidth=1;
-  for(let k=0;k<=5;k++){
-    const y=pad.t+k*(cH/5);
-    ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+cW,y);ctx.stroke();
-    const kg=maxKg-(k*(maxKg-minKg)/5);
-    ctx.fillStyle='#444';ctx.font=`${Math.max(9,Math.min(11,W/40))}px DM Sans`;ctx.textAlign='right';
-    ctx.fillText(kg.toFixed(0)+'kg',pad.l-4,y+4);
-  }
-
-  // Ziellinie 95 kg
-  const goalY=py(95);
-  ctx.save();ctx.setLineDash([5,4]);ctx.strokeStyle='rgba(95,255,154,0.4)';ctx.lineWidth=1.5;
-  ctx.beginPath();ctx.moveTo(pad.l,goalY);ctx.lineTo(pad.l+cW,goalY);ctx.stroke();
-  ctx.restore();
-  ctx.fillStyle='rgba(95,255,154,0.7)';ctx.font='9px DM Sans';ctx.textAlign='left';
-  ctx.fillText('Ziel 95 kg',pad.l+4,goalY-5);
-
-  // Gradient fill unter Kurve
-  const grad=ctx.createLinearGradient(0,pad.t,0,pad.t+cH);
-  grad.addColorStop(0,'rgba(232,255,71,0.18)');
-  grad.addColorStop(1,'rgba(232,255,71,0)');
-  ctx.beginPath();
-  ctx.moveTo(px(0),py(realData[0].kg));
-  realData.forEach((d,i)=>{if(i>0)ctx.lineTo(px(i),py(d.kg));});
-  ctx.lineTo(px(realData.length-1),pad.t+cH);
-  ctx.lineTo(px(0),pad.t+cH);
-  ctx.closePath();ctx.fillStyle=grad;ctx.fill();
-
-  // Hauptlinie (Gewichtskurve)
-  ctx.beginPath();
-  ctx.moveTo(px(0),py(realData[0].kg));
-  realData.forEach((d,i)=>{if(i>0)ctx.lineTo(px(i),py(d.kg));});
-  ctx.strokeStyle='#e8ff47';ctx.lineWidth=2.5;ctx.setLineDash([]);ctx.stroke();
-
-  // Trendlinie (lineare Regression)
-  if(weights.length>=2){
-    const base=new Date(weights[0].date).getTime();
-    const regPts=weights.map((w,idx)=>({x:idx,y:w.kg}));
-    const reg=linearRegression(regPts);
-    if(reg){
-      // Trendlinie von erstem bis letztem echten Punkt (+ Projektion bis Rand)
-      const startI=1; // Index in realData wo echte weights starten
-      const tX0=px(startI)+((realData.length-2>0)?0:0);
-      const tY0=py(reg.intercept);
-      const lastI=realData.length-1;
-      const tX1=px(lastI);
-      const tY1=py(reg.intercept+reg.slope*(weights.length-1));
-      ctx.save();
-      ctx.setLineDash([6,4]);
-      ctx.strokeStyle='rgba(255,107,71,0.75)';
-      ctx.lineWidth=2;
-      ctx.beginPath();ctx.moveTo(tX0,tY0);ctx.lineTo(tX1,tY1);ctx.stroke();
-      ctx.restore();
-    }
-  }
-
-  // Punkte auf der Kurve
-  realData.forEach((d,i)=>{
-    ctx.beginPath();ctx.arc(px(i),py(d.kg),i===0?4:5,0,Math.PI*2);
-    ctx.fillStyle=d.isStart?'#555':'#e8ff47';
-    ctx.strokeStyle='#0e0e10';ctx.lineWidth=1.5;
-    ctx.fill();ctx.stroke();
-    // Gewichtslabel über Punkt (bei wenigen Einträgen)
-    if(realData.length<=8&&!d.isStart){
-      ctx.fillStyle='rgba(232,255,71,0.85)';ctx.font='bold 9px DM Sans';ctx.textAlign='center';
-      ctx.fillText(d.kg.toFixed(1),px(i),py(d.kg)-10);
-    }
-  });
-
-  // X-Achse Labels
-  realData.forEach((d,i)=>{
-    ctx.fillStyle='#444';ctx.font='9px DM Sans';ctx.textAlign='center';
-    const lbl=d.isStart?'Start':d.date.slice(5);
-    // Nur jeden 2. Label bei vielen Einträgen
-    if(realData.length<=8||i%2===0||i===realData.length-1)
-      ctx.fillText(lbl,px(i),H-8);
-  });
+  renderSport();
 }
 
-// Tabs
-function switchTab(n,e){
-  document.querySelectorAll('.tc').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.tnav-btn').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.bn-item').forEach(t=>t.classList.remove('active'));
-  document.getElementById('tab-'+n).classList.add('active');
-  // Top nav
-  const tnav=document.querySelector(`.tnav-btn[data-tab="${n}"]`);
-  if(tnav) tnav.classList.add('active');
-  // Mobile bottom nav
-  const bnItem=document.querySelector(`.bn-item[data-tab="${n}"]`);
-  if(bnItem) bnItem.classList.add('active');
-  if(n==='gewicht'){setTimeout(drawChart,100);}
-}
-
-function updateGoalBar(){
-  const start=140,goal=95;
-  const cur=weights.length>0?weights[weights.length-1].kg:start;
-  const pct=Math.max(0,Math.min(100,Math.round((start-cur)/(start-goal)*100)));
-  const fill=document.getElementById('tngFill');
-  const pctEl=document.getElementById('tngPct');
-  if(fill) fill.style.width=pct+'%';
-  if(pctEl) pctEl.textContent=pct+'%';
-}
-
-// Days
-function showDay(i,el){
-  document.querySelectorAll('.dc').forEach(c=>c.classList.remove('sel'));
-  el.classList.add('sel');sel=i;renderDetail();
-}
-
-function renderDetail(){
-  const d=days[sel];
-  document.getElementById('d-title').textContent=d.title;
-  document.getElementById('d-sub').textContent=d.sub;
-  document.getElementById('d-tl').innerHTML=d.tl.map(item=>`
-    <div class="ti ${item.c}">
-      <div class="ti-l"><div class="ti-t">${item.time}</div><div class="ti-line"></div></div>
-      <div class="ti-dot"></div>
-      <div class="ti-r">
-        ${item.tag?`<span class="ti-tag ${item.tag}">${item.tgtxt}</span>`:''}
-        <div class="ti-title">${item.tt}</div>
-        ${item.desc?`<div class="ti-desc">${item.desc}</div>`:''}
+// ─── RULES ────────────────────────────────────────────────────────────────────
+function renderRules() {
+  document.getElementById('rules-list').innerHTML = principles.map((r,i) => `
+    <div class="rule-item">
+      <span class="rule-num">${i+1}</span>
+      <div class="rule-content">
+        <div class="rule-title">${r.title}</div>
+        <div class="rule-text">${r.text}</div>
       </div>
     </div>`).join('');
-  document.getElementById('d-fl').innerHTML=d.fl.map(item=>`
-    <div class="fi ${item.t}">
-      <div class="fn">${item.fn}</div>
-      <div class="fd">${item.fd}</div>
-      ${item.fk?`<div class="fkal">${item.fk}</div>`:''}
+}
+
+// ─── NOTES ────────────────────────────────────────────────────────────────────
+async function loadNotes() {
+  if (IS_SERVER) {
+    notes = await db.get('/api/notes', []);
+  } else {
+    try { notes = JSON.parse(localStorage.getItem('notes') || '[]'); } catch {}
+  }
+  renderNotes();
+}
+
+function renderNotes() {
+  const list = document.getElementById('notes-list');
+  if (!notes.length) { list.innerHTML = '<div class="empty">Noch keine Notizen</div>'; return; }
+  list.innerHTML = notes.map(n => `
+    <div class="note-card">
+      <div style="flex:1">
+        <div class="note-body">${n.text.replace(/</g,'&lt;')}</div>
+        <div class="note-meta">${fmt(n.date)}</div>
+      </div>
+      <button class="note-del" onclick="deleteNote(${n.id})">×</button>
     </div>`).join('');
 }
 
-// Water
-function initWater(){
-  const c=document.getElementById('glasses');
-  for(let i=0;i<10;i++){
-    const g=document.createElement('span');
-    g.className='gl';g.textContent='🥛';
-    g.onclick=()=>toggleW(i);c.appendChild(g);
-  }
-}
-
-function toggleW(i){
-  wc=(wc===i+1)?i:i+1;
-  document.querySelectorAll('.gl').forEach((g,idx)=>g.classList.toggle('on',idx<wc));
-  document.getElementById('wcnt').textContent=`${wc} / 10`;
-  document.getElementById('wfill').style.width=(wc*10)+'%';
-  const txts=['Los — erstes Glas!','Super!','500ml ✓','750ml!','1L ✓','1,25L','1,5L ✓','1,75L','2L ✓','2,25L','2,5L ✅ Ziel erreicht!'];
-  document.getElementById('wtxt').textContent=txts[wc];
-}
-
-// Date default
-document.getElementById('wt-date').valueAsDate=new Date();
-
-// ==============================
-// ECHTZEIT TAGESPLAN
-// ==============================
-const DE_DAYS=['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
-const DE_MONTHS=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
-
-// days[0]=Mo, days[1]=Di, ... days[6]=So
-// JS getDay(): 0=So,1=Mo,...,6=Sa → mappping
-function getTodayDayIndex(){
-  const jsd=new Date().getDay(); // 0=So
-  return jsd===0?6:jsd-1; // 0=Mo..6=So
-}
-
-function parseTime(t){
-  // "06:00" → minutes since midnight
-  const p=t.split(':');
-  return parseInt(p[0])*60+parseInt(p[1]);
-}
-
-function minsNow(){
-  const n=new Date();
-  return n.getHours()*60+n.getMinutes();
-}
-
-function updateNowCard(){
-  const now=new Date();
-  const h=String(now.getHours()).padStart(2,'0');
-  const m=String(now.getMinutes()).padStart(2,'0');
-  document.getElementById('nowClock').textContent=`${h}:${m}`;
-
-  const dayIdx=getTodayDayIndex();
-  const dayData=days[dayIdx];
-  const dayName=DE_DAYS[now.getDay()];
-  const dateStr=`${dayName}, ${now.getDate()}. ${DE_MONTHS[now.getMonth()]} ${now.getFullYear()}`;
-  document.getElementById('nowDate').textContent=dateStr;
-  document.getElementById('nowDayTitle').textContent=dayData.title.split(' — ')[0]+' — '+dayData.title.split(' — ').slice(1).join(' — ');
-
-  const cur=minsNow();
-  const tl=dayData.tl;
-
-  // Tagesfortschritt 06:00 bis 23:00
-  const dayStart=6*60,dayEnd=23*60;
-  const pct=Math.min(100,Math.max(0,Math.round((cur-dayStart)/(dayEnd-dayStart)*100)));
-  document.getElementById('nowProgPct').textContent=pct+'%';
-  document.getElementById('nowProgFill').style.width=pct+'%';
-
-  // Aktuelle Aktivität finden
-  let currentIdx=-1;
-  for(let i=0;i<tl.length;i++){
-    const tMin=parseTime(tl[i].time);
-    const nextMin=i+1<tl.length?parseTime(tl[i+1].time):24*60;
-    if(cur>=tMin && cur<nextMin){currentIdx=i;break;}
-  }
-  if(currentIdx===-1 && cur<parseTime(tl[0].time)) currentIdx=-1;
-  if(currentIdx===-1 && cur>=parseTime(tl[tl.length-1].time)) currentIdx=tl.length-1;
-
-  const curItem=currentIdx>=0?tl[currentIdx]:null;
-  if(curItem){
-    document.getElementById('nowCurrentAct').textContent=curItem.tt;
-    document.getElementById('nowCurrentDesc').textContent=curItem.desc||'';
+async function saveNote() {
+  const inp = document.getElementById('note-input');
+  const text = inp.value.trim();
+  if (!text) return;
+  inp.value = '';
+  if (IS_SERVER) {
+    await db.post('/api/notes', { text, date: todayKey });
+    notes = await db.get('/api/notes', notes);
   } else {
-    document.getElementById('nowCurrentAct').textContent='Vor dem Start des Tages';
-    document.getElementById('nowCurrentDesc').textContent='Tagesplan beginnt um '+tl[0].time+' Uhr';
+    const entry = { id: Date.now(), text, date: todayKey, createdAt: new Date().toISOString() };
+    notes.unshift(entry);
+    notes = notes.slice(0, 500);
+    localStorage.setItem('notes', JSON.stringify(notes));
   }
+  renderNotes();
+}
 
-  // Nächste 3 Aktivitäten
-  const nextStart=currentIdx+1;
-  const nextItems=tl.slice(nextStart,nextStart+3);
-  const nextEl=document.getElementById('nowNextList');
-  if(nextItems.length===0){
-    nextEl.innerHTML='<div style="font-size:11px;color:var(--muted);padding:6px 0;">✅ Alle Aktivitäten des Tages abgeschlossen — gute Nacht!</div>';
+async function deleteNote(id) {
+  if (IS_SERVER) {
+    await db.del('/api/notes/' + id);
+    notes = await db.get('/api/notes', notes);
   } else {
-    nextEl.innerHTML=nextItems.map(it=>`
-      <div class="now-next-item">
-        <span class="now-next-time">${it.time}</span>
-        <span class="now-next-txt">${it.tt}</span>
-      </div>`).join('');
+    notes = notes.filter(n => n.id !== id);
+    localStorage.setItem('notes', JSON.stringify(notes));
+  }
+  renderNotes();
+}
+
+// note input: Enter to save (shift+Enter = newline)
+document.getElementById('note-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); saveNote(); }
+});
+
+// ─── WEIGHT ──────────────────────────────────────────────────────────────────
+async function loadWeights() {
+  if (IS_SERVER) {
+    weights = await db.get('/api/weights', []);
+  } else {
+    try { weights = JSON.parse(localStorage.getItem('weights') || '[]'); } catch {}
+  }
+  renderGoalBar();
+  renderWeightHistory();
+  renderWeightStats();
+}
+
+function renderGoalBar() {
+  const latest = weights[weights.length - 1];
+  if (!latest) return;
+  const kg = latest.kg;
+  const pct = Math.min(100, Math.max(0, ((GOAL_START - kg) / (GOAL_START - GOAL_END)) * 100));
+  document.getElementById('goal-fill').style.width = pct + '%';
+  document.getElementById('goal-kg').textContent = kg.toFixed(1) + ' kg';
+}
+
+function renderWeightChart() {
+  const canvas = document.getElementById('weight-canvas');
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.offsetWidth || 300;
+  const H = 200;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  ctx.scale(dpr, dpr);
+
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = '#111113';
+  ctx.fillRect(0, 0, W, H);
+
+  if (weights.length < 1) {
+    ctx.fillStyle = '#71717a';
+    ctx.font = '500 13px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Noch keine Daten', W/2, H/2);
+    return;
   }
 
-  // Highlight heute im Wochenplan-Grid
-  document.querySelectorAll('.dc').forEach((el,i)=>{
-    el.style.boxShadow=i===dayIdx?'0 0 0 2px var(--accent)':'';
+  const pts = weights.map((w,i) => [i, w.kg]);
+  const allKg = pts.map(p=>p[1]);
+  const minKg = Math.min(...allKg) - 2;
+  const maxKg = Math.max(...allKg) + 2;
+  const pad = { t:20, b:30, l:44, r:16 };
+  const gW = W - pad.l - pad.r;
+  const gH = H - pad.t - pad.b;
+
+  const xOf = i => pad.l + (pts.length < 2 ? gW/2 : (i / (pts.length-1)) * gW);
+  const yOf = kg => pad.t + ((maxKg - kg) / (maxKg - minKg)) * gH;
+
+  // Grid lines
+  for (let kg = Math.ceil(minKg); kg <= Math.floor(maxKg); kg += 2) {
+    const y = yOf(kg);
+    ctx.strokeStyle = '#2a2a2f'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(W-pad.r, y); ctx.stroke();
+    ctx.fillStyle = '#71717a'; ctx.font = '400 10px Inter,sans-serif'; ctx.textAlign = 'right';
+    ctx.fillText(kg+'kg', pad.l-6, y+3);
+  }
+
+  // Trend line
+  const reg = linReg(pts);
+  if (reg && pts.length >= 2) {
+    ctx.strokeStyle = 'rgba(212,255,71,0.35)'; ctx.lineWidth = 1.5; ctx.setLineDash([4,4]);
+    ctx.beginPath();
+    ctx.moveTo(xOf(0), yOf(reg.at(0)));
+    ctx.lineTo(xOf(pts.length-1), yOf(reg.at(pts.length-1)));
+    ctx.stroke(); ctx.setLineDash([]);
+  }
+
+  // Area fill
+  if (pts.length > 1) {
+    ctx.beginPath(); ctx.moveTo(xOf(0), yOf(pts[0][1]));
+    pts.forEach(([i,kg]) => ctx.lineTo(xOf(i), yOf(kg)));
+    ctx.lineTo(xOf(pts.length-1), H-pad.b); ctx.lineTo(xOf(0), H-pad.b); ctx.closePath();
+    const grad = ctx.createLinearGradient(0,pad.t,0,H-pad.b);
+    grad.addColorStop(0,'rgba(212,255,71,0.15)'); grad.addColorStop(1,'rgba(212,255,71,0)');
+    ctx.fillStyle = grad; ctx.fill();
+  }
+
+  // Line
+  ctx.beginPath(); ctx.strokeStyle = '#d4ff47'; ctx.lineWidth = 2;
+  pts.forEach(([i,kg], idx) => idx===0 ? ctx.moveTo(xOf(i),yOf(kg)) : ctx.lineTo(xOf(i),yOf(kg)));
+  ctx.stroke();
+
+  // Dots + dates
+  pts.forEach(([i,kg], idx) => {
+    ctx.beginPath(); ctx.arc(xOf(i), yOf(kg), 4, 0, Math.PI*2);
+    ctx.fillStyle = '#d4ff47'; ctx.fill();
+    if (idx === pts.length-1 || idx === 0) {
+      ctx.fillStyle = '#f4f4f5'; ctx.font = '600 10px Inter,sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText(weights[i].date.slice(5), xOf(i), H-pad.b+14);
+    }
   });
 }
 
-// Init Echtzeit-Karte
-updateNowCard();
-setInterval(updateNowCard, 30000); // alle 30 Sek aktualisieren
+function renderWeightStats() {
+  const el = document.getElementById('weight-stats');
+  if (weights.length < 1) { el.innerHTML=''; return; }
+  const latest = weights[weights.length-1].kg;
+  const first = weights[0].kg;
+  const diff = latest - first;
+  const toGoal = latest - GOAL_END;
+  const pts = weights.map((w,i)=>[i,w.kg]);
+  const reg = linReg(pts);
+  let etaText = '—';
+  if (reg && reg.m < 0) {
+    const weeksLeft = (latest - GOAL_END) / (-reg.m * 7 / weights.length);
+    const d = new Date(); d.setDate(d.getDate() + Math.round(weeksLeft * 7));
+    etaText = d.toLocaleDateString('de-DE',{month:'short',year:'numeric'});
+  }
+  el.innerHTML = `
+    <div class="stat-box"><div class="stat-label">Aktuell</div><div class="stat-value accent">${latest.toFixed(1)} kg</div></div>
+    <div class="stat-box"><div class="stat-label">Veränderung</div><div class="stat-value ${diff<0?'green':'red'}">${diff>0?'+':''}${diff.toFixed(1)} kg</div></div>
+    <div class="stat-box"><div class="stat-label">Noch bis Ziel</div><div class="stat-value">${toGoal.toFixed(1)} kg</div></div>
+    <div class="stat-box"><div class="stat-label">ETA Ziel</div><div class="stat-value" style="font-size:15px">${etaText}</div></div>`;
+}
 
-// Init
-loadWeights();
-renderDetail();
-initWater();
-updateDashboard();
-window.addEventListener('resize',()=>{const t=document.getElementById('tab-gewicht');if(t.classList.contains('active'))drawChart();});
+function renderWeightHistory() {
+  const el = document.getElementById('weight-history');
+  if (!weights.length) { el.innerHTML='<div class="empty">Noch keine Einträge</div>'; return; }
+  el.innerHTML = [...weights].reverse().slice(0,20).map(w => `
+    <div class="weight-row">
+      <span class="weight-row-date">${fmt(w.date)}</span>
+      <span class="weight-row-kg">${w.kg.toFixed(1)} kg</span>
+      <button class="weight-row-del" onclick="deleteWeight('${w.date}')">×</button>
+    </div>`).join('');
+}
+
+async function addWeight() {
+  const kgEl = document.getElementById('w-kg');
+  const dateEl = document.getElementById('w-date');
+  const kg = parseFloat(kgEl.value);
+  if (isNaN(kg) || kg < 50 || kg > 250) { kgEl.style.borderColor='var(--red)'; return; }
+  kgEl.style.borderColor=''; dateEl.style.borderColor='';
+  let dateStr = todayKey;
+  if (dateEl.value) {
+    // parse TT.MM or TT.MM.YYYY
+    const parts = dateEl.value.split('.');
+    if (parts.length >= 2) {
+      const y = parts[2] ? parts[2] : todayKey.slice(0,4);
+      dateStr = `${y}-${pad2(parseInt(parts[1]))}-${pad2(parseInt(parts[0]))}`;
+    }
+  }
+  if (IS_SERVER) {
+    await db.post('/api/weights', { date: dateStr, kg });
+    weights = await db.get('/api/weights', weights);
+  } else {
+    weights = weights.filter(w => w.date !== dateStr);
+    weights.push({ date: dateStr, kg, savedAt: new Date().toISOString() });
+    weights.sort((a,b) => a.date.localeCompare(b.date));
+    localStorage.setItem('weights', JSON.stringify(weights));
+  }
+  kgEl.value = ''; dateEl.value = '';
+  renderGoalBar(); renderWeightHistory(); renderWeightStats(); renderWeightChart();
+}
+
+async function deleteWeight(date) {
+  if (IS_SERVER) {
+    await db.del('/api/weights/' + date);
+    weights = await db.get('/api/weights', weights);
+  } else {
+    weights = weights.filter(w => w.date !== date);
+    localStorage.setItem('weights', JSON.stringify(weights));
+  }
+  renderGoalBar(); renderWeightHistory(); renderWeightStats(); renderWeightChart();
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+async function init() {
+  todayKey = todayISO();
+  updateClock();
+  updateNowCard();
+  renderTodayTimeline();
+  renderWeek();
+  renderErnaehrung();
+  renderSport();
+  renderRules();
+  await Promise.all([loadWeights(), loadWater(), loadNotes()]);
+  checkServer();
+  setInterval(checkServer, 30000);
+  clockTimer = setInterval(() => { updateClock(); }, 1000);
+  nowTimer   = setInterval(() => { updateNowCard(); renderTodayTimeline(); }, 60000);
+}
+
+window.addEventListener('load', init);
 </script>
-
 </body>
 </html>
