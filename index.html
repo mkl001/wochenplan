@@ -16,21 +16,21 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse at 15% 10%,rgba(232,255,71,0.07) 0%,transparent 50%),radial-gradient(ellipse at 85% 90%,rgba(71,200,255,0.05) 0%,transparent 50%);}
-.wrap{max-width:1100px;margin:0 auto;padding:32px 20px;position:relative;z-index:1;}
-.hdr{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:32px;flex-wrap:wrap;gap:16px;}
-.hdr h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(38px,6vw,66px);line-height:.9;letter-spacing:2px;}
-.hdr h1 span{color:var(--accent);display:block;}
-.hdr p{color:var(--muted);font-size:12px;font-weight:300;margin-top:8px;}
-.badge{background:var(--accent);color:#000;font-weight:700;font-size:10px;padding:7px 14px;letter-spacing:1.5px;text-transform:uppercase;border-radius:2px;}
-.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:28px;}
-.sc{background:var(--surface);border:1px solid var(--border);padding:14px;border-radius:4px;}
-.sc .lbl{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:4px;}
-.sc .val{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--accent);line-height:1;}
-.sc .sub{font-size:10px;color:var(--muted);margin-top:3px;}
-.tabs{display:flex;gap:3px;margin-bottom:24px;background:var(--surface);padding:4px;border-radius:6px;flex-wrap:wrap;}
-.tab{padding:8px 12px;font-size:11px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--muted);border-radius:4px;transition:all .2s;font-family:'DM Sans',sans-serif;}
-.tab:hover{color:var(--text);}
-.tab.active{background:var(--accent);color:#000;font-weight:700;}
+/* TOP NAV */
+.top-nav{position:sticky;top:0;z-index:50;background:var(--surface);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-top:env(safe-area-inset-top,0);}
+.top-nav-links{display:flex;gap:2px;padding:6px 0;}
+.tnav-btn{padding:8px 14px;font-size:12px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--muted);border-radius:4px;transition:all .2s;font-family:'DM Sans',sans-serif;white-space:nowrap;}
+.tnav-btn:hover{color:var(--text);background:rgba(255,255,255,0.05);}
+.tnav-btn.active{background:var(--accent);color:#000;font-weight:700;}
+.top-nav-goal{display:flex;align-items:center;gap:8px;padding:6px 0;flex-shrink:0;}
+.tng-start,.tng-goal{font-size:10px;font-weight:600;color:var(--muted);white-space:nowrap;}
+.tng-goal{color:var(--green);}
+.tng-bar-wrap{display:flex;align-items:center;gap:5px;}
+.tng-bar{width:80px;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;}
+.tng-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));border-radius:3px;transition:width .5s ease;}
+.tng-pct{font-size:10px;font-weight:700;color:var(--accent);min-width:28px;}
+
+.wrap{max-width:1100px;margin:0 auto;padding:24px 20px;position:relative;z-index:1;}
 .tc{display:none;}.tc.active{display:block;}
 .dgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;margin-bottom:20px;}
 .dc{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:11px 9px;cursor:pointer;transition:all .2s;min-height:145px;}
@@ -247,9 +247,13 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
   .sc .lbl{font-size:8px;}
   .sc .sub{font-size:9px;}
 
-  /* Tabs: auf mobile verstecken, Bottom Nav nutzen */
-  .tabs{display:none;}
+  /* Top Nav: Links verstecken, Bottom Nav nutzen */
+  .top-nav-links{display:none;}
+  .top-nav{justify-content:center;}
+  .top-nav-goal{width:100%;justify-content:center;padding:8px 0;}
+  .tng-bar{width:120px;}
   .bottom-nav{display:flex;}
+  .wrap{padding:16px 14px 90px 14px;}
 
   /* Wochenplan-Grid: 2 Spalten auf mobile */
   .dgrid{grid-template-columns:repeat(2,1fr);gap:6px;}
@@ -330,31 +334,26 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 </style>
 </head>
 <body>
-<div class="wrap">
-
-<div class="hdr">
-  <div>
-    <h1>MARTIN'S<span>WOCHENPLAN</span></h1>
-    <p>49 J · 186 cm · 140 kg → 95 kg Ziel · More Nutrition · Büro täglich · Rudergerät Zuhause</p>
+<!-- TOP NAVIGATION -->
+<nav class="top-nav">
+  <div class="top-nav-links">
+    <button class="tnav-btn active" onclick="switchTab('woche',event)" data-tab="woche">📅 Woche</button>
+    <button class="tnav-btn" onclick="switchTab('gewicht',event)" data-tab="gewicht">⚖️ Gewichtstracker</button>
+    <button class="tnav-btn" onclick="switchTab('ernaehrung',event)" data-tab="ernaehrung">🥗 Ernährung</button>
+    <button class="tnav-btn" onclick="switchTab('sport',event)" data-tab="sport">💪 Sport</button>
+    <button class="tnav-btn" onclick="switchTab('prinzipien',event)" data-tab="prinzipien">🧠 Regeln</button>
   </div>
-  <div class="badge">⚡ 140 → 95 kg</div>
-</div>
+  <div class="top-nav-goal">
+    <span class="tng-start">140 kg</span>
+    <div class="tng-bar-wrap">
+      <div class="tng-bar"><div class="tng-fill" id="tngFill"></div></div>
+      <span class="tng-pct" id="tngPct">0%</span>
+    </div>
+    <span class="tng-goal">Ziel 95 kg</span>
+  </div>
+</nav>
 
-<div class="stats">
-  <div class="sc"><div class="lbl">Startgewicht</div><div class="val">140 kg</div><div class="sub">BMI 40.6 → Ziel 27.5</div></div>
-  <div class="sc"><div class="lbl">Zielgewicht</div><div class="val">95 kg</div><div class="sub">~45 kg abzunehmen</div></div>
-  <div class="sc"><div class="lbl">Pro Woche</div><div class="val">~1 kg</div><div class="sub">800 kcal Defizit/Tag</div></div>
-  <div class="sc"><div class="lbl">Zeitraum</div><div class="val">~11 Mo</div><div class="sub">Realistisch & gesund</div></div>
-  <div class="sc"><div class="lbl">Wiegetag</div><div class="val">SA</div><div class="sub">Morgens nüchtern</div></div>
-</div>
-
-<div class="tabs">
-  <button class="tab active" onclick="switchTab('woche',event)">📅 Wochenplan</button>
-  <button class="tab" onclick="switchTab('gewicht',event)">⚖️ Gewichtstracker</button>
-  <button class="tab" onclick="switchTab('ernaehrung',event)">🥗 Ernährung</button>
-  <button class="tab" onclick="switchTab('sport',event)">💪 Sport</button>
-  <button class="tab" onclick="switchTab('prinzipien',event)">🧠 Regeln</button>
-</div>
+<div class="wrap">
 
 <!-- Mobile Bottom Navigation -->
 <nav class="bottom-nav" id="bottomNav">
@@ -989,6 +988,7 @@ function updateDashboard(){
   renderMilestones(cur);
   renderTimeline();
   drawChart();
+  updateGoalBar();
 }
 
 function renderTimeline(){
@@ -1158,16 +1158,26 @@ function drawChart(){
 // Tabs
 function switchTab(n,e){
   document.querySelectorAll('.tc').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tnav-btn').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.bn-item').forEach(t=>t.classList.remove('active'));
   document.getElementById('tab-'+n).classList.add('active');
-  // Desktop tab
-  const clickedTab=e.target.closest('.tab');
-  if(clickedTab) clickedTab.classList.add('active');
+  // Top nav
+  const tnav=document.querySelector(`.tnav-btn[data-tab="${n}"]`);
+  if(tnav) tnav.classList.add('active');
   // Mobile bottom nav
   const bnItem=document.querySelector(`.bn-item[data-tab="${n}"]`);
   if(bnItem) bnItem.classList.add('active');
   if(n==='gewicht'){setTimeout(drawChart,100);}
+}
+
+function updateGoalBar(){
+  const start=140,goal=95;
+  const cur=weights.length>0?weights[weights.length-1].kg:start;
+  const pct=Math.max(0,Math.min(100,Math.round((start-cur)/(start-goal)*100)));
+  const fill=document.getElementById('tngFill');
+  const pctEl=document.getElementById('tngPct');
+  if(fill) fill.style.width=pct+'%';
+  if(pctEl) pctEl.textContent=pct+'%';
 }
 
 // Days
