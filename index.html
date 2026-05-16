@@ -1,0 +1,966 @@
+
+
+<!DOCTYPE html>
+
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Martins Wochenplan</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0e0e10;--surface:#18181c;--surface2:#222228;--accent:#e8ff47;--accent2:#47c8ff;--accent3:#ff6b47;--green:#5fff9a;--text:#f0f0f0;--muted:#888;--border:rgba(255,255,255,0.07);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse at 15% 10%,rgba(232,255,71,0.07) 0%,transparent 50%),radial-gradient(ellipse at 85% 90%,rgba(71,200,255,0.05) 0%,transparent 50%);}
+.wrap{max-width:1100px;margin:0 auto;padding:32px 20px;position:relative;z-index:1;}
+.hdr{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:32px;flex-wrap:wrap;gap:16px;}
+.hdr h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(38px,6vw,66px);line-height:.9;letter-spacing:2px;}
+.hdr h1 span{color:var(--accent);display:block;}
+.hdr p{color:var(--muted);font-size:12px;font-weight:300;margin-top:8px;}
+.badge{background:var(--accent);color:#000;font-weight:700;font-size:10px;padding:7px 14px;letter-spacing:1.5px;text-transform:uppercase;border-radius:2px;}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:28px;}
+.sc{background:var(--surface);border:1px solid var(--border);padding:14px;border-radius:4px;}
+.sc .lbl{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:4px;}
+.sc .val{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--accent);line-height:1;}
+.sc .sub{font-size:10px;color:var(--muted);margin-top:3px;}
+.tabs{display:flex;gap:3px;margin-bottom:24px;background:var(--surface);padding:4px;border-radius:6px;flex-wrap:wrap;}
+.tab{padding:8px 12px;font-size:11px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--muted);border-radius:4px;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.tab:hover{color:var(--text);}
+.tab.active{background:var(--accent);color:#000;font-weight:700;}
+.tc{display:none;}.tc.active{display:block;}
+.dgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;margin-bottom:20px;}
+.dc{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:11px 9px;cursor:pointer;transition:all .2s;min-height:145px;}
+.dc:hover{border-color:rgba(232,255,71,.3);transform:translateY(-2px);}
+.dc.sel{border-color:var(--accent);background:rgba(232,255,71,.05);}
+.dc .dn{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:5px;}
+.dc .dt{font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--text);line-height:1.2;margin-bottom:6px;}
+.pills{display:flex;flex-direction:column;gap:3px;}
+.p{font-size:8px;padding:2px 5px;border-radius:2px;font-weight:500;line-height:1.4;}
+.p.s{background:rgba(232,255,71,.12);color:var(--accent);}
+.p.f{background:rgba(71,200,255,.12);color:var(--accent2);}
+.p.r{background:rgba(255,107,71,.12);color:var(--accent3);}
+.p.m{background:rgba(255,0,80,.12);color:#ff4d7a;}
+.p.w{background:rgba(95,255,154,.15);color:var(--green);}
+.dpanel{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:24px;}
+.dpanel h2{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;margin-bottom:3px;}
+.dsub{color:var(--muted);font-size:12px;margin-bottom:20px;font-weight:300;}
+.dgrd{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+.ds h3{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:11px;padding-bottom:7px;border-bottom:1px solid var(--border);}
+.tl{display:flex;flex-direction:column;}
+.ti{display:flex;align-items:stretch;}
+.ti-l{display:flex;flex-direction:column;align-items:center;min-width:58px;padding-right:9px;}
+.ti-t{font-family:'Bebas Neue',sans-serif;font-size:15px;color:var(--accent);line-height:1;white-space:nowrap;}
+.ti.blue .ti-t{color:var(--accent2);}
+.ti.orange .ti-t{color:var(--accent3);}
+.ti.more .ti-t{color:#ff4d7a;}
+.ti.drive .ti-t{color:#555;}
+.ti.green .ti-t{color:var(--green);}
+.ti-line{width:1px;background:var(--border);flex:1;margin-top:4px;min-height:8px;}
+.ti-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:5px;}
+.ti.blue .ti-dot{background:var(--accent2);}
+.ti.orange .ti-dot{background:var(--accent3);}
+.ti.more .ti-dot{background:#ff4d7a;}
+.ti.drive .ti-dot{background:#333;}
+.ti.green .ti-dot{background:var(--green);}
+.ti-r{flex:1;padding-bottom:12px;padding-top:1px;}
+.ti-tag{display:inline-block;font-size:8px;padding:1px 6px;border-radius:2px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:3px;}
+.tg-drive{background:rgba(255,255,255,.07);color:#666;}
+.tg-more{background:rgba(255,77,122,.2);color:#ff4d7a;}
+.tg-training{background:rgba(255,107,71,.2);color:var(--accent3);}
+.tg-rudern{background:rgba(71,200,255,.2);color:var(--accent2);}
+.tg-wiegen{background:rgba(95,255,154,.2);color:var(--green);}
+.ti-title{font-size:12px;font-weight:500;margin-bottom:2px;}
+.ti-desc{font-size:10px;color:var(--muted);font-weight:300;line-height:1.5;}
+.fl{display:flex;flex-direction:column;gap:6px;}
+.fi{background:var(--surface2);padding:8px 12px;border-radius:4px;}
+.fi .fn{font-size:12px;font-weight:500;margin-bottom:2px;}
+.fi .fd{font-size:10px;color:var(--muted);font-weight:300;}
+.fi .fkal{font-size:10px;color:var(--accent);font-weight:600;margin-top:2px;}
+.fi.shake{border-left:3px solid #ff4d7a;}
+.fi.main{border-left:3px solid var(--accent2);}
+.fi.snack{border-left:3px solid var(--accent);}
+.walert{background:rgba(255,107,71,.07);border:1px solid rgba(255,107,71,.2);border-radius:4px;padding:11px 15px;font-size:11px;color:rgba(255,255,255,.7);line-height:1.6;margin-bottom:18px;}
+.walert strong{color:var(--accent3);}
+.notice{background:rgba(232,255,71,.05);border:1px solid rgba(232,255,71,.15);border-radius:4px;padding:12px 15px;font-size:11px;color:rgba(255,255,255,.65);line-height:1.6;margin-top:12px;}
+.notice strong{color:var(--accent);}
+.stitle{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1px;margin-bottom:3px;}
+.ssub{color:var(--muted);font-size:12px;font-weight:300;margin-bottom:20px;}
+/* GEWICHTSTRACKER */
+.wt-hero{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
+.wt-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:18px;text-align:center;}
+.wt-card.hl{border-color:rgba(232,255,71,.3);background:rgba(232,255,71,.04);}
+.wt-card.hl2{border-color:rgba(95,255,154,.3);background:rgba(95,255,154,.04);}
+.wlbl{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:7px;}
+.wval{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1;}
+.wsub{font-size:10px;color:var(--muted);margin-top:3px;}
+.wt-input-row{display:flex;gap:10px;margin-bottom:20px;align-items:flex-end;flex-wrap:wrap;}
+.wt-input-group{display:flex;flex-direction:column;gap:5px;}
+.wt-input-group label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);}
+.wt-input{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:4px;font-size:16px;font-family:'Bebas Neue',sans-serif;width:110px;outline:none;}
+.wt-input:focus{border-color:var(--accent);}
+.wt-btn{background:var(--accent);color:#000;border:none;padding:10px 20px;border-radius:4px;font-weight:700;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;letter-spacing:.5px;text-transform:uppercase;}
+.wt-btn:hover{opacity:.9;}
+.chart-wrap{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:20px;margin-bottom:16px;}
+.chart-wrap h4{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:16px;}
+.milestones{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:16px;}
+.ms{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:12px;text-align:center;transition:all .3s;}
+.ms.reached{border-color:var(--green);background:rgba(95,255,154,.06);}
+.ms-icon{font-size:16px;margin-bottom:3px;}
+.ms-kg{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--muted);}
+.ms.reached .ms-kg{color:var(--green);}
+.ms-lbl{font-size:9px;color:var(--muted);margin-top:2px;}
+.ms.reached .ms-lbl{color:var(--green);}
+.wt-timeline{display:flex;flex-direction:column;gap:6px;max-height:260px;overflow-y:auto;}
+.wt-entry{display:flex;align-items:center;gap:12px;background:var(--surface2);padding:10px 14px;border-radius:4px;}
+.we-date{font-size:11px;color:var(--muted);min-width:90px;font-weight:300;}
+.we-kg{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--text);}
+.we-bmi{font-size:10px;color:var(--muted);flex:1;}
+.we-diff{font-size:11px;font-weight:600;}
+.we-diff.neg{color:var(--green);}
+.we-diff.pos{color:var(--accent3);}
+.we-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:4px;opacity:.5;}
+.we-del:hover{opacity:1;color:var(--accent3);}
+/* ERNÄHRUNG */
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-bottom:12px;}
+.mc{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:15px;}
+.mc.shk{border-color:rgba(255,77,122,.3);background:rgba(255,77,122,.04);}
+.mt{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--accent2);margin-bottom:2px;}
+.mc.shk .mt{color:#ff4d7a;}
+.mn{font-size:12px;font-weight:600;margin-bottom:7px;}
+.mbdg{display:inline-block;font-size:8px;padding:2px 7px;border-radius:2px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
+.bdg-more{background:rgba(255,77,122,.2);color:#ff4d7a;}
+.bdg-meal{background:rgba(71,200,255,.15);color:var(--accent2);}
+.mi-list{list-style:none;display:flex;flex-direction:column;gap:3px;}
+.mi-list li{font-size:10px;color:var(--muted);font-weight:300;padding-left:11px;position:relative;line-height:1.5;}
+.mi-list li::before{content:'—';position:absolute;left:0;color:var(--accent);}
+.mi-list li.kal{color:var(--accent);font-weight:600;padding-left:0;}
+.mi-list li.kal::before{display:none;}
+.stress-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px;}
+.stress-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px;display:flex;gap:12px;}
+.stress-card.trigger{border-left:3px solid var(--accent3);}
+.stress-card.solution{border-left:3px solid var(--green);}
+.sico{font-size:22px;flex-shrink:0;}
+.stress-card h4{font-size:12px;font-weight:600;margin-bottom:5px;}
+.stress-card.trigger h4{color:var(--accent3);}
+.stress-card.solution h4{color:var(--green);}
+.stress-card p{font-size:11px;color:var(--muted);font-weight:300;line-height:1.6;}
+/* SPORT */
+.swk{display:flex;flex-direction:column;gap:10px;}
+.sd{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+.sdh{display:flex;align-items:center;gap:12px;padding:12px 15px;}
+.sdn{font-family:'Bebas Neue',sans-serif;font-size:20px;min-width:38px;}
+.sdt{font-size:12px;font-weight:500;flex:1;}
+.stbdg{font-size:9px;padding:3px 9px;border-radius:2px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;}
+.bdg-tr{background:rgba(255,107,71,.2);color:var(--accent3);}
+.bdg-mg{background:rgba(232,255,71,.15);color:var(--accent);}
+.bdg-rs{background:rgba(71,200,255,.15);color:var(--accent2);}
+.bdg-rd{background:rgba(71,200,255,.2);color:var(--accent2);}
+.sex{padding:0 15px 12px;display:flex;flex-direction:column;gap:7px;}
+.ei{display:flex;align-items:flex-start;gap:10px;background:var(--surface2);padding:9px 12px;border-radius:4px;}
+.eico{font-size:16px;flex-shrink:0;margin-top:1px;}
+.en{font-size:12px;font-weight:500;margin-bottom:2px;}
+.ed{font-size:10px;color:var(--muted);font-weight:300;line-height:1.5;}
+.etag{margin-left:auto;font-size:8px;padding:2px 7px;border-radius:2px;font-weight:600;text-transform:uppercase;white-space:nowrap;flex-shrink:0;}
+.et-k{background:rgba(232,255,71,.15);color:var(--accent);}
+.et-ka{background:rgba(255,107,71,.15);color:var(--accent3);}
+.et-r{background:rgba(71,200,255,.15);color:var(--accent2);}
+.et-rd{background:rgba(71,200,255,.25);color:var(--accent2);}
+/* PRINZIPIEN */
+.pgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.pcard{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px;display:flex;gap:12px;}
+.pico{font-size:24px;flex-shrink:0;}
+.pcard h4{font-size:12px;font-weight:600;margin-bottom:4px;color:var(--accent);}
+.pcard p{font-size:11px;color:var(--muted);font-weight:300;line-height:1.6;}
+.wtr{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px;margin-bottom:12px;}
+.wtr-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;}
+.wtr-ttl{font-size:12px;font-weight:600;}
+.glasses{display:flex;gap:5px;margin-bottom:9px;flex-wrap:wrap;}
+.gl{font-size:20px;cursor:pointer;transition:transform .15s;opacity:.2;user-select:none;}
+.gl.on{opacity:1;}
+.gl:hover{transform:scale(1.2);}
+.wbar{background:var(--surface2);border-radius:4px;height:7px;overflow:hidden;}
+.wfill{height:100%;background:linear-gradient(90deg,var(--accent2),#a0e8ff);border-radius:4px;transition:width .4s ease;}
+.wtxt{font-size:10px;color:var(--muted);margin-top:5px;}
+@media(max-width:768px){.dgrid{grid-template-columns:repeat(4,1fr);}.dgrd{grid-template-columns:1fr;}.mgrid{grid-template-columns:1fr;}.pgrid{grid-template-columns:1fr;}.stats{grid-template-columns:repeat(2,1fr);}.wt-hero{grid-template-columns:repeat(2,1fr);}.milestones{grid-template-columns:repeat(3,1fr);}.stress-grid{grid-template-columns:1fr;}}
+@media(max-width:480px){.dgrid{grid-template-columns:repeat(2,1fr);}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hdr">
+  <div>
+    <h1>MARTIN'S<span>WOCHENPLAN</span></h1>
+    <p>49 J · 186 cm · 140 kg → 95 kg Ziel · More Nutrition · Büro täglich · Rudergerät Zuhause</p>
+  </div>
+  <div class="badge">⚡ 140 → 95 kg</div>
+</div>
+
+<div class="stats">
+  <div class="sc"><div class="lbl">Startgewicht</div><div class="val">140 kg</div><div class="sub">BMI 40.6 → Ziel 27.5</div></div>
+  <div class="sc"><div class="lbl">Zielgewicht</div><div class="val">95 kg</div><div class="sub">~45 kg abzunehmen</div></div>
+  <div class="sc"><div class="lbl">Pro Woche</div><div class="val">~1 kg</div><div class="sub">800 kcal Defizit/Tag</div></div>
+  <div class="sc"><div class="lbl">Zeitraum</div><div class="val">~11 Mo</div><div class="sub">Realistisch & gesund</div></div>
+  <div class="sc"><div class="lbl">Wiegetag</div><div class="val">SA</div><div class="sub">Morgens nüchtern</div></div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('woche',event)">📅 Wochenplan</button>
+  <button class="tab" onclick="switchTab('gewicht',event)">⚖️ Gewichtstracker</button>
+  <button class="tab" onclick="switchTab('ernaehrung',event)">🥗 Ernährung</button>
+  <button class="tab" onclick="switchTab('sport',event)">💪 Sport</button>
+  <button class="tab" onclick="switchTab('prinzipien',event)">🧠 Regeln</button>
+</div>
+
+<!-- WOCHENPLAN -->
+
+<div id="tab-woche" class="tc active">
+  <div class="walert"><strong>Trainingstage Mi & Fr:</strong> Abfahrt 17:45 → Ankunft + Umziehen → Training 18:30–20:00 → Heimfahrt → Zuhause ~20:50. Shake sofort, leichtes Abendbrot, 22:30 schlafen.</div>
+  <div class="dgrid">
+    <div class="dc sel" onclick="showDay(0,this)"><div class="dn">Mo</div><div class="dt">Fokustag</div><div class="pills"><span class="p s">06:00 Aufstehen</span><span class="p m">🥤 Shake Frühstück</span><span class="p s">🐕 Walk + Übungen</span><span class="p r">07:30 🚗 Büro</span><span class="p f">~1800 kcal</span></div></div>
+    <div class="dc" onclick="showDay(1,this)"><div class="dn">Di</div><div class="dt">Deep Work</div><div class="pills"><span class="p s">06:00 Aufstehen</span><span class="p s">🐕 + Rücken</span><span class="p r">07:30 🚗 Büro</span><span class="p f">~1800 kcal</span></div></div>
+    <div class="dc" onclick="showDay(2,this)"><div class="dn">Mi</div><div class="dt">🥋 Training</div><div class="pills"><span class="p r">07:30 🚗 Büro</span><span class="p r">17:45 🚗 Training</span><span class="p f">18:30–20:00 🥋</span><span class="p m">~21:00 Shake!</span><span class="p f">~2000 kcal</span></div></div>
+    <div class="dc" onclick="showDay(3,this)"><div class="dn">Do</div><div class="dt">Erholung</div><div class="pills"><span class="p s">🐕 Langer Walk</span><span class="p r">07:30 🚗 Büro</span><span class="p f">Stretching Abend</span><span class="p f">~1800 kcal</span></div></div>
+    <div class="dc" onclick="showDay(4,this)"><div class="dn">Fr</div><div class="dt">🥋 Training</div><div class="pills"><span class="p r">07:30 🚗 Büro</span><span class="p r">17:45 🚗 Training</span><span class="p f">18:30–20:00 🥋</span><span class="p m">~21:00 Shake!</span><span class="p f">~2000 kcal</span></div></div>
+    <div class="dc" onclick="showDay(5,this)"><div class="dn">Sa</div><div class="dt">🌳 Erholung</div><div class="pills"><span class="p w">⚖️ WIEGEN nüchtern</span><span class="p s">🚶 Natur-Spaziergang</span><span class="p f">Meal Prep</span><span class="p f">~1900 kcal</span></div></div>
+    <div class="dc" onclick="showDay(6,this)"><div class="dn">So</div><div class="dt">🚣 Intensiv</div><div class="pills"><span class="p s">45 Min Rudergerät</span><span class="p s">Körpergew.-Zirkel</span><span class="p m">More Shake danach</span><span class="p f">~2000 kcal</span></div></div>
+  </div>
+  <div class="dpanel">
+    <h2 id="d-title">MONTAG — FOKUSTAG</h2>
+    <p class="dsub" id="d-sub">Morgenroutine schützen · Kaloriendefizit halten · Stress-Hunger mit Shake abfangen</p>
+    <div class="dgrd">
+      <div class="ds"><h3>Tagesablauf</h3><div class="tl" id="d-tl"></div></div>
+      <div class="ds"><h3>Ernährung & Kalorien</h3><div class="fl" id="d-fl"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- GEWICHTSTRACKER -->
+
+<div id="tab-gewicht" class="tc">
+  <div class="stitle">GEWICHTSTRACKER</div>
+  <div class="ssub">Jeden Samstag morgens · nüchtern · nach dem ersten Wasserlassen</div>
+
+  <div class="wt-hero">
+    <div class="wt-card hl">
+      <div class="wlbl">Aktuell</div>
+      <div class="wval" id="wt-current" style="color:var(--accent)">140 kg</div>
+      <div class="wsub" id="wt-bmi-current">BMI: 40.6 · Adipositas III</div>
+    </div>
+    <div class="wt-card">
+      <div class="wlbl">Abgenommen</div>
+      <div class="wval" id="wt-lost" style="color:var(--green)">0 kg</div>
+      <div class="wsub" id="wt-lost-pct">0% des Ziels erreicht</div>
+    </div>
+    <div class="wt-card">
+      <div class="wlbl">Noch bis Ziel</div>
+      <div class="wval" id="wt-remaining" style="color:var(--accent3)">45 kg</div>
+      <div class="wsub" id="wt-eta">~45 Wochen bei 1kg/Wo</div>
+    </div>
+    <div class="wt-card hl2">
+      <div class="wlbl">Zielgewicht</div>
+      <div class="wval" style="color:var(--green)">95 kg</div>
+      <div class="wsub">BMI: 27.5 · Normalbereich</div>
+    </div>
+  </div>
+
+  <!-- Meilensteine -->
+
+  <div class="milestones" id="milestones"></div>
+
+  <!-- Eingabe -->
+
+  <div class="wt-input-row">
+    <div class="wt-input-group">
+      <label>Datum</label>
+      <input type="date" id="wt-date" class="wt-input" style="width:150px;font-family:'DM Sans',sans-serif;font-size:13px;">
+    </div>
+    <div class="wt-input-group">
+      <label>Gewicht (kg)</label>
+      <input type="number" id="wt-kg" class="wt-input" placeholder="z.B. 139" step="0.1" min="50" max="200">
+    </div>
+    <button class="wt-btn" onclick="addWeight()">+ Eintragen</button>
+  </div>
+
+  <!-- Chart -->
+
+  <div class="chart-wrap">
+    <h4>📈 Gewichtsverlauf — Kurve</h4>
+    <canvas id="weightChart" height="200"></canvas>
+  </div>
+
+  <!-- Einträge -->
+
+  <div class="stitle" style="font-size:18px;margin-bottom:12px;">Alle Einträge</div>
+  <div class="wt-timeline" id="wt-timeline">
+    <div style="padding:20px;text-align:center;color:var(--muted);font-size:12px;">Noch keine Einträge — trag jeden Samstag dein Gewicht ein!</div>
+  </div>
+
+  <div class="notice" style="margin-top:16px;">
+    <strong>Wiegeprotokoll:</strong> Immer Samstag morgens · nüchtern (vor Frühstück) · nach erstem Wasserlassen · gleiche Waage · kein Kleidung. Schwankungen von ±1kg sind normal — nur der Trend über 4 Wochen zählt!
+  </div>
+</div>
+
+<!-- ERNÄHRUNG -->
+
+<div id="tab-ernaehrung" class="tc">
+  <div class="stitle">ERNÄHRUNGSPLAN</div>
+  <div class="ssub">~1800 kcal/Tag · Kein Reis · More Nutrition Whey · Stress-Essen durch Shakes ersetzen</div>
+
+  <div class="notice" style="margin-bottom:20px;">
+    <strong>Dein Kalorienbudget:</strong> Grundumsatz ~2600 kcal + Aktivität ~400 kcal = ~3000 kcal Verbrauch. Ziel: 1800–2000 kcal essen = ~800–1000 kcal Defizit = ~1 kg/Woche. Kein Hunger — 5 Mahlzeiten täglich!
+  </div>
+
+  <div class="mgrid">
+    <div class="mc shk">
+      <div class="mt">06:30</div>
+      <span class="mbdg bdg-more">MORE NUTRITION</span>
+      <div class="mn">Frühstücks-Shake (Schnell-Option)</div>
+      <ul class="mi-list">
+        <li>More Whey 2 Löffel (~50g)</li>
+        <li>250ml Milch 1,5%</li>
+        <li>1 Banane + 1 TL Erdnussbutter</li>
+        <li>→ satt bis 10:00 Uhr</li>
+        <li class="kal">≈ 480 kcal · 48g Protein</li>
+      </ul>
+    </div>
+    <div class="mc">
+      <div class="mt">06:30</div>
+      <span class="mbdg bdg-meal">KLASSISCH</span>
+      <div class="mn">Frühstück (wenn Zeit da ist)</div>
+      <ul class="mi-list">
+        <li>3 Eier (Rührei / Spiegelei)</li>
+        <li>1 Scheibe Vollkornbrot</li>
+        <li>Quark oder Avocado</li>
+        <li>Gurke · Tomaten</li>
+        <li class="kal">≈ 450 kcal · 32g Protein</li>
+      </ul>
+    </div>
+    <div class="mc">
+      <div class="mt">10:00</div>
+      <span class="mbdg bdg-meal">BÜRO-SNACK</span>
+      <div class="mn">Vormittag — kein Süßes!</div>
+      <ul class="mi-list">
+        <li>20–30g Mandeln oder Walnüsse</li>
+        <li>1 Apfel oder Handvoll Beeren</li>
+        <li>Kaffee mit Milch 1,5% (max. 2/Tag)</li>
+        <li>500ml Wasser dazu!</li>
+        <li class="kal">≈ 220 kcal · 6g Protein</li>
+      </ul>
+    </div>
+    <div class="mc">
+      <div class="mt">13:00</div>
+      <span class="mbdg bdg-meal">HAUPTMAHLZEIT</span>
+      <div class="mn">Mittagessen (Meal Prep)</div>
+      <ul class="mi-list">
+        <li>Hähnchen / Lachs / Rind 180g</li>
+        <li>Süßkartoffel ODER Linsen (150g)</li>
+        <li>Viel Gemüse (unbegrenzt!)</li>
+        <li>Olivenöl 1 EL · Kräuter</li>
+        <li class="kal">≈ 550 kcal · 42g Protein</li>
+      </ul>
+    </div>
+    <div class="mc shk">
+      <div class="mt">16:00</div>
+      <span class="mbdg bdg-more">MORE NUTRITION</span>
+      <div class="mn">Anti-Stress-Shake (statt Süßem!)</div>
+      <ul class="mi-list">
+        <li>More Whey 1,5 Löffel (~37g)</li>
+        <li>250ml Wasser (kein Zucker!)</li>
+        <li>Optional: 1 Frucht dazu</li>
+        <li>→ Dopamin ohne Reue</li>
+        <li class="kal">≈ 200 kcal · 34g Protein</li>
+      </ul>
+    </div>
+    <div class="mc">
+      <div class="mt">19:00</div>
+      <span class="mbdg bdg-meal">ABENDESSEN</span>
+      <div class="mn">Leicht & früh</div>
+      <ul class="mi-list">
+        <li>Greek Yogurt 200g + Beeren</li>
+        <li>ODER Gemüsesuppe + 1 Ei</li>
+        <li>ODER Quark + Leinöl + Kräuter</li>
+        <li>Nichts nach 20:00 Uhr!</li>
+        <li class="kal">≈ 300 kcal · 22g Protein</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="mc shk" style="margin-bottom:12px;">
+    <div class="mt">~21:00 — NUR MI + FR + SO</div>
+    <span class="mbdg bdg-more">MORE NUTRITION · POST-TRAINING PFLICHT</span>
+    <div class="mn">Recovery-Shake nach Training / Rudern</div>
+    <ul class="mi-list" style="display:flex;flex-wrap:wrap;gap:0 24px;">
+      <li>More Whey 2 Löffel + 250ml Milch + Banane</li>
+      <li>Innerhalb 30 Min nach Sport</li>
+      <li class="kal">≈ 480 kcal · 50g Protein · Muskelaufbau & Regeneration</li>
+    </ul>
+  </div>
+
+  <div class="stitle" style="font-size:20px;margin-top:24px;margin-bottom:4px;">STRESS-ESSEN PROTOKOLL</div>
+  <div class="ssub">Dein größtes Hindernis — hier ist der konkrete Plan dagegen</div>
+
+  <div class="stress-grid">
+    <div class="stress-card trigger">
+      <div class="sico">😤</div>
+      <div>
+        <h4>Trigger: Stress im Büro / Gründer-Druck</h4>
+        <p>Meeting lief schlecht · Investor-Mail · To-Do explodiert · Mitarbeiter-Problem → Griff zu Süßem ist automatisch und unbewusst.</p>
+      </div>
+    </div>
+    <div class="stress-card solution">
+      <div class="sico">🥤</div>
+      <div>
+        <h4>Lösung: Shake als sofortiger Ersatz</h4>
+        <p>More Whey in Wasser ist süß, sättigend, hat Protein und gibt das gleiche Belohnungsgefühl — ohne Zucker-Crash danach. Immer Shaker im Büro haben!</p>
+      </div>
+    </div>
+    <div class="stress-card trigger">
+      <div class="sico">🍟</div>
+      <div>
+        <h4>Trigger: Fast Food "weil keine Zeit"</h4>
+        <p>Kein Mittag vorbereitet · zu busy zum Denken · Burger oder Pizza bestellen fühlt sich schneller an als kochen.</p>
+      </div>
+    </div>
+    <div class="stress-card solution">
+      <div class="sico">🍱</div>
+      <div>
+        <h4>Lösung: Meal Prep ist deine Versicherung</h4>
+        <p>Samstag 2h kochen = Mo–Mi kein Nachdenken. Portionen im Kühlschrank. Wenn wirklich gar nichts da: Shake + Nüsse ist besser als Fast Food.</p>
+      </div>
+    </div>
+    <div class="stress-card trigger">
+      <div class="sico">🍫</div>
+      <div>
+        <h4>Trigger: Nachmittags-Loch 15–17 Uhr</h4>
+        <p>Energie sinkt, Konzentration lässt nach → automatischer Griff zu Schokolade, Keksen, Süßkram aus der Schublade.</p>
+      </div>
+    </div>
+    <div class="stress-card solution">
+      <div class="sico">⏰</div>
+      <div>
+        <h4>Lösung: 16:00 Shake ist FEST eingeplant</h4>
+        <p>Wecker auf 16:00. More Shake vorbereiten. Das verhindert den Impuls zuverlässig — Körper bekommt was er will, ohne Schaden.</p>
+      </div>
+    </div>
+    <div class="stress-card trigger">
+      <div class="sico">🌙</div>
+      <div>
+        <h4>Trigger: Abends nach dem Büro / Training</h4>
+        <p>Erschöpft, verdient, "ich hab heute so viel geleistet" → Belohnungsessen · zu große Portionen · spät noch essen.</p>
+      </div>
+    </div>
+    <div class="stress-card solution">
+      <div class="sico">🥣</div>
+      <div>
+        <h4>Lösung: Abendessen ist vorbereitet & leicht</h4>
+        <p>Greek Yogurt oder Suppe steht bereit. Nach Trainingstagen: erst Shake (~21:00), dann kleines Abendbrot. Kein Essen nach 21:30.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="notice">
+    <strong>Wichtigste Regel:</strong> Du musst nicht perfekt sein — du musst nur besser sein als vorher. Ein Fast-Food-Tag ruiniert nichts. Zwei hintereinander sind ein Problem. Der More Shake ist dein Sicherheitsnetz.
+  </div>
+</div>
+
+<!-- SPORT -->
+
+<div id="tab-sport" class="tc">
+  <div class="stitle">SPORTPLAN</div>
+  <div class="ssub">Realistisch · Rücken schützen · Kalorienverbrennung maximieren</div>
+  <div class="swk">
+    <div class="sd"><div class="sdh"><div class="sdn" style="color:var(--accent)">MO</div><div class="sdt">Hundespaziergang + Morgen-Aktivierung</div><span class="stbdg bdg-mg">~45 Min · ~280 kcal</span></div><div class="sex">
+      <div class="ei"><div class="eico">🐕</div><div><div class="en">Spaziergang mit Hund (30–45 Min)</div><div class="ed">Zügiges Tempo, aufrecht. Schultern zurück. Kein Handy beim Gehen.</div></div><span class="etag et-k">Basis</span></div>
+      <div class="ei"><div class="eico">🧱</div><div><div class="en">3× Plank à 30 Sek</div><div class="ed">Rumpfstabilität = wichtigstes Mittel gegen Kreuzschmerzen. Täglich steigern.</div></div><span class="etag et-r">Rücken</span></div>
+      <div class="ei"><div class="eico">🦵</div><div><div class="en">2× 15 Kniebeugen (Bodyweight)</div><div class="ed">Langsam runter (3 Sek). Beine & Gesäß aktivieren. Großer Kalorienverbraucher!</div></div><span class="etag et-k">Kraft</span></div>
+    </div></div>
+
+```
+<div class="sd"><div class="sdh"><div class="sdn" style="color:var(--accent)">DI</div><div class="sdt">Rücken-Fokus + Spaziergang</div><span class="stbdg bdg-mg">~40 Min · ~250 kcal</span></div><div class="sex">
+  <div class="ei"><div class="eico">🐕</div><div><div class="en">Spaziergang (30 Min)</div><div class="ed">Ruhiges Tempo. Bewusstes Atmen: 4 Sek ein, 6 Sek aus.</div></div><span class="etag et-k">Basis</span></div>
+  <div class="ei"><div class="eico">🤸</div><div><div class="en">Katze-Kuh — 10 Wdh. langsam</div><div class="ed">Auf allen Vieren: Rücken wölben dann hohlkreuzen. Wirbelsäule mobilisieren.</div></div><span class="etag et-r">Rücken</span></div>
+  <div class="ei"><div class="eico">🏊</div><div><div class="en">Superman — 3×10 Wdh.</div><div class="ed">Bauch auf Boden: Arme & Beine heben, 2 Sek halten. Unterer Rücken direkt.</div></div><span class="etag et-r">Rücken</span></div>
+  <div class="ei"><div class="eico">🪑</div><div><div class="en">Hip Flexor Stretch — 30 Sek je Seite</div><div class="ed">Verkürzte Hüftbeuger = Hauptursache Kreuzschmerzen bei Sitzberufen!</div></div><span class="etag et-r">Rücken</span></div>
+</div></div>
+
+<div class="sd"><div class="sdh"><div class="sdn" style="color:var(--accent3)">MI</div><div class="sdt">🥋 Selbstverteidigung 18:30–20:00</div><span class="stbdg bdg-tr">1,5 Std · ~700 kcal</span></div><div class="sex">
+  <div class="ei"><div class="eico">🐕</div><div><div class="en">Morgen-Spaziergang (30 Min, ruhig)</div><div class="ed">Energie für Abend aufsparen. Kein Workout morgens.</div></div><span class="etag et-k">Morgen</span></div>
+  <div class="ei"><div class="eico">🥋</div><div><div class="en">Selbstverteidigung 18:30–20:00</div><div class="ed">Cardio, Koordination, Kraft, mentale Schärfe. Alles geben.</div></div><span class="etag et-ka">Kampfsport</span></div>
+  <div class="ei"><div class="eico">🥤</div><div><div class="en">~21:00 More Recovery-Shake — SOFORT</div><div class="ed">Whey + Milch + Banane. Innerhalb 30 Min nach Heimkehr. Muskelaufbau!</div></div><span class="etag et-k">Recovery</span></div>
+</div></div>
+
+<div class="sd"><div class="sdh"><div class="sdn" style="color:var(--accent2)">DO</div><div class="sdt">Aktive Regeneration</div><span class="stbdg bdg-rs">~45 Min · ~200 kcal</span></div><div class="sex">
+  <div class="ei"><div class="eico">🐕</div><div><div class="en">Langer Spaziergang (45 Min)</div><div class="ed">Längster Walk der Woche. Kein Handy. Natur = mentale Erholung.</div></div><span class="etag et-k">Erholung</span></div>
+  <div class="ei"><div class="eico">🧘</div><div><div class="en">Abend-Stretching (15 Min)</div><div class="ed">Ischiasnerv-Dehnung, Piriformis-Stretch, Brustwirbelsäule. Kreuz entspannen.</div></div><span class="etag et-r">Rücken</span></div>
+</div></div>
+
+<div class="sd"><div class="sdh"><div class="sdn" style="color:var(--accent3)">FR</div><div class="sdt">🥋 Selbstverteidigung 18:30–20:00</div><span class="stbdg bdg-tr">1,5 Std · ~700 kcal</span></div><div class="sex">
+  <div class="ei"><div class="eico">🐕</div><div><div class="en">Morgen-Spaziergang (30 Min, ruhig)</div><div class="ed">Energie aufsparen für Abendtraining.</div></div><span class="etag et-k">Morgen</span></div>
+  <div class="ei"><div class="eico">🥋</div><div><div class="en">Selbstverteidigung 18:30–20:00</div><div class="ed">Letzte Einheit der Woche. Woche rauslassen. Alles geben.</div></div><span class="etag et-ka">Kampfsport</span></div>
+  <div class="ei"><div class="eico">🥤</div><div><div class="en">~21:00 More Recovery-Shake — SOFORT</div><div class="ed">Wochenende startet mit optimaler Regeneration.</div></div><span class="etag et-k">Recovery</span></div>
+</div></div>
+
+<div class="sd"><div class="sdh"><div class="sdn" style="color:var(--accent2)">SA</div><div class="sdt">🌳 Erholung · Wiegen · Meal Prep</div><span class="stbdg bdg-rs">Kein Sport!</span></div><div class="sex">
+  <div class="ei"><div class="eico">⚖️</div><div><div class="en">WIEGEN — morgens nüchtern (vor Frühstück!)</div><div class="ed">Ins Gewichtstracker eintragen. Trend beobachten, nicht täglich stressen.</div></div><span class="etag et-r" style="background:rgba(95,255,154,.2);color:var(--green)">Wiegen</span></div>
+  <div class="ei"><div class="eico">🌳</div><div><div class="en">Natur-Spaziergang (mit Frau & Hund)</div><div class="ed">Kein Sport. Aktive Erholung nach Fr-Training. Frische Luft, kein Handy.</div></div><span class="etag et-r">Erholung</span></div>
+  <div class="ei"><div class="eico">🍳</div><div><div class="en">Meal Prep mit Frau (1,5–2h)</div><div class="ed">Protein für Mo–Mi vorkochen. Spart enorm Zeit und verhindert Fast Food.</div></div><span class="etag et-k">Planung</span></div>
+</div></div>
+
+<div class="sd"><div class="sdh"><div class="sdn" style="color:var(--accent2)">SO</div><div class="sdt">🚣 Intensiv: Rudergerät + Körpergewicht</div><span class="stbdg bdg-rd">~75 Min · ~650 kcal</span></div><div class="sex">
+  <div class="ei"><div class="eico">🚣</div><div><div class="en">Rudergerät — 45 Min Intervalle</div><div class="ed">5 Min locker → 8× (2 Min intensiv / 1 Min locker) → 5 Min ausrudern. TECHNIK: Beine drücken → Rücken → Arme ziehen!</div></div><span class="etag et-rd">Cardio</span></div>
+  <div class="ei"><div class="eico">💪</div><div><div class="en">Körpergewicht-Zirkel — 3 Runden</div><div class="ed">15 Push-Ups · 12 Ausfallschritte je Seite · 30 Sek Plank · 10 Superman. 90 Sek Pause.</div></div><span class="etag et-k">Kraft</span></div>
+  <div class="ei"><div class="eico">🥤</div><div><div class="en">More Recovery-Shake danach</div><div class="ed">Whey 50g + Milch + Banane. Direkt nach Training.</div></div><span class="etag et-k">Recovery</span></div>
+  <div class="ei"><div class="eico">📋</div><div><div class="en">15 Min Wochenplanung</div><div class="ed">Top 3 Prioritäten. Kalender checken. Erholt und vorbereitet in den Montag.</div></div><span class="etag et-k">CEO</span></div>
+</div></div>
+```
+
+  </div>
+  <div class="notice" style="margin-top:14px;"><strong>Wöchentlicher Kalorienverbrauch Sport:</strong> Spaziergang täglich ~250 kcal + Mi Training ~700 kcal + Fr Training ~700 kcal + So Rudern+Kraft ~650 kcal = ~3500 kcal extra pro Woche. Das sind zusätzlich ~0,5 kg Fett pro Woche allein durch Sport!</div>
+</div>
+
+<!-- PRINZIPIEN -->
+
+<div id="tab-prinzipien" class="tc">
+  <div class="stitle">DEINE REGELN</div>
+  <div class="ssub">Einfach · Konsequent · Gründer-kompatibel · Ohne leiden</div>
+
+  <div class="wtr">
+    <div class="wtr-h">
+      <span class="wtr-ttl">💧 Wasser-Tracker — Tagesziel: 2,5 Liter</span>
+      <span id="wcnt" style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--accent2)">0 / 10</span>
+    </div>
+    <div class="glasses" id="glasses"></div>
+    <div class="wbar"><div class="wfill" id="wfill" style="width:0%"></div></div>
+    <div class="wtxt" id="wtxt">Klick auf ein Glas · je Glas = 250ml</div>
+  </div>
+
+  <div class="pgrid">
+    <div class="pcard"><div class="pico">🌅</div><div><h4>Morgenritual ist unverhandelbar</h4><p>06:00–07:30 gehört dir. Hund, Shake, Übungen — bevor der Laptop aufgeht. Das ist die Grundlage für alles andere.</p></div></div>
+    <div class="pcard"><div class="pico">🥤</div><div><h4>More Shake = dein Sicherheitsnetz</h4><p>Stress, Hunger, kein Zeit zum Kochen — immer zuerst den Shaker rausholen. Kein Fast Food solange Pulver da ist.</p></div></div>
+    <div class="pcard"><div class="pico">💧</div><div><h4>Wasser vor allem anderen</h4><p>500ml morgens vor dem Kaffee. Hunger ist oft Durst. 2,5L täglich — Kreuzschmerzen, Müdigkeit und Hunger bessern sich allein dadurch.</p></div></div>
+    <div class="pcard"><div class="pico">⚖️</div><div><h4>Samstag morgens wiegen — immer</h4><p>Nüchtern, gleiche Waage, ins Dashboard eintragen. Nur der Trend über 4 Wochen zählt — nicht die täglichen Schwankungen.</p></div></div>
+    <div class="pcard"><div class="pico">🕙</div><div><h4>22:30 Laptop zu — kein Verhandeln</h4><p>Schlafmangel erhöht Cortisol und Hunger-Hormone direkt. Wer schlecht schläft, nimmt nachweislich langsamer ab.</p></div></div>
+    <div class="pcard"><div class="pico">🍳</div><div><h4>Samstag Meal Prep = Wochenschutz</h4><p>2 Stunden Kochen = 5 Tage kein Fast Food. Das ist deine wichtigste Investition gegen Stress-Essen unter der Woche.</p></div></div>
+    <div class="pcard"><div class="pico">🥋</div><div><h4>Training Mi + Fr ist heilig</h4><p>17:45 Abfahrt — keine Meetings danach. Post-Shake innerhalb 30 Min nach Heimkehr. Dein physischer Reset der Woche.</p></div></div>
+    <div class="pcard"><div class="pico">🚣</div><div><h4>Sonntag: Rudern + Wochenplanung</h4><p>45 Min Rudergerät + Zirkel + Shake + 15 Min Planung. Du startest erholt und vorbereitet. Kein Montag-Chaos.</p></div></div>
+  </div>
+
+  <div class="notice" style="margin-top:14px;">
+    <strong>Zeitplan 140 → 95 kg:</strong> Mo 1–4: Routine, Wasser, Shakes etablieren · Mo 5–8: Erste 4 kg weg, Energie steigt · Mo 3–6: Rücken besser, Kleidung lockerer · Mo 7–12: 7–12 kg weniger · 1 Jahr: Ziel in Reichweite. Jede Woche zählt — fang heute an.
+  </div>
+</div>
+
+</div><!-- end wrap -->
+
+<script>
+// ===== TAGESDATEN =====
+const days=[
+  {title:"MONTAG — FOKUSTAG",sub:"Morgenroutine schützen · Shake statt Stress-Snack · 1800 kcal halten",
+   tl:[
+    {c:"",time:"06:00",tag:"",tt:"Aufstehen + 500ml Wasser",desc:"Vor Kaffee, vor Handy. Sofort."},
+    {c:"more",time:"06:20",tag:"tg-more",tgtxt:"MORE",tt:"More Whey Shake Frühstück",desc:"Whey 50g + Milch + Banane + Erdnussbutter. 3 Min. Satt bis 10:00."},
+    {c:"",time:"06:30",tag:"",tt:"🐕 Hund + Übungen (45 Min)",desc:"Zügig gehen + 3× Plank + 15 Kniebeugen unterwegs."},
+    {c:"",time:"07:15",tag:"",tt:"Waschen · Anziehen (15 Min)",desc:""},
+    {c:"drive",time:"07:30",tag:"tg-drive",tgtxt:"FAHRT",tt:"🚗 Büro (30 Min)",desc:"Kein Stress-Scrollen."},
+    {c:"blue",time:"08:00",tag:"",tt:"Deep Work Block 1",desc:"Schwerste Aufgabe zuerst. Handy stumm."},
+    {c:"",time:"10:00",tag:"",tt:"Snack + 500ml Wasser + aufstehen",desc:"Nüsse + Apfel. 5 Min Hüftbeuger. Kein Süßes!"},
+    {c:"blue",time:"13:00",tag:"",tt:"Mittagessen — Meal Prep",desc:"Protein + Gemüse. 20 Min Pause. Laptop zu."},
+    {c:"more",time:"16:00",tag:"tg-more",tgtxt:"SHAKE",tt:"Anti-Stress-Shake (Pflicht!)",desc:"Wecker stellen! Whey + Wasser. Verhindert Nachmittags-Snacken zuverlässig."},
+    {c:"drive",time:"17:30",tag:"tg-drive",tgtxt:"HEIMFAHRT",tt:"🚗 Heimfahrt (30 Min)",desc:"Feierabend. Bewusst abschalten."},
+    {c:"",time:"19:00",tag:"",tt:"Leichtes Abendessen",desc:"Greek Yogurt oder Suppe. Nichts nach 20:00!"},
+    {c:"orange",time:"22:30",tag:"",tt:"Laptop zu — schlafen",desc:"7,5h Schlaf. Unverhandelbar."}
+   ],
+   fl:[
+    {t:"shake",fn:"🥤 More Shake Frühstück",fd:"Whey 50g + Milch + Banane",fk:"480 kcal · 48g Protein"},
+    {t:"snack",fn:"🍎 Snack 10:00",fd:"20g Walnüsse + Apfel",fk:"220 kcal"},
+    {t:"main",fn:"🍗 Mittag Meal Prep",fd:"Hähnchen + Süßkartoffel + Gemüse",fk:"550 kcal · 42g Protein"},
+    {t:"shake",fn:"🥤 Anti-Stress-Shake 16:00",fd:"Whey 37g + Wasser",fk:"200 kcal · 34g Protein"},
+    {t:"snack",fn:"🥣 Abendessen",fd:"Greek Yogurt + Beeren",fk:"300 kcal · 22g Protein"},
+    {t:"snack",fn:"📊 Tagessumme",fd:"Kaloriendefizit ~800 kcal",fk:"≈ 1750 kcal · 146g Protein"}
+   ]},
+  {title:"DIENSTAG — DEEP WORK",sub:"Rücken-Routine einbauen · Meal Prep nutzen · Digital Detox Abend",
+   tl:[
+    {c:"",time:"06:00",tag:"",tt:"Aufstehen + 500ml Wasser",desc:""},
+    {c:"",time:"06:20",tag:"",tt:"Frühstück (Eier + Brot)",desc:"3 Eier + 1 Vollkornbrot + Quark."},
+    {c:"",time:"06:45",tag:"",tt:"🐕 Hund + Rücken-Routine (40 Min)",desc:"Spaziergang + Cat-Cow + Superman + Hip Flexor Stretch."},
+    {c:"",time:"07:15",tag:"",tt:"Waschen · Anziehen",desc:""},
+    {c:"drive",time:"07:30",tag:"tg-drive",tgtxt:"FAHRT",tt:"🚗 Büro (30 Min)",desc:""},
+    {c:"blue",time:"08:00",tag:"",tt:"Deep Work — wichtigstes Projekt",desc:"Kein E-Mail bis 10 Uhr."},
+    {c:"",time:"10:00",tag:"",tt:"Snack + aufstehen",desc:"Mandeln + Beeren. Hüftbeuger dehnen."},
+    {c:"blue",time:"13:00",tag:"",tt:"Mittagessen Meal Prep",desc:"Aus dem Samstags-Vorrat."},
+    {c:"more",time:"16:00",tag:"tg-more",tgtxt:"SHAKE",tt:"Anti-Stress-Shake",desc:"Whey + Wasser. Wecker stellen!"},
+    {c:"drive",time:"17:30",tag:"tg-drive",tgtxt:"HEIMFAHRT",tt:"🚗 Heimfahrt",desc:""},
+    {c:"orange",time:"20:00",tag:"",tt:"Digital Detox",desc:"Kein Social Media. Buch, Gespräch, Entspannen."},
+    {c:"orange",time:"22:30",tag:"",tt:"Schlafen",desc:""}
+   ],
+   fl:[
+    {t:"main",fn:"🍳 Frühstück",fd:"3 Eier + Vollkornbrot + Quark",fk:"450 kcal · 32g Protein"},
+    {t:"snack",fn:"🍎 Snack 10:00",fd:"Mandeln + Beeren",fk:"200 kcal"},
+    {t:"main",fn:"🍗 Mittag Meal Prep",fd:"Protein + Gemüse",fk:"550 kcal · 42g Protein"},
+    {t:"shake",fn:"🥤 Shake 16:00",fd:"Whey + Wasser",fk:"200 kcal · 34g Protein"},
+    {t:"snack",fn:"🥣 Abendessen",fd:"Quark + Kräuter + 1 Brot",fk:"300 kcal"},
+    {t:"snack",fn:"📊 Tagessumme",fd:"Kaloriendefizit ~800 kcal",fk:"≈ 1700 kcal · 108g Protein"}
+   ]},
+  {title:"MITTWOCH — TRAININGSTAG",sub:"Mehr Carbs essen · 17:45 Abfahrt · Post-Shake sofort nach Heimkehr ~21:00",
+   tl:[
+    {c:"",time:"06:00",tag:"",tt:"Aufstehen + 500ml Wasser",desc:""},
+    {c:"",time:"06:20",tag:"",tt:"Frühstück mit mehr Carbs",desc:"Haferbrei + Beeren + Eier. Heute braucht der Körper Energie."},
+    {c:"",time:"06:45",tag:"",tt:"🐕 Hund — ruhig (30 Min)",desc:"Energie für 18:30 aufsparen. Kein Workout."},
+    {c:"",time:"07:15",tag:"",tt:"Waschen · Anziehen",desc:""},
+    {c:"drive",time:"07:30",tag:"tg-drive",tgtxt:"FAHRT",tt:"🚗 Büro (30 Min)",desc:""},
+    {c:"blue",time:"08:00",tag:"",tt:"Büro — Meetings & Arbeit",desc:"Wichtige Entscheidungen vor 13 Uhr."},
+    {c:"blue",time:"13:00",tag:"",tt:"Mittagessen XL",desc:"Extra Protein + Süßkartoffel. Trainingstag = mehr essen ok."},
+    {c:"",time:"15:30",tag:"",tt:"Pre-Training Snack",desc:"Banane + Nüsse. 2–3h vor Training."},
+    {c:"drive",time:"17:30",tag:"tg-drive",tgtxt:"FAHRT",tt:"🚗 Fahrt zum Training (30 Min)",desc:"Pünktlich!"},
+    {c:"",time:"18:15",tag:"",tt:"Ankommen · Umziehen (15 Min)",desc:""},
+    {c:"orange",time:"18:30",tag:"tg-training",tgtxt:"TRAINING",tt:"🥋 Selbstverteidigung",desc:"Volles Training bis 20:00. Alles geben."},
+    {c:"drive",time:"20:00",tag:"tg-drive",tgtxt:"HEIMFAHRT",tt:"🚗 Heimfahrt (30 Min)",desc:"Umziehen + Fahrt."},
+    {c:"more",time:"20:50",tag:"tg-more",tgtxt:"PFLICHT",tt:"🥤 More Recovery-Shake — SOFORT",desc:"Whey 50g + Milch + Banane. Direkt nach Heimkehr!"},
+    {c:"",time:"21:15",tag:"",tt:"Kleines Abendbrot",desc:"Greek Yogurt oder Quark. Leicht & schnell."},
+    {c:"orange",time:"22:30",tag:"",tt:"Schlafen — früher heute",desc:"Körper regeneriert nach Training stärker im Schlaf."}
+   ],
+   fl:[
+    {t:"main",fn:"🥣 Frühstück mit Carbs",fd:"Haferbrei + Beeren + Eier",fk:"580 kcal"},
+    {t:"main",fn:"🍗 Mittag XL",fd:"200g Protein + Süßkartoffel + Gemüse",fk:"650 kcal · 48g Protein"},
+    {t:"snack",fn:"🍌 Pre-Training 15:30",fd:"Banane + Nüsse",fk:"250 kcal"},
+    {t:"shake",fn:"🥤 Recovery-Shake ~20:50",fd:"Whey 50g + Milch + Banane",fk:"480 kcal · 50g Protein"},
+    {t:"snack",fn:"📊 Tagessumme",fd:"Trainingstag: mehr essen erlaubt",fk:"≈ 1960 kcal · 98g+ Protein"}
+   ]},
+  {title:"DONNERSTAG — AKTIVE ERHOLUNG",sub:"Rücken regenerieren · langer Walk · Abend-Stretching Pflicht",
+   tl:[
+    {c:"",time:"06:00",tag:"",tt:"Aufstehen + 500ml Wasser",desc:""},
+    {c:"more",time:"06:20",tag:"tg-more",tgtxt:"MORE",tt:"More Shake oder Eier",desc:"Je nach Hunger nach gestrigem Training."},
+    {c:"",time:"06:45",tag:"",tt:"🐕 Langer Spaziergang (45 Min)",desc:"Längster Walk. Kein Handy. Natur tanken."},
+    {c:"",time:"07:15",tag:"",tt:"Waschen · Anziehen",desc:""},
+    {c:"drive",time:"07:30",tag:"tg-drive",tgtxt:"FAHRT",tt:"🚗 Büro (30 Min)",desc:""},
+    {c:"blue",time:"13:00",tag:"",tt:"Lachs oder fettreicher Fisch",desc:"Omega-3 für Rücken & Entzündungshemmung. Heute bewusst."},
+    {c:"more",time:"16:00",tag:"tg-more",tgtxt:"SHAKE",tt:"Shake oder Joghurt",desc:"Kein Süßes."},
+    {c:"drive",time:"17:30",tag:"tg-drive",tgtxt:"HEIMFAHRT",tt:"🚗 Heimfahrt",desc:""},
+    {c:"",time:"19:00",tag:"",tt:"Leichtes Abendessen",desc:"Suppe oder Quark."},
+    {c:"blue",time:"20:30",tag:"tg-rudern",tgtxt:"RÜCKEN",tt:"Stretching 15 Min",desc:"Ischiasnerv-Dehnung, Piriformis, Brustwirbelsäule."},
+    {c:"orange",time:"22:30",tag:"",tt:"Schlafen",desc:""}
+   ],
+   fl:[
+    {t:"shake",fn:"🥤 Shake oder Eier",fd:"Frühstück nach Training-Hunger",fk:"450 kcal"},
+    {t:"main",fn:"🐟 Lachs-Mittagessen",fd:"Lachs + Gemüse + Olivenöl",fk:"520 kcal · 40g Protein"},
+    {t:"shake",fn:"🥤 Shake 16:00",fd:"Whey + Wasser",fk:"200 kcal"},
+    {t:"snack",fn:"🥣 Abendessen leicht",fd:"Suppe oder Quark + Brot",fk:"280 kcal"},
+    {t:"snack",fn:"📊 Tagessumme",fd:"Kaloriendefizit ~900 kcal",fk:"≈ 1650 kcal"}
+   ]},
+  {title:"FREITAG — TRAININGSTAG",sub:"Wie Mittwoch · Woche stark beenden · Post-Shake nicht vergessen!",
+   tl:[
+    {c:"",time:"06:00",tag:"",tt:"Aufstehen + 500ml Wasser",desc:""},
+    {c:"",time:"06:20",tag:"",tt:"Frühstück mit Carbs",desc:"Wie Mi — Energie für Abendtraining."},
+    {c:"",time:"06:45",tag:"",tt:"🐕 Hund — ruhig (30 Min)",desc:"Energie aufsparen."},
+    {c:"",time:"07:15",tag:"",tt:"Waschen · Anziehen",desc:""},
+    {c:"drive",time:"07:30",tag:"tg-drive",tgtxt:"FAHRT",tt:"🚗 Büro (30 Min)",desc:""},
+    {c:"blue",time:"08:00",tag:"",tt:"Büro + Wochenreview",desc:"Was erreicht? Was nächste Woche?"},
+    {c:"blue",time:"13:00",tag:"",tt:"Mittagessen proteinreich",desc:"Letzte große Mahlzeit vor Training."},
+    {c:"",time:"15:30",tag:"",tt:"Pre-Training Snack",desc:"Banane + Nüsse."},
+    {c:"drive",time:"17:30",tag:"tg-drive",tgtxt:"FAHRT",tt:"🚗 Fahrt zum Training",desc:"Pünktlich!"},
+    {c:"orange",time:"18:30",tag:"tg-training",tgtxt:"TRAINING",tt:"🥋 Selbstverteidigung",desc:"Letzte Einheit. Woche rauslassen. Alles geben."},
+    {c:"drive",time:"20:00",tag:"tg-drive",tgtxt:"HEIMFAHRT",tt:"🚗 Heimfahrt",desc:""},
+    {c:"more",time:"20:50",tag:"tg-more",tgtxt:"PFLICHT",tt:"🥤 More Recovery-Shake — SOFORT",desc:"Wochenende startet mit optimaler Regeneration."},
+    {c:"",time:"21:15",tag:"",tt:"Abendbrot + entspannen",desc:"Leicht essen. Wochenende starten."},
+    {c:"orange",time:"22:30",tag:"",tt:"Schlafen — Sa ausschlafen!",desc:""}
+   ],
+   fl:[
+    {t:"main",fn:"🥣 Frühstück mit Carbs",fd:"Haferbrei + Beeren + Eier",fk:"580 kcal"},
+    {t:"main",fn:"🍗 Mittagessen XL",fd:"Protein + Kohlenhydrate + Gemüse",fk:"650 kcal"},
+    {t:"snack",fn:"🍌 Pre-Training 15:30",fd:"Banane + Nüsse",fk:"250 kcal"},
+    {t:"shake",fn:"🥤 Recovery-Shake ~20:50",fd:"Whey 50g + Milch + Banane — SOFORT!",fk:"480 kcal · 50g Protein"},
+    {t:"snack",fn:"📊 Tagessumme",fd:"Trainingstag: mehr essen ok",fk:"≈ 1960 kcal"}
+   ]},
+  {title:"SAMSTAG — ERHOLUNG & WIEGEN",sub:"Kein intensiver Sport! Nüchtern wiegen · Natur · Meal Prep für die Woche",
+   tl:[
+    {c:"green",time:"08:00",tag:"tg-wiegen",tgtxt:"WIEGEN",tt:"⚖️ WIEGEN — nüchtern, vor Frühstück!",desc:"Gleiche Waage, kein Kleidung. Ins Dashboard eintragen. Trend beobachten."},
+    {c:"",time:"08:15",tag:"",tt:"Ausschlafen — verdient!",desc:"Freitag war hart. Körper braucht das."},
+    {c:"",time:"09:00",tag:"",tt:"Entspanntes Frühstück mit Frau",desc:"Eier, Brot, Kaffee. Kein Stress."},
+    {c:"",time:"10:00",tag:"",tt:"🌳 Natur-Spaziergang (Frau + Hund)",desc:"Kein Handy, kein Podcast. Frische Luft, Gespräch. Kein Sport."},
+    {c:"blue",time:"12:00",tag:"",tt:"🍳 Meal Prep mit Frau (1,5–2h)",desc:"Hähnchen/Fisch/Rind + Gemüse für Mo–Mi. Portionieren & einfrieren."},
+    {c:"",time:"14:00",tag:"",tt:"Mittagessen — gemeinsam genießen",desc:"Was frisch gekocht wurde. Heute großzügiger essen."},
+    {c:"",time:"Nachm.",tag:"",tt:"Freizeit & Familie",desc:"Kein Laptop. Qualitätszeit. Erholung."},
+    {c:"blue",time:"Abend",tag:"tg-rudern",tgtxt:"RÜCKEN",tt:"Wärmflasche oder warmes Bad",desc:"Muskeln nach Trainingswoche entspannen."},
+    {c:"orange",time:"22:30",tag:"",tt:"Schlafen — morgen Intensivtraining!",desc:""}
+   ],
+   fl:[
+    {t:"main",fn:"⚖️ Wiegen nüchtern",fd:"Vor Frühstück · ins Dashboard eintragen",fk:""},
+    {t:"main",fn:"🍳 Frühstück mit Frau",fd:"Eier + Brot + Avocado + Kaffee",fk:"500 kcal"},
+    {t:"main",fn:"🍖 Meal Prep Mittagessen",fd:"Frisch Gekochtes genießen",fk:"600 kcal"},
+    {t:"snack",fn:"🍕 Abendessen — Wildcard",fd:"Heute etwas Schöneres erlaubt",fk:"~500 kcal"},
+    {t:"snack",fn:"📊 Samstag lockerer",fd:"Kein striktes Defizit — Erholungstag",fk:"≈ 1900 kcal"}
+   ]},
+  {title:"SONNTAG — INTENSIV-TRAINING",sub:"45 Min Rudergerät · Körpergewicht-Zirkel · Shake · 15 Min Wochenplanung",
+   tl:[
+    {c:"",time:"07:30",tag:"",tt:"Aufstehen + 500ml Wasser",desc:"Etwas später ok."},
+    {c:"",time:"08:00",tag:"",tt:"Frühstück — proteinreich",desc:"3 Eier + Vollkornbrot + Avocado. Energie für Training."},
+    {c:"",time:"09:00",tag:"",tt:"🐕 Kurzer Spaziergang (20 Min)",desc:"Aufwärmen für den Körper."},
+    {c:"",time:"09:30",tag:"",tt:"Aufwärmen (5 Min)",desc:"Gelenke mobilisieren, Schultern kreisen."},
+    {c:"blue",time:"09:35",tag:"tg-rudern",tgtxt:"RUDERN",tt:"🚣 Rudergerät — 45 Minuten",desc:"5 Min locker → 8× (2 Min intensiv / 1 Min locker) → 5 Min aus. TECHNIK: Beine → Rücken → Arme!"},
+    {c:"blue",time:"10:20",tag:"",tt:"💪 Körpergewicht-Zirkel (3 Runden)",desc:"15 Push-Ups · 12 Ausfallschritte · 30 Sek Plank · 10 Superman. 90 Sek Pause."},
+    {c:"more",time:"11:00",tag:"tg-more",tgtxt:"PFLICHT",tt:"🥤 More Recovery-Shake — direkt danach",desc:"Whey 50g + Milch + Banane. Muskeln aufbauen, Regeneration starten."},
+    {c:"",time:"11:30",tag:"",tt:"Duschen · Mittagessen",desc:"Großzügig essen. Carbs heute verdient."},
+    {c:"blue",time:"14:00",tag:"",tt:"📋 15 Min Wochenplanung",desc:"Top 3 Prioritäten. Kalender checken. Montag kann kommen."},
+    {c:"",time:"Nachm.",tag:"",tt:"Freizeit & Familie",desc:"Kein Laptop vor 17 Uhr."},
+    {c:"orange",time:"22:30",tag:"",tt:"Schlafen",desc:"Gut vorbereitet in die neue Woche."}
+   ],
+   fl:[
+    {t:"main",fn:"🍳 Frühstück proteinreich",fd:"3 Eier + Vollkornbrot + Avocado",fk:"500 kcal"},
+    {t:"shake",fn:"🥤 Recovery-Shake nach Training",fd:"Whey 50g + Milch + Banane",fk:"480 kcal · 50g Protein"},
+    {t:"main",fn:"🍖 Mittagessen großzügig",fd:"Mit Carbs — verdient!",fk:"650 kcal"},
+    {t:"snack",fn:"🥗 Abendessen leicht",fd:"Salat oder Joghurt vor der Woche",fk:"280 kcal"},
+    {t:"snack",fn:"📊 Tagessumme",fd:"Trainingstag: mehr essen ok",fk:"≈ 1910 kcal"}
+   ]}
+];
+
+let sel=0,wc=0,weights=[];
+
+// Milestones
+const msDef=[
+  {kg:135,icon:"🎯",lbl:"-5kg Start!"},
+  {kg:130,icon:"💪",lbl:"-10kg"},
+  {kg:125,icon:"⚡",lbl:"-15kg"},
+  {kg:120,icon:"🔥",lbl:"-20kg"},
+  {kg:110,icon:"🏆",lbl:"-30kg"}
+];
+
+function bmi(kg){return(kg/(1.86*1.86)).toFixed(1);}
+function bmiCat(b){if(b<18.5)return"Untergewicht";if(b<25)return"Normalgewicht";if(b<30)return"Übergewicht";if(b<35)return"Adipositas I";if(b<40)return"Adipositas II";return"Adipositas III";}
+
+function renderMilestones(cur){
+  const c=document.getElementById('milestones');
+  c.innerHTML=msDef.map(m=>{
+    const reached=cur<=m.kg;
+    return`<div class="ms ${reached?'reached':''}">
+      <div class="ms-icon">${m.icon}</div>
+      <div class="ms-kg">${m.kg} kg</div>
+      <div class="ms-lbl">${m.lbl}${reached?' ✓':''}</div>
+    </div>`;
+  }).join('');
+}
+
+function updateDashboard(){
+  const start=140,goal=95,height=1.86;
+  const cur=weights.length>0?weights[weights.length-1].kg:start;
+  const lost=start-cur;
+  const rem=cur-goal;
+  const b=bmi(cur);
+  document.getElementById('wt-current').textContent=cur.toFixed(1)+' kg';
+  document.getElementById('wt-bmi-current').textContent=`BMI: ${b} · ${bmiCat(parseFloat(b))}`;
+  document.getElementById('wt-lost').textContent=lost.toFixed(1)+' kg';
+  const pct=Math.max(0,Math.round(lost/45*100));
+  document.getElementById('wt-lost-pct').textContent=`${pct}% des Ziels erreicht`;
+  document.getElementById('wt-remaining').textContent=Math.max(0,rem).toFixed(1)+' kg';
+  const weeks=Math.ceil(rem);
+  document.getElementById('wt-eta').textContent=rem>0?`~${weeks} Wochen bei 1kg/Wo`:'🎉 Ziel erreicht!';
+  renderMilestones(cur);
+  renderTimeline();
+  drawChart();
+}
+
+function renderTimeline(){
+  const c=document.getElementById('wt-timeline');
+  if(weights.length===0){
+    c.innerHTML='<div style="padding:20px;text-align:center;color:var(--muted);font-size:12px;">Noch keine Einträge — trag jeden Samstag dein Gewicht ein!</div>';
+    return;
+  }
+  c.innerHTML=[...weights].reverse().map((e,ri)=>{
+    const i=weights.length-1-ri;
+    const prev=i>0?weights[i-1].kg:140;
+    const diff=e.kg-prev;
+    const diffStr=diff===0?'±0':(diff<0?diff.toFixed(1):'+'+diff.toFixed(1));
+    const diffCls=diff<0?'neg':diff>0?'pos':'';
+    const b=bmi(e.kg);
+    return`<div class="wt-entry">
+      <span class="we-date">${e.date}</span>
+      <span class="we-kg">${e.kg} kg</span>
+      <span class="we-bmi">BMI ${b} · ${bmiCat(parseFloat(b))}</span>
+      <span class="we-diff ${diffCls}">${diffStr} kg</span>
+      <button class="we-del" onclick="deleteWeight(${i})">✕</button>
+    </div>`;
+  }).join('');
+}
+
+function addWeight(){
+  const dateEl=document.getElementById('wt-date');
+  const kgEl=document.getElementById('wt-kg');
+  const date=dateEl.value;
+  const kg=parseFloat(kgEl.value);
+  if(!date||isNaN(kg)||kg<50||kg>250){alert('Bitte Datum und gültiges Gewicht eingeben!');return;}
+  weights.push({date,kg});
+  weights.sort((a,b)=>a.date.localeCompare(b.date));
+  saveWeights();
+  updateDashboard();
+  kgEl.value='';
+}
+
+function deleteWeight(i){
+  weights.splice(i,1);
+  saveWeights();
+  updateDashboard();
+}
+
+function saveWeights(){
+  try{localStorage.setItem('martin_weights',JSON.stringify(weights));}catch(e){}
+}
+
+function loadWeights(){
+  try{const d=localStorage.getItem('martin_weights');if(d)weights=JSON.parse(d);}catch(e){}
+}
+
+function drawChart(){
+  const canvas=document.getElementById('weightChart');
+  const ctx=canvas.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  const rect=canvas.parentElement.getBoundingClientRect();
+  const W=rect.width-40;
+  const H=200;
+  canvas.width=W*dpr;
+  canvas.height=H*dpr;
+  canvas.style.width=W+'px';
+  canvas.style.height=H+'px';
+  ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,W,H);
+
+  const allData=[{date:'Start',kg:140},...weights,{date:'Ziel',kg:95,ghost:true}];
+  if(allData.length<2){
+    ctx.fillStyle='#555';ctx.font='13px DM Sans';ctx.textAlign='center';
+    ctx.fillText('Trag dein erstes Gewicht ein — dann erscheint die Kurve!',W/2,H/2);return;
+  }
+
+  const minKg=Math.min(...allData.map(d=>d.kg))-3;
+  const maxKg=Math.max(...allData.map(d=>d.kg))+3;
+  const pad={t:20,r:20,b:30,l:45};
+  const cW=W-pad.l-pad.r;
+  const cH=H-pad.t-pad.b;
+  const xStep=cW/(allData.length-1);
+  const yScale=cH/(maxKg-minKg);
+
+  const px=(i)=>pad.l+i*xStep;
+  const py=(kg)=>pad.t+cH-(kg-minKg)*yScale;
+
+  // Grid
+  ctx.strokeStyle='rgba(255,255,255,0.05)';ctx.lineWidth=1;
+  for(let k=0;k<=4;k++){
+    const y=pad.t+k*(cH/4);
+    ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+cW,y);ctx.stroke();
+    const kg=maxKg-(k*(maxKg-minKg)/4);
+    ctx.fillStyle='#555';ctx.font='10px DM Sans';ctx.textAlign='right';
+    ctx.fillText(kg.toFixed(0),pad.l-5,y+4);
+  }
+
+  // Goal line
+  const goalY=py(95);
+  ctx.setLineDash([4,4]);ctx.strokeStyle='rgba(95,255,154,0.3)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(pad.l,goalY);ctx.lineTo(pad.l+cW,goalY);ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle='rgba(95,255,154,0.6)';ctx.font='10px DM Sans';ctx.textAlign='left';
+  ctx.fillText('Ziel 95 kg',pad.l+4,goalY-4);
+
+  // Gradient fill
+  const grad=ctx.createLinearGradient(0,pad.t,0,pad.t+cH);
+  grad.addColorStop(0,'rgba(232,255,71,0.15)');
+  grad.addColorStop(1,'rgba(232,255,71,0)');
+  ctx.beginPath();
+  ctx.moveTo(px(0),py(allData[0].kg));
+  allData.forEach((d,i)=>{if(i>0)ctx.lineTo(px(i),py(d.kg));});
+  ctx.lineTo(px(allData.length-1),pad.t+cH);
+  ctx.lineTo(px(0),pad.t+cH);
+  ctx.closePath();ctx.fillStyle=grad;ctx.fill();
+
+  // Line
+  ctx.beginPath();ctx.moveTo(px(0),py(allData[0].kg));
+  allData.forEach((d,i)=>{if(i>0){if(d.ghost){ctx.setLineDash([4,4]);ctx.strokeStyle='rgba(95,255,154,0.4)';}ctx.lineTo(px(i),py(d.kg));}});
+  ctx.strokeStyle='#e8ff47';ctx.setLineDash([]);ctx.lineWidth=2;
+  ctx.beginPath();
+  const realData=allData.filter(d=>!d.ghost);
+  realData.forEach((d,i)=>{const idx=allData.indexOf(d);i===0?ctx.moveTo(px(idx),py(d.kg)):ctx.lineTo(px(idx),py(d.kg));});
+  ctx.stroke();
+
+  // Dots
+  realData.forEach((d,i)=>{
+    const idx=allData.indexOf(d);
+    ctx.beginPath();ctx.arc(px(idx),py(d.kg),4,0,Math.PI*2);
+    ctx.fillStyle=i===0?'#888':'#e8ff47';ctx.fill();
+  });
+
+  // Labels
+  allData.forEach((d,i)=>{
+    ctx.fillStyle=d.ghost?'rgba(95,255,154,0.5)':'#555';
+    ctx.font='9px DM Sans';ctx.textAlign='center';
+    const lbl=d.date==='Start'?'Start':d.date==='Ziel'?'Ziel':d.date.slice(5);
+    ctx.fillText(lbl,px(i),H-8);
+  });
+}
+
+// Tabs
+function switchTab(n,e){
+  document.querySelectorAll('.tc').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+n).classList.add('active');
+  e.target.classList.add('active');
+  if(n==='gewicht'){setTimeout(drawChart,100);}
+}
+
+// Days
+function showDay(i,el){
+  document.querySelectorAll('.dc').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');sel=i;renderDetail();
+}
+
+function renderDetail(){
+  const d=days[sel];
+  document.getElementById('d-title').textContent=d.title;
+  document.getElementById('d-sub').textContent=d.sub;
+  document.getElementById('d-tl').innerHTML=d.tl.map(item=>`
+    <div class="ti ${item.c}">
+      <div class="ti-l"><div class="ti-t">${item.time}</div><div class="ti-line"></div></div>
+      <div class="ti-dot"></div>
+      <div class="ti-r">
+        ${item.tag?`<span class="ti-tag ${item.tag}">${item.tgtxt}</span>`:''}
+        <div class="ti-title">${item.tt}</div>
+        ${item.desc?`<div class="ti-desc">${item.desc}</div>`:''}
+      </div>
+    </div>`).join('');
+  document.getElementById('d-fl').innerHTML=d.fl.map(item=>`
+    <div class="fi ${item.t}">
+      <div class="fn">${item.fn}</div>
+      <div class="fd">${item.fd}</div>
+      ${item.fk?`<div class="fkal">${item.fk}</div>`:''}
+    </div>`).join('');
+}
+
+// Water
+function initWater(){
+  const c=document.getElementById('glasses');
+  for(let i=0;i<10;i++){
+    const g=document.createElement('span');
+    g.className='gl';g.textContent='🥛';
+    g.onclick=()=>toggleW(i);c.appendChild(g);
+  }
+}
+
+function toggleW(i){
+  wc=(wc===i+1)?i:i+1;
+  document.querySelectorAll('.gl').forEach((g,idx)=>g.classList.toggle('on',idx<wc));
+  document.getElementById('wcnt').textContent=`${wc} / 10`;
+  document.getElementById('wfill').style.width=(wc*10)+'%';
+  const txts=['Los — erstes Glas!','Super!','500ml ✓','750ml!','1L ✓','1,25L','1,5L ✓','1,75L','2L ✓','2,25L','2,5L ✅ Ziel erreicht!'];
+  document.getElementById('wtxt').textContent=txts[wc];
+}
+
+// Date default
+document.getElementById('wt-date').valueAsDate=new Date();
+
+// Init
+loadWeights();
+renderDetail();
+initWater();
+updateDashboard();
+window.addEventListener('resize',()=>{const t=document.getElementById('tab-gewicht');if(t.classList.contains('active'))drawChart();});
+</script>
+
+</body>
+</html>
